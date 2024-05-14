@@ -11,3 +11,5 @@ export default async function Page({
   const res = await UserCreateForgotPassword(searchParams);
   return <CheckMail email={searchParams.email} res={res} />;
 }
+
+

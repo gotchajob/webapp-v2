@@ -5,7 +5,6 @@ import Grid from '@mui/material/Grid';
 import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import { FlexCenter } from 'components/common/box/flex-box';
 import { PRIMARYCOLOR } from 'components/common/config';
-import { RegisterVerify } from 'components/common/form/register/register-verify';
 import { ImageCard } from 'components/common/image/image-card';
 import Link from 'next/link';
 import { Text } from 'components/common/text/text';
@@ -15,6 +14,7 @@ import { UserCreateForgotPasswordResponse } from 'package/api/user/create-forgot
 // ==============================|| AUTH1 - CHECK MAIL ||============================== //
 
 const CheckMail = ({ res, email }: { res: UserCreateForgotPasswordResponse; email: string }) => {
+
   return (
     <AuthWrapper1>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
