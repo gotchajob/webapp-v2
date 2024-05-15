@@ -4,8 +4,7 @@ export const EnchantInput = ({ initValue, onChange }: { initValue: string; onCha
   return (
     <Editor
       inline={true}
-      //@ts-ignore
-      onChange={onChange}
+      onEditorChange={onChange} 
       apiKey="e2f3pntb5ogxx9hu1lba5p8ef4c29vnogx4n8lid5dw71i4v"
       initialValue={initValue}
       init={{
