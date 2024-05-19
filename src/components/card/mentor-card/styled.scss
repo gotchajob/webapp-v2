@@ -1,0 +1,16 @@
+.mentor-card {
+  .mentor-card-navigation {
+    transition: all 1000ms ease;
+    // transition: padding 1000ms;
+    overflow: hidden;
+    height: 0px;
+  }
+}
+.mentor-card:hover {
+  .mentor-card-navigation {
+    transition: all 1000ms ease;
+    overflow: hidden;
+    padding-top: 10px;
+    height: 110px;
+  }
+}

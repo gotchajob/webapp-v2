@@ -1,10 +1,12 @@
 import './globals.css';
 
 // PROJECT IMPORTS
-import ProviderWrapper from 'store/ProviderWrapper';
-import { getAccessTime } from 'package/cookies/token';
-import { cookies } from 'next/headers';
 import { UpdateAccessServer } from 'components/common/access/update-access';
+import SnackbarProvider from 'components/snackbar-provider';
+import ThemeRegistry from 'components/theme-registry/theme-registry';
+import { cookies } from 'next/headers';
+import { getAccessTime } from 'package/cookies/token';
+import ProviderWrapper from 'store/ProviderWrapper';
 
 export const metadata = {
   title: 'Gotcha Job',
@@ -15,6 +17,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const accessTime = await getAccessTime(cookies());
+
   return (
     <html lang="en">
       <head>
@@ -26,8 +29,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         }}
       >
         <UpdateAccessServer accessTime={accessTime} />
-        <ProviderWrapper>{children}</ProviderWrapper>
+        <ProviderWrapper>
+          {children}
+        </ProviderWrapper>
+        {/* <ThemeRegistry>
+          {children}
+        </ThemeRegistry> */}
       </body>
-    </html>
+    </html >
   );
 }

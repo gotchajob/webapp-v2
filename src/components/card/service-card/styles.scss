@@ -1,0 +1,21 @@
+.service-card {
+  transition: all 500ms ease;
+  .service-card-title {
+    text-align: center;
+  }
+  .service-card-description {
+    transition: all 500ms ease;
+    opacity: 0;
+    overflow: hidden;
+    height: 0px;
+  }
+}
+
+.service-card:hover {
+  box-shadow: 0px 0px 20px 0px rgba(8, 78, 118, 0.3);
+  .service-card-description {
+    height: 90px;
+    overflow: hidden;
+    opacity: 1;
+  }
+}
