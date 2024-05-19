@@ -48,11 +48,12 @@ export const NavigationItem = () => {
         p={1.5}
         pl={3}
         pr={3}
-        href={"/quick-interview-test"}
+        href={"/cv"}
         sx={{
           textDecoration: "none",
         }}
       >
+
         <Text color={PRIMARYCOLOR} fontWeight={"bold"}>
           CVs
         </Text>

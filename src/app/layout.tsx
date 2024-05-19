@@ -29,11 +29,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         }}
       >
         <UpdateAccessServer accessTime={accessTime} />
-        <ThemeRegistry>
-          {/* <ProviderWrapper></ProviderWrapper> */}
-          <SnackbarProvider>{children}</SnackbarProvider>
-        </ThemeRegistry>
+        <ProviderWrapper>
+          {children}
+        </ProviderWrapper>
+        {/* <ThemeRegistry>
+          {children}
+        </ThemeRegistry> */}
       </body>
-    </html>
+    </html >
   );
 }

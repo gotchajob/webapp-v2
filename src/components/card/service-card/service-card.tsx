@@ -102,7 +102,7 @@ export const ServiceCard = ({ params }: { params: ServiceCardParams }) => {
 
   return (
     <>
-      <Box sx={{ maxWidth: "80%", py: 1, px: 1 }}>
+      <Box sx={{ maxWidth: "80%", py: 6, px: 6 }}>
         <CardContent sx={{
           padding: 0,
           width: "100%",

@@ -1,4 +1,6 @@
+
 import Image from 'next/image';
+
 // material-ui
 import Box from '@mui/material/Box';
 import ImageListItem from '@mui/material/ImageListItem';
@@ -10,12 +12,7 @@ import useConfig from 'hooks/useConfig';
 
 // types
 import { PostImage } from 'types/user-profile';
-
-// set image width & height radio
-function srcset(image: string, width: number, height: number, rows = 1, cols = 1) {
-  return `${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format 1x,
-  ${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format&dpr=2 2x`;
-}
+import { ImageCard } from 'components/common/image/image-card';
 
 // ==============================|| IMAGE LIST/GRID ||============================== //
 
@@ -42,13 +39,8 @@ const ImageList = ({ itemData }: ImageListProps) => {
 
         return (
           <ImageListItem key={index} cols={cols} rows={rows} sx={{ overflow: 'hidden', borderRadius: `${borderRadius}px` }}>
-            <Box sx={{ height: item.featured ? 320 : 220, maxWidth: '100%' }}>
-              <Image
-                src={srcset(`/assets/images/profile/${item.img}`, 250, 200, rows, cols)}
-                alt={item.title || 'dummy'}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+            <Box sx={{ height: "100%", maxWidth: "100%" }}>
+              <img src={`/assets/images/profile/${item.img}`} style={{ height: '100%', width: "100%", objectFit: 'cover' }}></img>
             </Box>
             <ImageListItemBar
               sx={{

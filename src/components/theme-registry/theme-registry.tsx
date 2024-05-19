@@ -4,6 +4,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import NextAppDirEmotionCacheProvider from './emotion-cache';
 import theme from './theme';
+import SnackbarProvider from 'components/snackbar-provider';
+
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
   return (
