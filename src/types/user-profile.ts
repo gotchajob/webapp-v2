@@ -89,6 +89,7 @@ export type Comment = {
   profile: Profile;
   data?: CommentData;
 };
+
 export type Post = {
   id?: string;
   profile: Profile;

@@ -134,10 +134,10 @@ const SocialProfile = ({ tab }: Props) => {
     breadcrumbLinks = [{ title: 'Home', to: DASHBOARD_PATH }, { title: 'Social Profile' }];
   }
 
-  useEffect(() => {
-    if (menuMaster.openedItem !== 'posts') handlerActiveItem('posts');
-    // eslint-disable-next-line
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (menuMaster.openedItem !== 'posts') handlerActiveItem('posts');
+  //   // eslint-disable-next-line
+  // }, [pathname]);
 
   useEffect(() => {
     setLoading(false);
