@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -14,6 +15,7 @@ import Collapse from '@mui/material/Collapse';
 import Stack from '@mui/material/Stack';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
+import { JSDOM } from 'jsdom';
 
 // project imports
 import { gridSpacing } from 'store/constant - vh';
@@ -33,7 +35,7 @@ import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
 
-//third party
+// third party
 import * as yup from 'yup';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -42,9 +44,18 @@ import ImageList from 'ui-component/extended/ImageList';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Comment Field is Required')
-
 });
+
 // ==============================|| COMMENT TEXTFIELD ||============================== //
+
+// const getFirstElementHtml = (htmlString: string): string => {
+//   const parsed = parse(htmlString) as Element | Element[];
+//   if (Array.isArray(parsed)) {
+//     return parsed[0].props.children;
+//   } else {
+//     return parsed.props.children;
+//   }
+// };
 
 const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...others }: FormInputProps) => {
   let isError = false;
@@ -101,11 +112,21 @@ const BlogDetailsCard = ({
   comments
 }: BlogPost) => {
   const theme = useTheme();
+  const router = useRouter();  // Call useRouter here
 
-  // const [openComment, setOpenComment] = React.useState(!(data.comments && data.comments.length > 0));
+  // const handleCardClick = () => {
+  //   router.push(`localhost:3000/blog-details/${id}`);
+  // };
+
+  const contentArray = content.split('<');
+
+  let firstPart = contentArray[2];
+
+  firstPart = firstPart.replace('<p>', '');
+
   const [openComment, setOpenComment] = React.useState<boolean>(false);
-
   const [anchorEl, setAnchorEl] = React.useState<Element | (() => Element) | null | undefined>(null);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement> | undefined) => {
     setAnchorEl(event?.currentTarget);
   };
@@ -144,8 +165,10 @@ const BlogDetailsCard = ({
         bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'grey.50',
         border: '1px solid',
         borderColor: 'divider',
-        '&:hover': { borderColor: 'primary.main' }
+        '&:hover': { borderColor: 'primary.main', cursor: 'pointer' }
       }}
+      // onClick={handleCardClick}
+      onClick={() => router.push(`/blog-details/${id}`)}
     >
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
@@ -157,11 +180,11 @@ const BlogDetailsCard = ({
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          {/* <img src={featuredImage} alt={title} style={{ maxWidth: '100%' }} /> */}
           <ImageList itemData={[{ img: 'img-gal-1.png', featured: true }]}></ImageList>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="body1">{content}</Typography>
+          {/* <Typography variant="body1">{content}</Typography> */}
+          <Typography variant="body1">&lt;{firstPart}</Typography>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
@@ -183,10 +206,6 @@ const BlogDetailsCard = ({
             </Grid>
           </Grid>
         </Grid>
-        {/* <Grid item xs={12}>
-          <Typography variant="caption">Author</Typography>
-          <Typography variant="h6">{author.name}</Typography>
-        </Grid> */}
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={6}>
@@ -199,96 +218,6 @@ const BlogDetailsCard = ({
             </Grid>
           </Grid>
         </Grid>
-        {/* <Grid item xs={12}>
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Button variant="outlined" fullWidth startIcon={<FavoriteBorderOutlinedIcon />}>
-                {likes} Likes
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant="outlined" fullWidth startIcon={<CommentOutlinedIcon />}>
-                {comments.length} Comments
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid> */}
-        {/* post comment */}
-        <Grid item xs={12}>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={2}
-            sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
-          >
-            <Grid item>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="text"
-                  // onClick={() => handlePostLikes(id)}
-                  color="inherit"
-                  size="small"
-                  startIcon={<ThumbUpAltTwoToneIcon color='primary' />}
-                >
-                  {/* {data && data.likes && data.likes.value ? data.likes.value : 0} */}0
-                  <Typography color="inherit" sx={{ fontWeight: 500, ml: 0.5, display: { xs: 'none', sm: 'block' } }}>
-                    likes
-                  </Typography>
-                </Button>
-                <Button
-                  onClick={handleChangeComment}
-                  size="small"
-                  variant="text"
-                  color="inherit"
-                  startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
-                >
-                  {/* {data.comments ? data.comments.length : 0} comments */} 0 comments
-                </Button>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <IconButton onClick={handleSharedClick} size="large" aria-label="more options">
-                <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-              </IconButton>
-              <Menu
-                id="menu-post"
-                // anchorEl={anchorSharedEl}
-                // keepMounted
-                open={Boolean(anchorSharedEl)}
-                // onClose={handleSharedClose}
-                variant="selectedMenu"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                sx={{
-                  '& .MuiSvgIcon-root': {
-                    marginRight: '14px',
-                    fontSize: '1.25rem'
-                  }
-                }}
-              >
-                <MenuItem onClick={handleSharedClose}>
-                  <ShareTwoToneIcon fontSize="inherit" /> Share Now
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <PeopleAltTwoToneIcon fontSize="inherit" /> Share to Friends
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <ChatTwoToneIcon fontSize="inherit" /> Send in Messanger
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <ContentCopyTwoToneIcon fontSize="inherit" /> Copy Link
-                </MenuItem>
-              </Menu>
-            </Grid>
-          </Grid>
-        </Grid>
         <Collapse in={openComment} sx={{ width: '100%' }}>
           {openComment && (
             <Grid item xs={12} sx={{ pt: 2 }}>
@@ -298,7 +227,6 @@ const BlogDetailsCard = ({
                     <Avatar
                       sx={{ mt: 0.75 }}
                       alt="User 1"
-                      // src={profile && profile.avatar ? `${avatarImage}/${profile.avatar}` : `${avatarImage}/avatar-1.png`}
                       src=''
                       size="xs"
                     />
