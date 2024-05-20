@@ -52,7 +52,9 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
   const { control } = useFormContext();
 
   let isError = false;
+
   let errorMessage = '';
+
   if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
     isError = true;
     errorMessage = bug[name].message;
@@ -100,9 +102,11 @@ interface CommentComponentProps {
 
 const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level }: CommentComponentProps) => {
   const theme = useTheme();
+
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
+
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -112,11 +116,13 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
   };
 
   const [openReply, setOpenReply] = useState(false);
+
   const handleChangeReply = () => {
     setOpenReply((prev) => !prev);
   };
 
   let repliesResult: ReactElement[] | ReactElement = <></>;
+
   if (Object.keys(comment).length > 0 && comment.data?.replies && comment.data?.replies.length) {
     repliesResult = comment.data?.replies.map((reply, index) => (
       <Comment
@@ -140,6 +146,7 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
     formState: { errors },
     reset
   } = methods;
+
   const onSubmit = async (reply: CommentData, e: any) => {
     handleChangeReply();
     const replyId = uniqueId('#REPLY_');
@@ -157,6 +164,7 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
     };
 
     commentAdd(postId, comment.id, newReply);
+    
     reset({ name: '' });
   };
 
@@ -223,7 +231,9 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
           </Card>
         </Grid>
       )}
+
       {repliesResult}
+
       {/* comment - add new replay */}
       <Collapse in={openReply} sx={{ width: '100%' }}>
         {openReply && (
