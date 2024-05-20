@@ -192,49 +192,6 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item>
-                    <ButtonBase sx={{ borderRadius: '12px' }} aria-label="more options">
-                      <Avatar
-                        variant="rounded"
-                        sx={{
-                          ...theme.typography.commonAvatar,
-                          ...theme.typography.smallAvatar,
-                          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-                          color: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.dark',
-                          zIndex: 1,
-                          transition: 'all .2s ease-in-out',
-                          '&[aria-controls="menu-list-grow"],&:hover': {
-                            background: theme.palette.secondary.main,
-                            color: theme.palette.secondary.light
-                          }
-                        }}
-                        aria-controls="menu-comment"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                      >
-                        <MoreVertTwoToneIcon fontSize="inherit" />
-                      </Avatar>
-                    </ButtonBase>
-                    <Menu
-                      id="menu-comment"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={Boolean(anchorEl)}
-                      onClose={handleClose}
-                      variant="selectedMenu"
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right'
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right'
-                      }}
-                    >
-                      <MenuItem onClick={handleClose}>Edit</MenuItem>
-                      <MenuItem onClick={handleClose}>Delete</MenuItem>
-                    </Menu>
-                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>

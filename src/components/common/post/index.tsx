@@ -199,45 +199,6 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item>
-              <ButtonBase sx={{ borderRadius: '12px' }} onClick={handleClick} aria-label="Add to Cart product">
-                <Avatar
-                  variant="rounded"
-                  sx={{
-                    ...theme.typography.commonAvatar,
-                    ...theme.typography.smallAvatar,
-                    bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-                    color: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.dark',
-                    zIndex: 1,
-                    transition: 'all .2s ease-in-out',
-                    '&[aria-controls="menu-list-grow"],&:hover': { bgcolor: 'secondary.main', color: 'secondary.light' }
-                  }}
-                  aria-controls="menu-post"
-                  aria-haspopup="true"
-                >
-                  <MoreVertTwoToneIcon fontSize="inherit" />
-                </Avatar>
-              </ButtonBase>
-              <Menu
-                id="menu-post"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                variant="selectedMenu"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-              >
-                <MenuItem onClick={handleClose}>Edit</MenuItem>
-                <MenuItem onClick={handleClose}>Delete</MenuItem>
-              </Menu>
-            </Grid>
           </Grid>
         </Grid>
 
