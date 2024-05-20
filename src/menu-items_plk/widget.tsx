@@ -21,32 +21,7 @@ const loadingMenu: NavItemType = {
   id: 'group-widget-loading',
   title: <FormattedMessage id="widget" />,
   type: 'group',
-  children: [
-    {
-      id: 'statistics1',
-      title: 'loading',
-      type: 'item',
-      icon: IconLoader,
-      url: '/widget/statistics',
-      breadcrumbs: false
-    },
-    {
-      id: 'data1',
-      title: 'loading',
-      type: 'item',
-      icon: IconLoader,
-      url: '/widget/data',
-      breadcrumbs: false
-    },
-    {
-      id: 'chart1',
-      title: 'loading',
-      type: 'item',
-      icon: IconLoader,
-      url: '/widget/chart',
-      breadcrumbs: false
-    }
-  ]
+  children: []
 };
 
 // ==============================|| MENU ITEMS - API ||============================== //

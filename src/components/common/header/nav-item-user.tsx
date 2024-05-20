@@ -10,6 +10,7 @@ import Link from "next/link";
 import { enqueueSnackbar } from "notistack";
 import { apiClientFetch } from "package/api/api-fetch";
 import { FlexBetween } from "../box/flex-box";
+import { useState } from "react";
 
 export const NavigationItem = () => {
 
@@ -19,21 +20,30 @@ export const NavigationItem = () => {
     { name: "Blog", targetId: "blogDiv", icon: ArrowDropDownIcon },
   ];
 
+  const [activeNav, setActiveNav] = useState(false);
+
   const handleClick = (targetId: string) => {
     if (document !== null) {
       //@ts-ignore
       document.getElementById(targetId).scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
     <>
       {navItemList.map((navItem) => (
         <FlexBetween
-          sx={{ cursor: "pointer" }}
-          width={navItem.icon ? "170px" : "fit-content"}
-          p={1.5}
-          pl={3}
-          pr={3}
+          sx={{
+            cursor: "pointer",
+            width: navItem.icon ? "170px" : "fit-content",
+            padding: 1.5,
+            paddingLeft: 3,
+            paddingRight: 3,
+            '&:not(:last-child)': {
+              marginRight: 2,
+            },
+            textDecoration: activeNav === true ? "underline" : "none",
+          }}
           key={navItem.targetId}
           onClick={() => {
             handleClick(navItem.targetId);

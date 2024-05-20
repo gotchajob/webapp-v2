@@ -160,6 +160,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
     formState: { errors },
     reset
   } = methods;
+
   const onSubmit = async (comment: CommentData, e: any) => {
     handleChangeComment();
     const commentId = uniqueId('#COMMENT_');
@@ -371,6 +372,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             </Grid>
           )}
         </Collapse>
+        
         {commentsResult}
       </Grid>
     </MainCard>

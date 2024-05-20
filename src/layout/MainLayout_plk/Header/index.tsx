@@ -1,26 +1,21 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // project imports
+import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 import useConfig from 'hooks/useConfig';
 import LogoSection from '../LogoSection';
-import SearchSection from './SearchSection';
-import MobileSection from './MobileSection';
-import ProfileSection from './ProfileSection';
 import FullScreenSection from './FullScreenSection';
-import LocalizationSection from './LocalizationSection';
-import MegaMenuSection from './MegaMenuSection';
-import NotificationSection from './NotificationSection';
-
-import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+import ProfileSection from './ProfileSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons-react';
 
 // types
+import { NavigationItem } from 'components/common/header/nav-item-user';
 import { MenuOrientation, ThemeMode } from 'types/config';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
@@ -65,10 +60,19 @@ const Header = () => {
         )}
       </Box>
 
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'center' }}>
+        <Box
+          sx={{
+            display: {
+              xs: 'none',
+              md: 'flex',
+              gap: 4,
+            },
+          }}
+        >
+          <NavigationItem />
+        </Box>
+      </Box>
 
       {/* full sceen toggler */}
       <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
