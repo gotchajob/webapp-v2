@@ -11,7 +11,10 @@ import { useEffect, useState } from "react";
 
 export const Feedback = () => {
   const [feedbackHeight, setFeedbackHeight] = useState(753.36);
+
+
   let clientWidth = useWindowSize();
+
   useEffect(() => {
     if (document !== null) {
       const feedbackHeight =
@@ -19,6 +22,7 @@ export const Feedback = () => {
       setFeedbackHeight(feedbackHeight);
     }
   }, [clientWidth]);
+
   return (
     <Box position={"relative"} height={feedbackHeight} mt={25} sx={{
       display: feedbackHeight < 300 ? "none !important" : "block !important"
@@ -49,11 +53,24 @@ export const Feedback = () => {
             Khách hàng nói gì về Gotcha Job?
           </Text>
           <FlexCenter>
-            <ImageCard
+            {/* <ImageCard
               src="/assets/images/user-image.png"
-              width={"90px"}
-              height={"90px"}
-              borderRadius={50}
+              sx={{
+                width: "90px",
+                height: "90px",
+                borderRadius: "50%",
+                objectFit: "cover"
+              }}
+            /> */}
+            <Box
+              component="img"
+              src="/assets/images/user-image.png"
+              sx={{
+                width: "90px",
+                height: "90px",
+                borderRadius: "50%",
+                objectFit: "cover"
+              }}
             />
           </FlexCenter>
           <Box>

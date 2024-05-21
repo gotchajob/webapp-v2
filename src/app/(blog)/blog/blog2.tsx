@@ -134,24 +134,26 @@ const fakeBlogPosts: BlogPost[] = [
 const Profile = () => {
     const theme = useTheme();
     const [posts, setPosts] = React.useState<PostDataType[]>([]);
+
     const [blogs, setBlogs] = React.useState<BlogPost[] | null>(null);
+
     const userState = useSelector((state) => state.user);
 
     React.useEffect(() => {
-        // fetchData().then(data => setBlogs(data));
         setBlogs(fakeBlogPosts);
     }, []);
-    const getPost = async () => {
-        dispatch(getPosts());
-    };
 
-    React.useEffect(() => {
-        setPosts(userState.posts);
-    }, [userState]);
+    // const getPost = async () => {
+    //     dispatch(getPosts());
+    // };
 
-    React.useEffect(() => {
-        getPost();
-    }, []);
+    // React.useEffect(() => {
+    //     setPosts(userState.posts);
+    // }, [userState]);
+
+    // React.useEffect(() => {
+    //     getPost();
+    // }, []);
 
     const editPost = async (id: string, commentId: string) => {
         dispatch(editComment(id, commentId));

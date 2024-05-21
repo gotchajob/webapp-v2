@@ -55,11 +55,13 @@ export const BlogList = () => {
       <MainTitle py={10} pt={25} id={"blogDiv"}>
         Blog
       </MainTitle>
-      <FlexBox>
-        {blogList.slice(0, numberOfBlog).map((blog) => (
-          <BlogCard props={blog} key={blog.title} />
-        ))}
-      </FlexBox>
+      <a href={"/blog"} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <FlexBox>
+          {blogList.slice(0, numberOfBlog).map((blog) => (
+            <BlogCard props={blog} key={blog.title} />
+          ))}
+        </FlexBox >
+      </a>
     </>
   );
 };

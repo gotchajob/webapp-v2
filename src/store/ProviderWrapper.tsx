@@ -22,6 +22,9 @@ import { persister, store } from 'store';
 import { ConfigProvider } from 'contexts/ConfigContext';
 
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
+import ThemeRegistry from 'components/theme-registry/theme-registry';
+import SnackbarProvider from 'components/snackbar-provider';
+import CssBaseline from '@mui/material/CssBaseline';
 // import { FirebaseProvider as AuthProvider } from '../contexts/FirebaseContext';
 // import { Auth0Provider as AuthProvider } from '../contexts/Auth0Context';
 // import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';

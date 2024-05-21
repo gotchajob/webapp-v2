@@ -2,6 +2,7 @@ import { Editor } from '@tinymce/tinymce-react';
 
 export const EnchantInput = ({ initValue, onChange }: { initValue: string; onChange?: (value: string) => void }) => {
   return (
+    
     <Editor
       inline={true}
       onEditorChange={onChange} 

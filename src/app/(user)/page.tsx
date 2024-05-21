@@ -8,6 +8,7 @@ import { MentorList } from "./_components/mentor-list";
 import { PartnerCarousel } from "./_components/partner-slider";
 import { ServiceList } from "./_components/service-list";
 import { MainTitle } from "components/common/text/text";
+import ThemeRegistry from "components/theme-registry/theme-registry";
 
 export default async function Page() {
   return (

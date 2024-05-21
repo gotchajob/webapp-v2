@@ -12,11 +12,13 @@ import { apiClientFetch } from "package/api/api-fetch";
 import { FlexBetween } from "../box/flex-box";
 
 export const NavigationItem = () => {
+
   const navItemList = [
     { name: "Dịch vụ", targetId: "serviceDiv", icon: ArrowDropDownIcon },
     { name: "Đội ngũ", targetId: "mentorDiv", icon: ArrowDropDownIcon },
     { name: "Blog", targetId: "blogDiv", icon: ArrowDropDownIcon },
   ];
+
   const handleClick = (targetId: string) => {
     if (document !== null) {
       //@ts-ignore
@@ -48,11 +50,12 @@ export const NavigationItem = () => {
         p={1.5}
         pl={3}
         pr={3}
-        href={"/quick-interview-test"}
+        href={"/cv"}
         sx={{
           textDecoration: "none",
         }}
       >
+
         <Text color={PRIMARYCOLOR} fontWeight={"bold"}>
           CVs
         </Text>
