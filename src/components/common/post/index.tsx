@@ -1,6 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import { useState, ReactElement } from 'react';
+
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -37,7 +39,7 @@ import useConfig from 'hooks/useConfig';
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
 import { CommentType, PostDataType, CommentData } from './interface';
-
+import { comments_post } from './interface'
 // assets
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
@@ -110,6 +112,8 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
   const { borderRadius } = useConfig();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
+  const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
+
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const handleClick = (event: React.SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
@@ -128,28 +132,57 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
     setAnchorSharedEl(null);
   };
 
-  const [openComment, setOpenComment] = React.useState(!(data.comments && data.comments.length > 0));
-  const handleChangeComment = () => {
-    setOpenComment((prev) => !prev);
+  const [openComment, setOpenComment] = React.useState(!(comments_post && comments_post.length > 0));
+  const handleChangeComment = (id: string) => {
+    if (comments_post) {
+      console.log(id);
+      const commentFiltered = comments_post.filter((comment) => comment.parentId === id);
+      console.log(comments_post)
+      if (commentFiltered.length > 0) {
+        const comments = commentFiltered.map((comment, index) => (
+          <Comment
+            postId={id}
+            parentId={""}
+            comment={comment}
+            key={comment.id}
+            user={profile}
+            level={0}
+            commentAdd={commentAdd}
+            handleCommentLikes={handleCommentLikes}
+          />
+        ));
+        setCommentsResult(comments);
+        // console.log('comment', comments);
+      }
+      else {
+        setCommentsResult([])
+      }
+      setOpenComment((prev) => !prev);
+    }
   };
 
-  let commentsResult:
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>[] = <></>;
+  // let commentsResult:
+  //   | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+  //   | React.ReactElement<any, string | React.JSXElementConstructor<any>>[] = <></>;
 
-  if (data && data.comments) {
-    commentsResult = data.comments.map((comment, index) => (
-      <Comment
-        postId={id}
-        comment={comment}
-        key={comment.id}
-        user={profile}
-        level={0}
-        commentAdd={commentAdd}
-        handleCommentLikes={handleCommentLikes}
-      />
-    ));
-  }
+  // console.log('comment_post', comments_post);
+  // console.log('data', data);
+
+  // if (comments_post) {
+  //   const commentFiltered = comments_post.filter((comment) => )
+  //   commentsResult = comments_post.map((comment, index) => (
+  //     <Comment
+  //       postId={id}
+  //       parentId={""}
+  //       comment={comment}
+  //       key={comment.id}
+  //       user={profile}
+  //       level={0}
+  //       commentAdd={commentAdd}
+  //       handleCommentLikes={handleCommentLikes}
+  //     />
+  //   ));
+  // }
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -162,10 +195,11 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
   } = methods;
 
   const onSubmit = async (comment: CommentData, e: any) => {
-    handleChangeComment();
+    // handleChangeComment(id);
     const commentId = uniqueId('#COMMENT_');
     const newComment: CommentType = {
       id: commentId,
+      parentId: "",
       profile,
       data: {
         comment: comment.name,
@@ -173,7 +207,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
           like: false,
           value: 0
         },
-        replies: []
+        replies: 0
       }
     };
     postCommentAdd(id, newComment);
@@ -250,13 +284,13 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
                   </Typography>
                 </Button>
                 <Button
-                  onClick={handleChangeComment}
+                  onClick={() => handleChangeComment(id)}
                   size="small"
                   variant="text"
                   color="inherit"
                   startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
                 >
-                  {data.comments ? data.comments.length : 0} comments
+                  {comments_post ? comments_post.length : 0} comments
                 </Button>
               </Stack>
             </Grid>
@@ -333,8 +367,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             </Grid>
           )}
         </Collapse>
-        
-        {commentsResult}
+        {commentsResult ? commentsResult : <></>}
       </Grid>
     </MainCard>
 

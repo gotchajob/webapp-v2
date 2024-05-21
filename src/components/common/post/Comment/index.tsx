@@ -28,7 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { Profile, CommentData, CommentType } from '../interface';
+import { Profile, CommentData, CommentType, replies_comment, replies_reply } from '../interface';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
@@ -37,7 +37,6 @@ import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
 import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded';
 
 const avatarImage = '/assets/images/users';
-
 // types
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
@@ -96,16 +95,21 @@ interface CommentComponentProps {
   handleCommentLikes: any;
   commentAdd: any;
   user: Profile;
+  parentId: string;
 }
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
 
-const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level }: CommentComponentProps) => {
+const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, user, level }: CommentComponentProps) => {
   const theme = useTheme();
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
+
+  const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
+
+  let repliesFilterd = [];
 
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
@@ -117,25 +121,53 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
 
   const [openReply, setOpenReply] = useState(false);
 
-  const handleChangeReply = () => {
+  // const handleChangeReply = () => {
+  //   setOpenReply((prev) => !prev);
+  // };
+
+  // let repliesResult: ReactElement[] | ReactElement = <></>;
+
+  const handleChangeReply = (id: string) => {
+    const repliesFiltered = replies_comment.filter((reply) => reply.parentId === id);
+    console.log('Replies for id_cha:', id, repliesFiltered);
+
+    if (repliesFiltered.length > 0) {
+      console.log('1');
+      const replies = repliesFiltered.map((reply) => (
+        <Comment
+          level={level + 1}
+          parentId={reply.parentId}
+          postId={postId}
+          comment={reply}
+          key={reply.id}
+          user={user}
+          commentAdd={commentAdd}
+          handleCommentLikes={handleCommentLikes}
+        />
+      ));
+      setRepliesResult(replies);
+      console.log(replies);
+    } else {
+      setRepliesResult([]);
+    }
     setOpenReply((prev) => !prev);
   };
 
-  let repliesResult: ReactElement[] | ReactElement = <></>;
+  // if (Object.keys(comment).length > 0 && comment.data?.replies && comment.data?.replies) {
+  //   repliesResult = comment.data?.replies.map((reply, index) => (
+  //     <Comment
+  //       level={level + 1}
+  //       postId={postId}
+  //       comment={reply}
+  //       key={reply.id}
+  //       user={user}
+  //       commentAdd={commentAdd}
+  //       handleCommentLikes={handleCommentLikes}
+  //     />
+  //   ));
+  // }
 
-  if (Object.keys(comment).length > 0 && comment.data?.replies && comment.data?.replies.length) {
-    repliesResult = comment.data?.replies.map((reply, index) => (
-      <Comment
-        level={level + 1}
-        postId={postId}
-        comment={reply}
-        key={reply.id}
-        user={user}
-        commentAdd={commentAdd}
-        handleCommentLikes={handleCommentLikes}
-      />
-    ));
-  }
+
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -148,7 +180,7 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
   } = methods;
 
   const onSubmit = async (reply: CommentData, e: any) => {
-    handleChangeReply();
+    // handleChangeReply();
     const replyId = uniqueId('#REPLY_');
     const newReply = {
       id: replyId,
@@ -164,7 +196,7 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
     };
 
     commentAdd(postId, comment.id, newReply);
-    
+
     reset({ name: '' });
   };
 
@@ -218,13 +250,21 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
                   </Button>
                   <Button
                     variant="text"
-                    onClick={handleChangeReply}
+                    onClick={() => handleChangeReply(comment.id)}
                     color="inherit"
                     size="small"
                     startIcon={<ReplyTwoToneIcon color="primary" />}
                   >
-                    {comment.data?.replies ? comment.data?.replies.length : 0} reply
+                    {comment.data?.replies ? comment.data?.replies : 0} reply
                   </Button>
+                  {/* {comment.data?.replies ? <Button
+                    variant="text"
+                    onClick={() => handleShowReply(comment.id)}
+                    color="inherit"
+                    size="small"
+                  // startIcon={<ReplyTwoToneIcon color="primary" />}
+                  > Show reply
+                  </Button> : <></>} */}
                 </Stack>
               </Grid>
             </Grid>
@@ -232,7 +272,7 @@ const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level 
         </Grid>
       )}
 
-      {repliesResult}
+      {repliesResult ? repliesResult : <></>}
 
       {/* comment - add new replay */}
       <Collapse in={openReply} sx={{ width: '100%' }}>
