@@ -7,15 +7,8 @@ import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
 import Typography from '@mui/material/Typography';
-import MenuItem from '@mui/material/MenuItem';
 import Collapse from '@mui/material/Collapse';
-import Stack from '@mui/material/Stack';
-import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
-import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
-import { JSDOM } from 'jsdom';
 
 // project imports
 import { gridSpacing } from 'store/constant - vh';
@@ -24,16 +17,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // types
 import { ThemeMode } from 'types/config';
 import { FormInputProps } from 'types';
-import { BlogPost, BlogCategory, BlogTag, BlogAuthor, BlogComment } from 'types/blog';
-
-// assets
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
-import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
+import { BlogList } from 'package/api/blog';
 
 // third party
 import * as yup from 'yup';
@@ -99,18 +83,12 @@ const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...othe
 const BlogDetailsCard = ({
   id,
   title,
-  slug,
-  excerpt,
-  content,
-  featuredImage,
-  categories,
-  tags,
-  author,
-  publishedAt,
-  updatedAt,
-  likes,
-  comments
-}: BlogPost) => {
+  thumbnail,
+  shortDescription,
+  createAt,
+  profile
+
+}: BlogList) => {
   const theme = useTheme();
   const router = useRouter();  // Call useRouter here
 
@@ -118,11 +96,11 @@ const BlogDetailsCard = ({
   //   router.push(`localhost:3000/blog-details/${id}`);
   // };
 
-  const contentArray = content.split('<');
+  // const contentArray = content.split('<');
 
-  let firstPart = contentArray[2];
+  // let firstPart = contentArray[2];
 
-  firstPart = firstPart.replace('<p>', '');
+  // firstPart = firstPart.replace('<p>', '');
 
   const [openComment, setOpenComment] = React.useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<Element | (() => Element) | null | undefined>(null);
@@ -158,6 +136,10 @@ const BlogDetailsCard = ({
     setAnchorEl(event.currentTarget);
   };
 
+  React.useEffect(() => {
+    console.log("Thằng card blog nè")
+  },[])
+
   return (
     <Card
       sx={{
@@ -168,7 +150,7 @@ const BlogDetailsCard = ({
         '&:hover': { borderColor: 'primary.main', cursor: 'pointer' }
       }}
       // onClick={handleCardClick}
-      onClick={() => router.push(`/blog-details/${id}`)}
+      onClick={() => router.push(`/blog/${id}`)}
     >
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
@@ -176,27 +158,27 @@ const BlogDetailsCard = ({
         </Grid>
         <Grid item xs={12}>
           <Typography variant="subtitle2" sx={{ color: 'grey.700' }}>
-            {excerpt}
+            {title}
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <ImageList itemData={[{ img: 'img-gal-1.png', featured: true }]}></ImageList>
+          <ImageList itemData={[{ img: `${thumbnail}`, featured: true }]}></ImageList>
         </Grid>
         <Grid item xs={12}>
           {/* <Typography variant="body1">{content}</Typography> */}
-          <Typography variant="body1">&lt;{firstPart}</Typography>
+          <Typography variant="body1">{shortDescription}</Typography>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Typography variant="caption">Categories</Typography>
               {categories.map((category: BlogCategory) => (
                 <Typography key={category.id} variant="h6">
                   {category.name}
                 </Typography>
               ))}
-            </Grid>
-            <Grid item xs={6}>
+            </Grid> */}
+            {/* <Grid item xs={12}>
               <Typography variant="caption">Tags</Typography>
               {tags.map((tag: BlogTag) => (
                 <Typography key={tag.id} variant="h6">
@@ -205,17 +187,17 @@ const BlogDetailsCard = ({
               ))}
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Typography variant="caption">Published</Typography>
-              <Typography variant="h6">{new Date(publishedAt).toLocaleDateString()}</Typography>
+              <Typography variant="h6">{createAt}</Typography>
             </Grid>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Typography variant="caption">Last Updated</Typography>
               <Typography variant="h6">{new Date(updatedAt).toLocaleDateString()}</Typography>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
         <Collapse in={openComment} sx={{ width: '100%' }}>

@@ -6,15 +6,11 @@ import { useState, ReactElement } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ButtonBase from '@mui/material/ButtonBase';
 import Card from '@mui/material/Card';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -28,12 +24,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { Profile, CommentData, CommentType, replies_comment, replies_reply } from '../interface';
+import { CommentData } from '../interface';
+import { CommentList, GetBlogComment, Profile } from 'package/api/comment';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
-import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
-import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
 import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded';
 
 const avatarImage = '/assets/images/users';
@@ -89,18 +83,17 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
 };
 
 interface CommentComponentProps {
-  comment: CommentType;
+  comment: CommentList;
   postId: string;
   level: number;
-  handleCommentLikes: any;
-  commentAdd: any;
   user: Profile;
-  parentId: string;
+  parentId: number;
 }
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
 
-const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, user, level }: CommentComponentProps) => {
+const Comment = ({ comment, parentId, postId, user, level }: CommentComponentProps) => {
+
   const theme = useTheme();
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
@@ -109,7 +102,7 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
 
   const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
 
-  let repliesFilterd = [];
+  const [comments, setComments] = useState<CommentList[] | null>(null)
 
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
@@ -121,28 +114,37 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
 
   const [openReply, setOpenReply] = useState(false);
 
-  const handleChangeReply = (id: string) => {
-    const repliesFiltered = replies_comment.filter((reply) => reply.parentId === id);
-    console.log('Replies for id_cha:', id, repliesFiltered);
+  const fetchComments = async (id: number) => {
+    const data = await GetBlogComment({
+      id: id,
+      parentCommentId: 0,
+      pageNumber: 1,
+      pageSize: 12,
+    }, "");
+    if (data) {
+      setComments(data.data.list);
+    }
+  }
 
-    if (repliesFiltered.length > 0) {
-      console.log('1');
-      const replies = repliesFiltered.map((reply) => (
-        <Comment
-          level={level + 1}
-          parentId={reply.parentId}
-          postId={postId}
-          comment={reply}
-          key={reply.id}
-          user={user}
-          commentAdd={commentAdd}
-          handleCommentLikes={handleCommentLikes}
-        />
-      ));
-      setRepliesResult(replies);
-      console.log(replies);
-    } else {
-      setRepliesResult([]);
+  const handleChangeReply = (id: string) => {
+    if (comments) {
+      if (comments.length > 0) {
+        console.log('1');
+        const replies = comments.map((reply) => (
+          <Comment
+            level={level + 1}
+            parentId={0}
+            postId={postId}
+            comment={reply}
+            key={reply.id}
+            user={user}
+          />
+        ));
+        setRepliesResult(replies);
+        console.log(replies);
+      } else {
+        setRepliesResult([]);
+      }
     }
     setOpenReply((prev) => !prev);
   };
@@ -173,8 +175,7 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
       }
     };
 
-    commentAdd(postId, comment.id, newReply);
-
+    // commentAdd(postId, comment.id, newReply);
     reset({ name: '' });
   };
 
@@ -201,11 +202,11 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
                   <Grid item xs zeroMinWidth>
                     <Grid container alignItems="center" spacing={1}>
                       <Grid item>
-                        <Typography variant="h5">{comment.profile.name}</Typography>
+                        <Typography variant="h5">{comment.profile.fullName}</Typography>
                       </Grid>
                       <Grid item>
                         <Typography variant="caption">
-                          <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} /> {comment.profile.time}
+                          <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} /> {comment.createAt}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -213,9 +214,9 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
                 </Grid>
               </Grid>
               <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>
-                <Typography variant="body2">{comment.data?.comment}</Typography>
+                <Typography variant="body2">{comment.content}</Typography>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Stack direction="row" spacing={2} sx={{ color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}>
                   <Button
                     onClick={() => handleCommentLikes(postId, comment.id)}
@@ -235,16 +236,8 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
                   >
                     {comment.data?.replies ? comment.data?.replies : 0} reply
                   </Button>
-                  {/* {comment.data?.replies ? <Button
-                    variant="text"
-                    onClick={() => handleShowReply(comment.id)}
-                    color="inherit"
-                    size="small"
-                  // startIcon={<ReplyTwoToneIcon color="primary" />}
-                  > Show reply
-                  </Button> : <></>} */}
                 </Stack>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Card>
         </Grid>

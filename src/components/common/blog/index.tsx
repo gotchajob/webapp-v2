@@ -137,17 +137,15 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
       console.log(id);
       const commentFiltered = comments_post.filter((comment) => comment.parentId === id);
       console.log(comments_post)
-      if (commentFiltered.length > 0) {
-        const comments = commentFiltered.map((comment, index) => (
+      if (comments_post.length > 0) {
+        const comments = comments_post.map((comment) => (
           <Comment
             postId={id}
-            parentId={""}
+            parentId={0}
             comment={comment}
             key={comment.id}
             user={profile}
             level={0}
-            commentAdd={commentAdd}
-            handleCommentLikes={handleCommentLikes}
           />
         ));
         setCommentsResult(comments);

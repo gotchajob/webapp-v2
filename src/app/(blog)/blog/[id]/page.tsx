@@ -2,36 +2,19 @@
 
 import { useEffect, useState, SyntheticEvent } from 'react';
 import { useParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 
 // material-ui
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Typography from '@mui/material/Typography';
-
-// import post1 from './blog-post.1.md';
 
 // project imports
-// import BlogContent from 'components/application/blog/BlogContent';
-// import BlogComments from 'components/application/blog/BlogComments';
-// import RelatedPosts from 'components/application/blog/RelatedPosts';
-// import Loader from 'ui-component/Loader';
-// import MainCard from 'ui-component/cards/MainCard';
-// import { useGetBlogPost } from 'api/blog';
-import { gridSpacing } from 'store/constant';
-import { dispatch, useSelector } from 'store';
-// import { getBlogPost } from 'store/slices/blog';
-// import { BlogPost } from 'types/blog';
+import { BlogDetailData, getBlogDetail } from 'package/api/blog/id';
 
 // types
 import { TabsProps } from 'types';
-import { Avatar, Container } from '@mui/material';
-import { ThemeProvider } from '@emotion/react';
+import { Container } from '@mui/material';
 import Main from './Main';
-import { title } from 'process';
 import Sidebar from './Sidebar';
 
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -48,22 +31,20 @@ function TabPanel({ children, value, index, ...other }: TabsProps) {
     );
 }
 
-function a11yProps(index: number) {
-    return {
-        id: `blog-details-tab-${index}`,
-        'aria-controls': `blog-details-tabpanel-${index}`
-    };
-}
-
 type Props = {
-    id: string;
+    id: number;
 };
 
 const BlogDetails = ({ id }: Props) => {
+    const [blog, setBlog] = useState<BlogDetailData | null>(null);
     const params = useParams();
-    // const router = useRouter();
-    // const { blogPost } = useGetBlogPost();
-    // const { post } = useSelector((state) => state.blog);
+    const fetchBlogDetail = async (id: number) => {
+        const data = await getBlogDetail({ id: id }, '');
+        if (data) {
+            console.log('data_blog', data);
+            setBlog(data.data);
+        }
+    }
     const blog_post = {
         "title": "Understanding the Basics of React",
         "subtitle": "A comprehensive guide to getting started with React",
@@ -99,7 +80,7 @@ const BlogDetails = ({ id }: Props) => {
         "rating": 3
     }
 
-    const post = [blog_post]
+    // const post = [blog_post]
 
     const [loading, setLoading] = useState<boolean>(true);
     const [value, setValue] = useState(0);
@@ -108,49 +89,21 @@ const BlogDetails = ({ id }: Props) => {
         setValue(newValue);
     };
 
-    // useEffect(() => {
-    //     dispatch(getBlogPost(id as string)).then(() => setLoading(false));
-    // }, [id]);
+    useEffect(() => {
+        console.log(params);
+        fetchBlogDetail(params.id);
+    }, [params.id]);
 
     // if (loading) return <Loader />;
 
     return (
-        // <Grid container spacing={2}>
-        //     <Grid item xs={12}>
-        //         <Typography variant="h1">{blog_post.title}</Typography>
-        //         <Typography variant="subtitle1">{blog_post.subtitle}</Typography>
-        //     </Grid>
-        //     <Grid item xs={12}>
-        //         <Typography variant="body1">{blog_post.content}</Typography>
-        //     </Grid>
-        //     <Grid item xs={12} sm={2}>
-        //         <Avatar alt={blog_post.name} src={blog_post.avatar} />
-        //     </Grid>
-        //     <Grid item xs={12} sm={10}>
-        //         <Typography variant="body2">{blog_post.name}</Typography>
-        //         <Typography variant="caption">{new Date(blog_post.created_at).toLocaleDateString()}</Typography>
-        //         <Typography variant="body2">{blog_post.category}</Typography>
-        //     </Grid>
-        //     <Grid item xs={12}>
-        //         <Typography variant="h6">Related Posts</Typography>
-        //         {blog_post.related_posts.map((post, index) => (
-        //             <div key={index}>
-        //                 <img src={post.image} alt={post.title} />
-        //                 <Typography variant="h6">{post.title}</Typography>
-        //             </div>
-        //         ))}
-        //     </Grid>
-        //     <Grid item xs={12}>
-        //         <Typography variant="body2">Likes: {blog_post.reaction.likes}</Typography>
-        //         <Typography variant="body2">Dislikes: {blog_post.reaction.dislikes}</Typography>
-        //         <Typography variant="body2">Rating: {blog_post.rating}</Typography>
-        //     </Grid>
-        // </Grid>
         <Container maxWidth="lg">
-            <Grid container spacing={5} sx={{ mt: 3 }}>
-                <Main blog={{ title: blog_post.title, subtitle: blog_post.subtitle, avatar: blog_post.avatar, name: blog_post.name, created_at: blog_post.created_at, category: blog_post.category, reaction: blog_post.reaction, rating: blog_post.rating }} content={[blog_post.content]}></Main>
-                <Sidebar relatedBlog={blog_post.related_posts}></Sidebar>
-            </Grid>
+            {blog ?
+                <Grid container spacing={5} sx={{ mt: 3 }}>
+                    <Main blog={{ title: blog.title, subtitle: blog.shortDescription, avatar: blog.profile.avatar, name: blog.profile.fullName, created_at: blog.createdAt, category: blog.category, reaction: blog.likes ? blog.likes.value : 0, rating: blog_post.rating, id_comment: 0, id_blog: blog.id }} content={[blog.content]}></Main>
+                    <Sidebar relatedBlog={blog.relateBlog}></Sidebar>
+                </Grid>
+                : <></>}
         </Container>
     );
 };

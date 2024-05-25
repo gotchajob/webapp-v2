@@ -1,27 +1,22 @@
 'use client';
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Markdown from './Markdown';
 import { Avatar, Rating } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
-import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import RecommendIcon from '@mui/icons-material/Recommend';
+import { GetBlogCommentReq, GetBlogComment, CommentList, Profile } from 'package/api/comment';
+import Comment from 'components/common/blog/Comment';
 
 interface MainProps {
   content: ReadonlyArray<string>;
   blog: Blog;
-  // title: string;
-  // avatar: string;
-  // category: string;
-  // created_at: string;
-  // reaction: Object;
-  // rating: Number;
-  // name: string;
 }
 
 interface Blog {
+  id_blog: number;
   title: string;
   subtitle: string;
   avatar: string;
@@ -30,11 +25,51 @@ interface Blog {
   category: string;
   reaction: Object;
   rating: number;
+  id_comment: number;
+  profile: Profile;
 }
 
 export default function Main(props: MainProps) {
   const { content, blog } = props;
+  const [comment, setComment] = useState<CommentList[] | null>(null)
+  const [openComment, setOpenComment] = useState(!(comment && comment.length > 0));
 
+  const fetchComments = async (id: number) => {
+    const data = await GetBlogComment({
+      id: id,
+      parentCommentId: 0,
+      pageNumber: 1,
+      pageSize: 12,
+    }, "");
+    if (data) {
+      setComment(data.data.list);
+    }
+  }
+
+
+  const handleChangeComment = (id: string) => {
+    if (comment) {
+      if (comment.length > 0) {
+        const comments = comment.map((comment, index) => {
+          <Comment
+            postId={blog.id_comment.toString()}
+            parentId={0}
+            comment={comment}
+            key={comment.id}
+            user={props.blog.profile}
+            level={0}
+            // commentAdd={commentAdd}
+            // handleCommentLikes={handleCommentLikes}
+            ></Comment>
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchComments(blog.id_blog);
+    console.log('comment', comment);
+  }, [blog.id_blog])
   return (
     <Grid
       item
@@ -68,7 +103,7 @@ export default function Main(props: MainProps) {
         </Markdown>
       ))}
       <Divider></Divider>
-      <Grid container sx={{ pt: 2, py: 2}} alignItems="center">
+      <Grid container sx={{ pt: 2, py: 2 }} alignItems="center">
         <Grid item xs={1} container alignItems="center">
           <CommentIcon fontSize='medium'></CommentIcon>
           <Typography alignItems="center"> 5 </Typography>
