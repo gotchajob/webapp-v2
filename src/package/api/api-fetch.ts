@@ -1,23 +1,15 @@
-export const apiClientFetch = async (
-  path: string,
-  body?: any
-): Promise<any> => {
-  const res = await fetch("/api/user?path=" + path, {
-    method: "POST",
-    cache: "no-cache",
-    body: JSON.stringify(body),
+export const apiClientFetch = async (path: string, body?: any): Promise<any> => {
+  const res = await fetch('/api/user?path=' + path, {
+    method: 'POST',
+    cache: 'no-cache',
+    body: JSON.stringify(body)
   });
   return await res.json();
 };
 
-export const apiServerFetch = async (
-  url: string,
-  method: "GET" | "POST",
-  body?: any,
-  accessToken?: string
-): Promise<any> => {
+export const apiServerFetch = async (url: string, method: 'GET' | 'POST' | 'PATCH', body?: any, accessToken?: string): Promise<any> => {
   let headers: any = {
-    "Content-type": "application/json",
+    'Content-type': 'application/json'
   };
   let newBody: any = {};
   if (accessToken) {
@@ -26,22 +18,22 @@ export const apiServerFetch = async (
   if (body) {
     newBody = { body: JSON.stringify(body) };
   }
-  const res = await fetch("https://dc13-27-74-255-96.ngrok-free.app" + url, {
+  const res = await fetch('https://gcjob.azurewebsites.net' + url, {
     method,
     headers,
-    cache: "no-store",
-    ...newBody,
+    cache: 'no-store',
+    ...newBody
   });
   if (!(res.status === 200 || res.status === 400)) {
-    throw new Error("Backend error");
+    throw new Error('Backend error');
   }
   return await res.json();
 };
 
 export const errorSystem = (error: string, data: any) => {
   return {
-    status: "error",
+    status: 'error',
     responseText: error,
-    data,
+    data
   };
 };
