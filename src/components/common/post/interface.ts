@@ -4,7 +4,7 @@ export interface PostData {
   images: PostImage[];
   video?: string;
   likes: Likes;
-  comments?: number;
+  comments: number;
 }
 
 export interface PostImage {
@@ -214,23 +214,23 @@ export const replies_comment: CommentType[] = [
   }
 ];
 
-export const replies_reply: CommentType[] = [
-  {
-    id: '#REPLY_#REPLY_1',
-    parentId: '#REPLY_1',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'John Doe',
-      time: '15 min ago'
-    },
-    data: {
-      comment: 'Test Reply',
-      likes: {
-        like: true,
-        value: 1
-      },
-      replies: 0
-    }
-  }
-];
+// export const replies_reply: CommentType[] = [
+//   {
+//     id: '#REPLY_#REPLY_1',
+//     parentId: '#REPLY_1',
+//     profile: {
+//       id: '#52JONE_DOE',
+//       avatar: 'avatar-1.png',
+//       name: 'John Doe',
+//       time: '15 min ago'
+//     },
+//     data: {
+//       comment: 'Test Reply',
+//       likes: {
+//         like: true,
+//         value: 1
+//       },
+//       replies: 0
+//     }
+//   }
+// ];

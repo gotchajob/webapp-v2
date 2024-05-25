@@ -28,7 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { Profile, CommentData, CommentType, replies_comment, replies_reply } from '../interface';
+import { Profile, CommentData, CommentType, replies_comment } from '../interface';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
@@ -89,13 +89,13 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
 };
 
 interface CommentComponentProps {
+  handleCommentLikes: any;
   comment: CommentType;
   postId: string;
+  parentId: string;
   level: number;
-  handleCommentLikes: any;
   commentAdd: any;
   user: Profile;
-  parentId: string;
 }
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
@@ -109,8 +109,6 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
 
   const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
 
-  let repliesFilterd = [];
-
   const handleClick = (event: React.MouseEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -121,19 +119,11 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
 
   const [openReply, setOpenReply] = useState(false);
 
-  // const handleChangeReply = () => {
-  //   setOpenReply((prev) => !prev);
-  // };
-
-  // let repliesResult: ReactElement[] | ReactElement = <></>;
-
   const handleChangeReply = (id: string) => {
-    const repliesFiltered = replies_comment.filter((reply) => reply.parentId === id);
-    console.log('Replies for id_cha:', id, repliesFiltered);
-
-    if (repliesFiltered.length > 0) {
-      console.log('1');
-      const replies = repliesFiltered.map((reply) => (
+    console.log("Reply Id:", id);
+    const repliesFilterById = replies_comment.filter((reply) => reply.parentId === id);
+    if (repliesFilterById.length > 0) {
+      const replies = repliesFilterById.map((reply) => (
         <Comment
           level={level + 1}
           parentId={reply.parentId}
@@ -146,28 +136,11 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
         />
       ));
       setRepliesResult(replies);
-      console.log(replies);
     } else {
       setRepliesResult([]);
     }
     setOpenReply((prev) => !prev);
   };
-
-  // if (Object.keys(comment).length > 0 && comment.data?.replies && comment.data?.replies) {
-  //   repliesResult = comment.data?.replies.map((reply, index) => (
-  //     <Comment
-  //       level={level + 1}
-  //       postId={postId}
-  //       comment={reply}
-  //       key={reply.id}
-  //       user={user}
-  //       commentAdd={commentAdd}
-  //       handleCommentLikes={handleCommentLikes}
-  //     />
-  //   ));
-  // }
-
-
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -180,7 +153,6 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
   } = methods;
 
   const onSubmit = async (reply: CommentData, e: any) => {
-    // handleChangeReply();
     const replyId = uniqueId('#REPLY_');
     const newReply = {
       id: replyId,
@@ -194,9 +166,7 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
         replies: []
       }
     };
-
     commentAdd(postId, comment.id, newReply);
-
     reset({ name: '' });
   };
 
@@ -244,9 +214,9 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
                     variant="text"
                     color="inherit"
                     size="small"
-                    startIcon={<ThumbUpAltTwoToneIcon color={comment.data?.likes && comment.data?.likes.like ? 'secondary' : 'inherit'} />}
+                    startIcon={<ThumbUpAltTwoToneIcon color={comment.data?.likes && comment.data.likes.like ? 'secondary' : 'inherit'} />}
                   >
-                    {comment.data?.likes && comment.data?.likes.value ? comment.data?.likes.value : 0} likes
+                    {comment.data?.likes ? comment.data.likes.value : 0} likes
                   </Button>
                   <Button
                     variant="text"
@@ -255,7 +225,7 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
                     size="small"
                     startIcon={<ReplyTwoToneIcon color="primary" />}
                   >
-                    {comment.data?.replies ? comment.data?.replies : 0} reply
+                    {comment.data?.replies ? comment.data.replies : 0} reply
                   </Button>
                   {/* {comment.data?.replies ? <Button
                     variant="text"
@@ -272,7 +242,7 @@ const Comment = ({ comment, parentId, handleCommentLikes, postId, commentAdd, us
         </Grid>
       )}
 
-      {repliesResult ? repliesResult : <></>}
+      {repliesResult && repliesResult}
 
       {/* comment - add new replay */}
       <Collapse in={openReply} sx={{ width: '100%' }}>
