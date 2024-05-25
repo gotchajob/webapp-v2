@@ -13,27 +13,28 @@ import Grid from '@mui/material/Grid';
 import { gridSpacing } from 'store/constant - vh';
 
 export default function Page() {
-  const [posts, setPosts] = useState<PostDataType>(data[0]);
 
-  const postCommentAdd = async (postId: string, comment: CommentType) => {};
+    const [posts, setPosts] = useState<PostDataType>(data[0]);
 
-  const commentAdd = async (id: string, comment: CommentType, reply: CommentType) => {};
+    const postCommentAdd = async (postId: string, comment: CommentType) => { };
 
-  const handlePostLikes = async (postId: string) => {};
+    const commentAdd = async (id: string, comment: CommentType, reply: CommentType) => { };
 
-  const handleCommentLikes = async (postId: string, comment: CommentType) => {};
+    const handlePostLikes = async (postId: string) => { };
 
-  return (
-    <Grid container justifyContent="center" spacing={gridSpacing}>
-      <Grid item xs={8}>
-        <PostComment
-          commentAdd={commentAdd}
-          postCommentAdd={postCommentAdd}
-          handleCommentLikes={handleCommentLikes}
-          handlePostLikes={handlePostLikes}
-          post={posts}
-        />
-      </Grid>
-    </Grid>
-  );
+    const handleCommentLikes = async (postId: string, comment: CommentType) => { };
+
+    return (
+        <Grid container justifyContent="center" spacing={gridSpacing}>
+            <Grid item xs={8}>
+                <PostComment
+                    commentAdd={commentAdd}
+                    postCommentAdd={postCommentAdd}
+                    handleCommentLikes={handleCommentLikes}
+                    handlePostLikes={handlePostLikes}
+                    post={posts}
+                />
+            </Grid>
+        </Grid>
+    );
 }
