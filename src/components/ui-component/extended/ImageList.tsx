@@ -1,5 +1,4 @@
 import Image from 'next/image';
-
 // material-ui
 import Box from '@mui/material/Box';
 import ImageListItem from '@mui/material/ImageListItem';
