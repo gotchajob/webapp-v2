@@ -25,11 +25,13 @@ import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 import ThemeRegistry from 'components/theme-registry/theme-registry';
 import SnackbarProvider from 'components/snackbar-provider';
 import CssBaseline from '@mui/material/CssBaseline';
+// import { useRouter } from 'next/router';
 // import { FirebaseProvider as AuthProvider } from '../contexts/FirebaseContext';
 // import { Auth0Provider as AuthProvider } from '../contexts/Auth0Context';
 // import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';
 
 export default function ProviderWrapper({ children }: { children: ReactNode }) {
+  // const router = useRouter();
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persister}>
