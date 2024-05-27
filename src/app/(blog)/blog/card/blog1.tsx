@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -11,22 +11,32 @@ import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
-import { getUniqueCategories } from 'utils/utils';
 
 // project imports
+import { gridSpacing } from 'store/constant';
 import BlogDetailsCard from 'ui-component/cards/BlogDetailsCard';
 import MainCard from 'ui-component/cards/MainCard';
-import { gridSpacing } from 'store/constant';
-import { dispatch, useSelector } from 'store';
-import { getDetailCards, filterDetailCards } from 'store/slices/user';
 
 // assets
-import { IconSearch } from '@tabler/icons-react';
+import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
+import DescriptionTwoToneIcon from '@mui/icons-material/DescriptionTwoTone';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import { IconSearch } from '@tabler/icons-react';
 
 // types
-import { UserProfile } from 'types/user-profile';
-import { BlogPost, BlogPostData } from 'types/blog';
+import { Tabs } from '@mui/material';
+import Box from '@mui/material/Box';
+import Link from 'next/link';
+import { SyntheticEvent, useState } from 'react';
+import { TabsProps } from 'types';
+import { BlogPost } from 'types/blog';
+import { ThemeMode } from 'types/config';
+import { BlogList, GetBlog } from 'package/api/blog';
+
+// material-ui
+import Tab from '@mui/material/Tab';
+import { useTheme } from '@mui/material/styles';
+
 
 const fakeBlogPosts: BlogPost[] = [
   {
@@ -118,20 +128,56 @@ const fakeBlogPosts: BlogPost[] = [
 ]
 
 
+// tabs panel
+function TabPanel({ children, value, index, ...other }: TabsProps) {
+  return (
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {value === index && <Box sx={{ p: 0 }}>{children}</Box>}
+    </div>
+  );
+}
+
+// ally props
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
+  };
+}
+
+// tabs option
+const tabsOption = [
+  {
+    label: 'Profile',
+    icon: <AccountCircleTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+  },
+  {
+    label: 'Billing',
+    icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />
+  },
+];
+
+
 // ==============================|| USER CARD STYLE 1 ||============================== //
 
 const BlogStyle = () => {
-  const [blogs, setBlogs] = React.useState<BlogPost[] | null>(null); // Sử dụng dữ liệu giả
-  // const { blogPosts } = useSelector((state) => state.);
+  const [blogs, setBlogs] = React.useState<BlogPost[] | null>(null);
+  const [blogList, setBlogsList] = React.useState<BlogList[] | null>(null);
+
+  const fetchBlogList = async () => {
+    const data = await GetBlog({ pageNumber: 1, pageSize: 12 }, "");
+    console.log(1)
+    if (data) {
+      console.log('data', data)
+      setBlogsList(data.data.list);
+    }
+  }
+
 
   // React.useEffect(() => {
-  //   setBlogs(blogPosts);
-  // }, [blogPosts]);
-
-  React.useEffect(() => {
-    // fetchData().then(data => setBlogs(data));
-    setBlogs(fakeBlogPosts);
-  }, []);
+  //   // fetchData().then(data => setBlogs(data));
+  //   setBlogs(fakeBlogPosts);
+  // }, []);
 
   const [anchorEl, setAnchorEl] = React.useState<Element | (() => Element) | null | undefined>(null);
   const handleClick = (event: React.MouseEvent) => {
@@ -143,16 +189,7 @@ const BlogStyle = () => {
   };
 
   const [search, setSearch] = React.useState<string | undefined>('');
-  // const handleSearch = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | undefined) => {
-  //   const newString = event?.target.value;
-  //   setSearch(newString);
 
-  //   if (newString) {
-  //     dispatch(filterDetailCards(newString));
-  //   } else {
-  //     dispatch(getDetailCards());
-  //   }
-  // };
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | undefined) => {
     const searchTerm = event?.target.value;
     setSearch(searchTerm);
@@ -162,19 +199,8 @@ const BlogStyle = () => {
     } else {
       const filteredBlogs = fakeBlogPosts.filter((blog) => {
         const title = blog.title
-        // const excerpt = blog.excerpt.toLowerCase();
-        // const content = blog.content.toLowerCase();
-        // const authorName = blog.author.name.toLowerCase();
-        // const categoryNames = blog.categories.map((category) => category.name.toLowerCase());
-        // const tagNames = blog.tags.map((tag) => tag.name.toLowerCase());
-
         return (
           title.includes(searchTerm)
-          // excerpt.includes(searchTerm) ||
-          // content.includes(searchTerm) ||
-          // authorName.includes(searchTerm) ||
-          // categoryNames.some((category) => category.includes(searchTerm)) ||
-          // tagNames.some((tag) => tag.includes(searchTerm))
         );
       });
 
@@ -183,48 +209,107 @@ const BlogStyle = () => {
   };
 
   let blogResult: React.ReactElement | React.ReactElement[] = <></>;
-  if (blogs) {
-    blogResult = blogs.map((blog, index) => (
+  if (blogList) {
+    blogResult = blogList.map((blog, index) => (
       <Grid key={index} item xs={12} sm={6} lg={4} xl={3}>
         <BlogDetailsCard
           id={blog.id}
           title={blog.title}
-          slug={blog.slug}
-          excerpt={blog.excerpt}
-          content={blog.content}
-          featuredImage={blog.featuredImage}
-          categories={blog.categories}
-          tags={blog.tags}
-          author={blog.author}
-          publishedAt={blog.publishedAt}
-          updatedAt={blog.updatedAt}
-          likes={blog.likes}
-          comments={blog.comments}
+          thumbnail={blog.thumbnail}
+          shortDescription={blog.shortDescription}
+          createAt={blog.createAt}
+          profile={blog.profile}
         />
       </Grid>
     ));
   }
 
+  const theme = useTheme();
+
+  const [value, setValue] = useState<number>(0);
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+
+  useEffect(() => {
+    fetchBlogList();
+    console.log('Blog ne')
+  }, []);
+
   return (
     <MainCard
       title={
-        <Grid container alignItems="center" justifyContent="space-between" spacing={gridSpacing}>
-          <Grid item>
-            <Typography variant="h3">Blog Posts</Typography> {/* Thay đổi tiêu đề */}
+        <Grid container alignItems="center" justifyContent="center" spacing={gridSpacing}>
+          <Grid item xs={12}>
+            <Grid container alignItems="center" justifyContent="space-evenly" spacing={gridSpacing} >
+              <Grid item xs={6}>
+                <Typography variant="h3">Blog Posts</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <OutlinedInput
+                  id="input-search-card-style1"
+                  placeholder="Search"
+                  value={search}
+                  onChange={handleSearch}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <IconSearch stroke={1.5} size="16px" />
+                    </InputAdornment>
+                  }
+                  size="small"
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item>
-            <OutlinedInput
-              id="input-search-card-style1"
-              placeholder="Search"
-              value={search}
-              onChange={handleSearch}
-              startAdornment={
-                <InputAdornment position="start">
-                  <IconSearch stroke={1.5} size="16px" />
-                </InputAdornment>
-              }
-              size="small"
-            />
+            <Grid container spacing={gridSpacing}>
+              <Grid item xs={12}>
+                <Tabs
+                  value={value}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  onChange={() => { }}
+                  aria-label="simple tabs example"
+                  variant="scrollable"
+                  sx={{
+                    mb: 3,
+                    '& a': {
+                      minHeight: 'auto',
+                      minWidth: 10,
+                      py: 1.5,
+                      px: 1,
+                      mr: 2.25,
+                      color: theme.palette.mode === ThemeMode.DARK ? 'grey.600' : 'grey.900',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    },
+                    '& a.Mui-selected': {
+                      color: 'primary.main'
+                    },
+                    '& .MuiTabs-indicator': {
+                      bottom: 2
+                    },
+                    '& a > svg': {
+                      marginBottom: '0px !important',
+                      mr: 1.25
+                    }
+                  }}
+                >
+                  {tabsOption.map((tab, index) => (
+                    <Tab key={index} component={Link} href="#" icon={tab.icon} label={tab.label} {...a11yProps(index)} />
+                  ))}
+                </Tabs>
+                <TabPanel value={value} index={0}>
+
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+
+                </TabPanel>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       }

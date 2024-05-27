@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { Divider } from '@mui/material';
+import { RelatedBlog } from 'package/api/blog/id';
 
 interface SidebarProps {
   // archives: ReadonlyArray<{
@@ -20,10 +21,10 @@ interface SidebarProps {
   relatedBlog: ReadonlyArray<RelatedBlog>;
 }
 
-interface RelatedBlog {
-  image: string;
-  title: string;
-}
+// interface RelatedBlog {
+//   image: string;
+//   title: string;
+// }
 
 export default function Sidebar(props: SidebarProps) {
   const { relatedBlog } = props;
@@ -42,7 +43,7 @@ export default function Sidebar(props: SidebarProps) {
         // </Link>
         <Grid container sx={{ pt: 2 }} alignItems="center" spacing={8}>
           <Grid item xs={2}>
-            <img alt='' src={`${blog.image}`} style={{height: 60, width: 60}}></img>
+            <img alt='' src={`${blog.thumbnail}`} style={{height: 60, width: 60}}></img>
           </Grid>
           <Grid item xs={10}>
             <Typography variant='h4'>{blog.title}</Typography>

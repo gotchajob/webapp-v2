@@ -1,11 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { ReactElement } from 'react';
+import { useState, ReactElement } from 'react';
 
 
 // material-ui
+import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import ButtonBase from '@mui/material/ButtonBase';
 import CardMedia from '@mui/material/CardMedia';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -16,38 +18,36 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import uniqueId from 'lodash/uniqueId';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import * as yup from 'yup';
 
 // project imports
-import useConfig from 'hooks/useConfig';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import Avatar from 'ui-component/extended/Avatar';
-import ImageList from 'ui-component/extended/ImageList';
 import Comment from './Comment';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import ImageList from 'ui-component/extended/ImageList';
+import Avatar from 'ui-component/extended/Avatar';
+import useConfig from 'hooks/useConfig';
 
 // types
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { CommentData, CommentType, PostDataType, comments_post } from './interface';
-
+import { CommentType, PostDataType, CommentData } from './interface';
+import { comments_post } from './interface'
 // assets
-import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
+import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
 import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
 import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
+import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import MainCard from 'ui-component/cards/MainCard';
 
 const avatarImage = '/assets/images/users';
@@ -61,7 +61,6 @@ const validationSchema = yup.object().shape({
 const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...others }: FormInputProps) => {
   let isError = false;
   let errorMessage = '';
-
   if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
     isError = true;
     errorMessage = bug[name].message;
@@ -108,17 +107,13 @@ export interface PostProps {
 
 const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
   const theme = useTheme();
-
   const { id, data, profile } = post;
-
   const { borderRadius } = useConfig();
-
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
 
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-
   const handleClick = (event: React.SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -136,29 +131,25 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
     setAnchorSharedEl(null);
   };
 
-  //check length comment > 0
-  const [openComment, setOpenComment] = React.useState(!(post && post.data.comments > 0));
-
-  //Open chat & show comment
+  const [openComment, setOpenComment] = React.useState(!(comments_post && comments_post.length > 0));
   const handleChangeComment = (id: string) => {
-    console.log("Id Post :", id);
-    if (post) {
-      const commentsFilterById = comments_post.filter((comment) => comment.parentId === id);
-      console.log("filterd: ", commentsFilterById);
-      if (commentsFilterById.length > 0) {
-        const comments = commentsFilterById.map((comment, index) => (
+    if (comments_post) {
+      console.log(id);
+      const commentFiltered = comments_post.filter((comment) => comment.parentId === id);
+      console.log(comments_post)
+      if (comments_post.length > 0) {
+        const comments = comments_post.map((comment) => (
           <Comment
+            postId={id}
+            parentId={0}
             comment={comment}
-            key={index}
-            postId={comment.id}
-            parentId={comment.parentId}
-            user={comment.profile}
+            key={comment.id}
+            user={profile}
             level={0}
-            commentAdd={commentAdd}
-            handleCommentLikes={handleCommentLikes}
           />
         ));
         setCommentsResult(comments);
+        // console.log('comment', comments);
       }
       else {
         setCommentsResult([])
@@ -207,7 +198,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>
-                  <Typography variant="h5">{post?.profile.name}</Typography>
+                  <Typography variant="h5">{profile.name}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="caption">
@@ -266,13 +257,13 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => handleChangeComment(post.id)}
+                  onClick={() => handleChangeComment(id)}
                   size="small"
                   variant="text"
                   color="inherit"
                   startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
                 >
-                  {post ? post.data.comments : 0} comments
+                  {comments_post ? comments_post.length : 0} comments
                 </Button>
               </Stack>
             </Grid>
@@ -318,7 +309,6 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             </Grid>
           </Grid>
         </Grid>
-
         {/* add new comment */}
         <Collapse in={openComment} sx={{ width: '100%' }}>
           {openComment && (
@@ -350,9 +340,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             </Grid>
           )}
         </Collapse>
-
-        {commentsResult && commentsResult}
-
+        {commentsResult ? commentsResult : <></>}
       </Grid>
     </MainCard>
 
