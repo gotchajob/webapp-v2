@@ -10,7 +10,6 @@ import Grid from '@mui/material/Grid';
 import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 
 // types
-import { AuthSliderProps } from 'types';
 import { FlexCenter } from 'components/common/box/flex-box';
 import { ImageCard } from 'components/common/image/image-card';
 
@@ -19,9 +18,11 @@ import { Text } from 'components/common/text/text';
 import { PRIMARYCOLOR } from 'components/common/config';
 
 import { LoginForm } from 'components/common/form/login/login-form';
+import { MentorRegisterForm } from 'components/common/form/register/register-mentor-form';
+
 // ================================|| AUTH1 - LOGIN ||================================ //
 
-const Login = () => {
+const MentorRegister = () => {
   return (
     <AuthWrapper1>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
@@ -32,38 +33,23 @@ const Login = () => {
             </Link>
             <Box py={5}>
               <Text color={PRIMARYCOLOR} textAlign={'center'} fontWeight={'700'} fontSize={30}>
-                Chào mừng bạn đã trở lại!
+                Chào mừng bạn đến với Gotcha Job!
               </Text>
               <Text mt={1} fontSize={12} textAlign={'center'} fontWeight={'700'}>
-                Hãy để chúng tôi tiếp tục đồng hành cùng bạn
+                Hãy đồng hành cùng chúng tôi
               </Text>
             </Box>
-            <LoginForm />
+            <MentorRegisterForm />
             <Text fontSize={12} mt={12} fontWeight={'700'}>
-              Chưa có tài khoản? Đăng ký {``}
+              Đã có tài khoản? Đăng nhập
               <Text
                 component={Link}
                 //@ts-ignore
-                href={'/mentor/register'}
+                href={'/login'}
                 fontSize={12}
                 color={PRIMARYCOLOR}
                 fontWeight={'700'}
-                sx={{
-                  textDecoration: 'underline'
-                }}
-              >
-                tại đây
-              </Text>
-            </Text>
-            <Text fontSize={12} mt={2} fontWeight={'700'}>
-              Bạn muốn trở thành một mentor của chúng tối ? Đăng ký {``}
-              <Text
-                component={Link}
-                //@ts-ignore
-                href={'/register'}
-                fontSize={12}
-                color={PRIMARYCOLOR}
-                fontWeight={'700'}
+                ml={0.5}
                 sx={{
                   textDecoration: 'underline'
                 }}
@@ -81,4 +67,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default MentorRegister;

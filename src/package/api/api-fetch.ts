@@ -26,11 +26,11 @@ export const apiServerFetch = async (
   if (body) {
     newBody = { body: JSON.stringify(body) };
   }
-  const res = await fetch("https://dc13-27-74-255-96.ngrok-free.app" + url, {
+  const res = await fetch('https://gcjob.azurewebsites.net' + url, {
     method,
     headers,
-    cache: "no-store",
-    ...newBody,
+    cache: 'no-store',
+    ...newBody
   });
   if (!(res.status === 200 || res.status === 400)) {
     throw new Error("Backend error");
