@@ -33,7 +33,7 @@ const MentorRegister = () => {
             </Link>
             <Box py={5}>
               <Text color={PRIMARYCOLOR} textAlign={'center'} fontWeight={'700'} fontSize={30}>
-                Chào mừng mentor đến với Gotcha Job!
+                Chào mừng chuyên gia đến với Gotcha Job!
               </Text>
               <Text mt={1} fontSize={12} textAlign={'center'} fontWeight={'700'}>
                 Hãy đồng hành cùng chúng tôi
