@@ -88,7 +88,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
 
   const { mode, menuOrientation, borderRadius } = useConfig();
   const { menuMaster } = useGetMenuMaster();
-  const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const drawerOpen = menuMaster?.isDashboardDrawerOpened || true;
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
 
   const [open, setOpen] = useState(false);
@@ -255,6 +255,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
               })
             }}
             selected={isSelected}
+            //@ts-ignore
             {...(!drawerOpen && { onMouseEnter: handleClickMini, onMouseLeave: handleClosePopper })}
             onClick={handleClickMini}
           >
@@ -263,6 +264,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
                 sx={{
                   minWidth: level === 1 ? 36 : 18,
                   color: isSelected ? iconSelectedColor : 'text.primary',
+                  //@ts-ignore
                   ...(!drawerOpen &&
                     level === 1 && {
                       borderRadius: `${borderRadius}px`,

@@ -9,8 +9,7 @@ export const Media = () => {
       controls={true}
       sx={{
         width: {
-          xs: "100%",
-          800: "800px !important"
+          xs: "800px !important"
         }
       }}
       src="/assets/videos/demo.mp4"

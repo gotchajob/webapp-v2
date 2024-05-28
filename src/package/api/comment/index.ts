@@ -2,7 +2,7 @@ import { apiServerFetch, errorSystem } from 'package/api/api-fetch';
 
 export interface GetBlogCommentReq {
   id: number;
-  parentCommentId: number;
+  parentCommentId?: number;
   pageNumber: number;
   pageSize: number;
 }

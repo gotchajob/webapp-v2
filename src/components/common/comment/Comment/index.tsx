@@ -28,6 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import { Profile, CommentData, CommentType } from '../interface';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
@@ -36,11 +37,10 @@ import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
 import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded';
 
 const avatarImage = '/assets/images/users';
+
 // types
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { CommentList, GetBlogComment, Profile } from 'package/api/comment';
-import { CustomerToken } from 'hooks/use-login';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Reply Field is Required')
@@ -52,9 +52,7 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
   const { control } = useFormContext();
 
   let isError = false;
-
   let errorMessage = '';
-
   if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
     isError = true;
     errorMessage = bug[name].message;
@@ -90,49 +88,48 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
 };
 
 interface CommentComponentProps {
-  handleCommentLikes: any;
-  comment: CommentList;
-  blogId: number;
+  comment: CommentType;
+  postId: string;
   level: number;
+  handleCommentLikes: any;
   commentAdd: any;
   user: Profile;
 }
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
 
-const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level }: CommentComponentProps) => {
+const Comment = ({ comment, handleCommentLikes, postId, commentAdd, user, level }: CommentComponentProps) => {
   const theme = useTheme();
-
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
+  const handleClick = (event: React.MouseEvent) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
-
-  const { customerToken } = CustomerToken();
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const [openReply, setOpenReply] = useState(false);
-
-  const handleChangeReply = async (id: number) => {
-    const data = await GetBlogComment({ id, pageNumber: 1, pageSize: 10, parentCommentId: comment.id }, customerToken);
-    if (data.data.list.length > 0) {
-      const replies = data.data.list.map((reply) => (
-        <Comment
-          level={level + 1}
-          blogId={blogId}
-          comment={reply}
-          key={reply.id}
-          user={user}
-          commentAdd={commentAdd}
-          handleCommentLikes={handleCommentLikes}
-        />
-      ));
-      setRepliesResult(replies);
-    } else {
-      setRepliesResult([]);
-    }
+  const handleChangeReply = () => {
     setOpenReply((prev) => !prev);
   };
+
+  let repliesResult: ReactElement[] | ReactElement = <></>;
+  if (Object.keys(comment).length > 0 && comment.data?.replies && comment.data?.replies.length) {
+    repliesResult = comment.data?.replies.map((reply, index) => (
+      <Comment
+        level={level + 1}
+        postId={postId}
+        comment={reply}
+        key={reply.id}
+        user={user}
+        commentAdd={commentAdd}
+        handleCommentLikes={handleCommentLikes}
+      />
+    ));
+  }
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -143,8 +140,23 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
     formState: { errors },
     reset
   } = methods;
+  const onSubmit = async (reply: CommentData, e: any) => {
+    handleChangeReply();
+    const replyId = uniqueId('#REPLY_');
+    const newReply = {
+      id: replyId,
+      profile: user,
+      data: {
+        comment: reply.name,
+        likes: {
+          like: false,
+          value: 0
+        },
+        replies: []
+      }
+    };
 
-  const onSubmit = async (reply: any, e: any) => {
+    commentAdd(postId, comment.id, newReply);
     reset({ name: '' });
   };
 
@@ -180,6 +192,49 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                       </Grid>
                     </Grid>
                   </Grid>
+                  <Grid item>
+                    <ButtonBase sx={{ borderRadius: '12px' }} aria-label="more options">
+                      <Avatar
+                        variant="rounded"
+                        sx={{
+                          ...theme.typography.commonAvatar,
+                          ...theme.typography.smallAvatar,
+                          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
+                          color: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.dark',
+                          zIndex: 1,
+                          transition: 'all .2s ease-in-out',
+                          '&[aria-controls="menu-list-grow"],&:hover': {
+                            background: theme.palette.secondary.main,
+                            color: theme.palette.secondary.light
+                          }
+                        }}
+                        aria-controls="menu-comment"
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                      >
+                        <MoreVertTwoToneIcon fontSize="inherit" />
+                      </Avatar>
+                    </ButtonBase>
+                    <Menu
+                      id="menu-comment"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      variant="selectedMenu"
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right'
+                      }}
+                    >
+                      <MenuItem onClick={handleClose}>Edit</MenuItem>
+                      <MenuItem onClick={handleClose}>Delete</MenuItem>
+                    </Menu>
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>
@@ -188,33 +243,30 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
               <Grid item xs={12}>
                 <Stack direction="row" spacing={2} sx={{ color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}>
                   <Button
-                    onClick={() => handleCommentLikes(blogId, comment.id)}
+                    onClick={() => handleCommentLikes(postId, comment.id)}
                     variant="text"
                     color="inherit"
                     size="small"
-                    startIcon={<ThumbUpAltTwoToneIcon color={comment.data?.likes && comment.data.likes.like ? 'secondary' : 'inherit'} />}
+                    startIcon={<ThumbUpAltTwoToneIcon color={comment.data?.likes && comment.data?.likes.like ? 'secondary' : 'inherit'} />}
                   >
-                    {comment.data?.likes ? comment.data.likes.value : 0} likes
+                    {comment.data?.likes && comment.data?.likes.value ? comment.data?.likes.value : 0} likes
                   </Button>
                   <Button
                     variant="text"
-                    onClick={() => handleChangeReply(comment.id)}
+                    onClick={handleChangeReply}
                     color="inherit"
                     size="small"
                     startIcon={<ReplyTwoToneIcon color="primary" />}
                   >
-                    {comment.data?.replies ? comment.data.replies : 0} reply
+                    {comment.data?.replies ? comment.data?.replies.length : 0} reply
                   </Button>
-                 
                 </Stack>
               </Grid>
             </Grid>
           </Card>
         </Grid>
       )}
-
-      {repliesResult && repliesResult}
-
+      {repliesResult}
       {/* comment - add new replay */}
       <Collapse in={openReply} sx={{ width: '100%' }}>
         {openReply && (

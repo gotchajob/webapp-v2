@@ -33,6 +33,7 @@ export interface BlogDetailData {
   createdAt: string;
   likes: Like;
   profile: Profile;
+  comments?: number;
   relateBlog: RelatedBlog[];
 }
 
@@ -47,6 +48,6 @@ export const getBlogDetail = async (params: BlogDetaiReq, accessToken: string): 
     const res = await apiServerFetch(`/blog/${params.id}`, 'GET', undefined, accessToken);
     return res;
   } catch (error: any) {
-    return errorSystem('Lấy detail bài viết thất bại', {});
+    return errorSystem('Lấy detail bài viết thất bại', null);
   }
 };

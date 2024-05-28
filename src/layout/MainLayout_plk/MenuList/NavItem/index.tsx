@@ -46,7 +46,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
 
   const { menuMaster } = useGetMenuMaster();
   const openItem = menuMaster.openedItem;
-  const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const drawerOpen = menuMaster?.isDashboardDrawerOpened || true;
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
   const isSelected = openItem === item.id;
 
@@ -141,6 +141,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
               sx={{
                 minWidth: level === 1 ? 36 : 18,
                 color: isSelected ? iconSelectedColor : 'text.primary',
+                //@ts-ignore
                 ...(!drawerOpen &&
                   level === 1 && {
                     borderRadius: `${borderRadius}px`,

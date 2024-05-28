@@ -1,11 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { ReactElement } from 'react';
-
 
 // material-ui
+import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import ButtonBase from '@mui/material/ButtonBase';
 import CardMedia from '@mui/material/CardMedia';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -16,35 +16,37 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import uniqueId from 'lodash/uniqueId';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import * as yup from 'yup';
 
 // project imports
-import useConfig from 'hooks/useConfig';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import Avatar from 'ui-component/extended/Avatar';
-import ImageList from 'ui-component/extended/ImageList';
 import Comment from './Comment';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+import ImageList from 'ui-component/extended/ImageList';
+import Avatar from 'ui-component/extended/Avatar';
+import useConfig from 'hooks/useConfig';
 
 // types
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { CommentData, CommentType, PostDataType, comments_post } from './interface';
+import { CommentType, PostDataType, CommentData } from './interface';
 
 // assets
-import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
+import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
+import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
+import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
-import MainCard from 'ui-component/cards/MainCard';
+import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 
 const avatarImage = '/assets/images/users';
 
@@ -57,7 +59,6 @@ const validationSchema = yup.object().shape({
 const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...others }: FormInputProps) => {
   let isError = false;
   let errorMessage = '';
-
   if (bug && Object.prototype.hasOwnProperty.call(bug, name)) {
     isError = true;
     errorMessage = bug[name].message;
@@ -102,19 +103,13 @@ export interface PostProps {
   commentAdd: (postId: string, comment: CommentType, reply: CommentType) => Promise<void>;
 }
 
-const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
+const PostComment = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
   const theme = useTheme();
-
   const { id, data, profile } = post;
-
   const { borderRadius } = useConfig();
-
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
-
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-
   const handleClick = (event: React.SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
@@ -132,36 +127,28 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
     setAnchorSharedEl(null);
   };
 
-  //check length comment > 0
-  const [openComment, setOpenComment] = React.useState(!(post && post.data.comments > 0));
-
-  //Open chat & show comment
-  const handleChangeComment = (id: string) => {
-    console.log("Id Post :", id);
-    if (post) {
-      const commentsFilterById = comments_post.filter((comment) => comment.parentId === id);
-      console.log("filterd: ", commentsFilterById);
-      if (commentsFilterById.length > 0) {
-        const comments = commentsFilterById.map((comment, index) => (
-          <Comment
-            comment={comment}
-            key={index}
-            postId={comment.id}
-            parentId={comment.parentId}
-            user={comment.profile}
-            level={0}
-            commentAdd={commentAdd}
-            handleCommentLikes={handleCommentLikes}
-          />
-        ));
-        setCommentsResult(comments);
-      }
-      else {
-        setCommentsResult([])
-      }
-      setOpenComment((prev) => !prev);
-    }
+  const [openComment, setOpenComment] = React.useState(!(data.comments && data.comments.length > 0));
+  const handleChangeComment = () => {
+    setOpenComment((prev) => !prev);
   };
+
+  let commentsResult:
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>[] = <></>;
+
+  if (data && data.comments) {
+    commentsResult = data.comments.map((comment, index) => (
+      <Comment
+        postId={id}
+        comment={comment}
+        key={comment.id}
+        user={profile}
+        level={0}
+        commentAdd={commentAdd}
+        handleCommentLikes={handleCommentLikes}
+      />
+    ));
+  }
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -172,12 +159,11 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
     formState: { errors },
     reset
   } = methods;
-
   const onSubmit = async (comment: CommentData, e: any) => {
+    handleChangeComment();
     const commentId = uniqueId('#COMMENT_');
     const newComment: CommentType = {
       id: commentId,
-      parentId: "",
       profile,
       data: {
         comment: comment.name,
@@ -185,7 +171,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
           like: false,
           value: 0
         },
-        replies: 0
+        replies: []
       }
     };
     postCommentAdd(id, newComment);
@@ -193,7 +179,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
   };
 
   return (
-    <MainCard boxShadow hover>
+    <>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
@@ -203,7 +189,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>
-                  <Typography variant="h5">{post?.profile.name}</Typography>
+                  <Typography variant="h5">{profile.name}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="caption">
@@ -211,6 +197,45 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
                   </Typography>
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item>
+              <ButtonBase sx={{ borderRadius: '12px' }} onClick={handleClick} aria-label="Add to Cart product">
+                <Avatar
+                  variant="rounded"
+                  sx={{
+                    ...theme.typography.commonAvatar,
+                    ...theme.typography.smallAvatar,
+                    bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
+                    color: theme.palette.mode === ThemeMode.DARK ? 'dark.light' : 'secondary.dark',
+                    zIndex: 1,
+                    transition: 'all .2s ease-in-out',
+                    '&[aria-controls="menu-list-grow"],&:hover': { bgcolor: 'secondary.main', color: 'secondary.light' }
+                  }}
+                  aria-controls="menu-post"
+                  aria-haspopup="true"
+                >
+                  <MoreVertTwoToneIcon fontSize="inherit" />
+                </Avatar>
+              </ButtonBase>
+              <Menu
+                id="menu-post"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                variant="selectedMenu"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+              >
+                <MenuItem onClick={handleClose}>Edit</MenuItem>
+                <MenuItem onClick={handleClose}>Delete</MenuItem>
+              </Menu>
             </Grid>
           </Grid>
         </Grid>
@@ -262,13 +287,13 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
                   </Typography>
                 </Button>
                 <Button
-                  onClick={() => handleChangeComment(post.id)}
+                  onClick={handleChangeComment}
                   size="small"
                   variant="text"
                   color="inherit"
                   startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
                 >
-                  {post ? post.data.comments : 0} comments
+                  {data.comments ? data.comments.length : 0} comments
                 </Button>
               </Stack>
             </Grid>
@@ -276,11 +301,44 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
               <IconButton onClick={handleSharedClick} size="large" aria-label="more options">
                 <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
               </IconButton>
-             
+              <Menu
+                id="menu-post"
+                anchorEl={anchorSharedEl}
+                keepMounted
+                open={Boolean(anchorSharedEl)}
+                onClose={handleSharedClose}
+                variant="selectedMenu"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                sx={{
+                  '& .MuiSvgIcon-root': {
+                    marginRight: '14px',
+                    fontSize: '1.25rem'
+                  }
+                }}
+              >
+                <MenuItem onClick={handleSharedClose}>
+                  <ShareTwoToneIcon fontSize="inherit" /> Share Now
+                </MenuItem>
+                <MenuItem onClick={handleSharedClose}>
+                  <PeopleAltTwoToneIcon fontSize="inherit" /> Share to Friends
+                </MenuItem>
+                <MenuItem onClick={handleSharedClose}>
+                  <ChatTwoToneIcon fontSize="inherit" /> Send in Messanger
+                </MenuItem>
+                <MenuItem onClick={handleSharedClose}>
+                  <ContentCopyTwoToneIcon fontSize="inherit" /> Copy Link
+                </MenuItem>
+              </Menu>
             </Grid>
           </Grid>
         </Grid>
-
         {/* add new comment */}
         <Collapse in={openComment} sx={{ width: '100%' }}>
           {openComment && (
@@ -312,13 +370,10 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
             </Grid>
           )}
         </Collapse>
-
-        {commentsResult && commentsResult}
-
+        {commentsResult}
       </Grid>
-    </MainCard>
-
+    </>
   );
 };
 
-export default Post;
+export default PostComment;
