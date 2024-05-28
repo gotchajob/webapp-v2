@@ -41,12 +41,8 @@ import { CommentData, CommentType, PostDataType, comments_post } from './interfa
 
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
-import ChatTwoToneIcon from '@mui/icons-material/ChatTwoTone';
-import ContentCopyTwoToneIcon from '@mui/icons-material/ContentCopyTwoTone';
+import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -197,7 +193,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
   };
 
   return (
-    <MainCard>
+    <MainCard boxShadow hover>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
@@ -280,41 +276,7 @@ const Post = ({ commentAdd, handleCommentLikes, handlePostLikes, post, postComme
               <IconButton onClick={handleSharedClick} size="large" aria-label="more options">
                 <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
               </IconButton>
-              <Menu
-                id="menu-post"
-                anchorEl={anchorSharedEl}
-                keepMounted
-                open={Boolean(anchorSharedEl)}
-                onClose={handleSharedClose}
-                variant="selectedMenu"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right'
-                }}
-                sx={{
-                  '& .MuiSvgIcon-root': {
-                    marginRight: '14px',
-                    fontSize: '1.25rem'
-                  }
-                }}
-              >
-                <MenuItem onClick={handleSharedClose}>
-                  <ShareTwoToneIcon fontSize="inherit" /> Share Now
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <PeopleAltTwoToneIcon fontSize="inherit" /> Share to Friends
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <ChatTwoToneIcon fontSize="inherit" /> Send in Messanger
-                </MenuItem>
-                <MenuItem onClick={handleSharedClose}>
-                  <ContentCopyTwoToneIcon fontSize="inherit" /> Copy Link
-                </MenuItem>
-              </Menu>
+             
             </Grid>
           </Grid>
         </Grid>

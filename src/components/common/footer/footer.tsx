@@ -11,7 +11,7 @@ import { SubscribeForm } from "./subscribe-form";
 export const Footer = () => {
   return (
     <>
-      <Box bgcolor={"#031a27"} height={280} mt={12} pt={4} width={"100%"}>
+      <Box bgcolor={"#031a27"} height={280} pt={4} width={"100%"}>
         <Grid
           container
           sx={{

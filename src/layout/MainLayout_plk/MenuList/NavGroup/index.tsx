@@ -56,7 +56,7 @@ const NavGroup = ({ item, lastItem, remItems, lastItemId, selectedID, setSelecte
 
   const { menuOrientation, borderRadius } = useConfig();
   const { menuMaster } = useGetMenuMaster();
-  const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const drawerOpen = menuMaster?.isDashboardDrawerOpened || true;
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
 
   const [anchorEl, setAnchorEl] = useState<VirtualElement | (() => VirtualElement) | null | undefined>(null);
@@ -209,8 +209,7 @@ const NavGroup = ({ item, lastItem, remItems, lastItemId, selectedID, setSelecte
             {items}
           </List>
 
-          {/* group divider */}
-          {drawerOpen && <Divider sx={{ mt: 0.25, mb: 1.25 }} />}
+       
         </>
       ) : (
         <List>

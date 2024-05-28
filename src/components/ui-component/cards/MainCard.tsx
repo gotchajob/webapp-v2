@@ -51,6 +51,7 @@ const MainCard = React.forwardRef(
       darkTitle,
       secondary,
       shadow,
+      hover,
       sx = {},
       title,
       ...others
@@ -67,6 +68,7 @@ const MainCard = React.forwardRef(
         sx={{
           border: border ? '1px solid' : 'none',
           borderColor: 'divider',
+          boxShadow: hover ? shadow || defaultShadow : 'inherit',
           ':hover': { boxShadow: boxShadow ? shadow || defaultShadow : 'inherit' },
           ...sx
         }}

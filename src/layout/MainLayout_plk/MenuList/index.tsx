@@ -31,7 +31,7 @@ const MenuList = () => {
   const { menuOrientation } = useConfig();
   const { menuLoading } = useGetMenu();
   const { menuMaster } = useGetMenuMaster();
-  const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const drawerOpen = menuMaster?.isDashboardDrawerOpened || true;
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
   const [selectedID, setSelectedID] = useState<string | undefined>('');
@@ -47,10 +47,7 @@ const MenuList = () => {
       return false;
     });
     if (menuLoading) {
-      menuItem.items.splice(1, 0, widgetMenu);
-      setMenuItems({ items: [...menuItem.items] });
-    } else if (!menuLoading && widgetMenu?.id !== undefined && !isFound) {
-      menuItem.items.splice(1, 1, widgetMenu);
+      menuItem.items.splice(1, 0);
       setMenuItems({ items: [...menuItem.items] });
     } else {
       setMenuItems({ items: [...menuItem.items] });

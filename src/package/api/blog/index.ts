@@ -16,7 +16,7 @@ export interface BlogList {
   title: string;
   thumbnail: string;
   shortDescription: string;
-  createAt: string;
+  createdAt: string;
   profile: Profile;
 }
 
@@ -45,11 +45,10 @@ export const GetBlog = async (params: BlogGetRequest, accessToken: string): Prom
     const searchParams = new URLSearchParams();
     searchParams.set('pageNumber', params.pageNumber + '');
     searchParams.set('pageSize', params.pageSize + '');
-    // const res = await apiServerFetch('/user?' + searchParams.toString(), 'GET', undefined, accessToken);
     const res = await apiServerFetch('/blog?' + searchParams.toString(), 'GET', undefined, accessToken);
     return res;
   } catch (error: any) {
-    return errorSystem('Lấy danh sách thất bại', { pageNumber: 0, pageSize: 0 });
+    return errorSystem('Lấy danh sách thất bại', { list: [], totalPage: 0 });
   }
 };
 

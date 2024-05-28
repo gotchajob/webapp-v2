@@ -44,30 +44,8 @@ function ElevationScroll({ children, window }: ElevationScrollProps) {
 // ==============================|| HORIZONTAL MENU LIST ||============================== //
 
 const HorizontalBar = () => {
-  const { container, mode } = useConfig();
 
-  return (
-    <ElevationScroll>
-      <AppBar
-        sx={{
-          top: 71,
-          bgcolor: mode === ThemeMode.DARK ? 'background.default' : 'background.paper',
-          width: '100%',
-          height: 62,
-          justifyContent: 'center',
-          borderTop: '1px solid',
-          borderColor: mode === ThemeMode.DARK ? 'background.paper' : 'grey.300',
-          zIndex: 1098
-        }}
-      >
-        <Container maxWidth={container ? 'lg' : false}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <MenuList />
-          </Box>
-        </Container>
-      </AppBar>
-    </ElevationScroll>
-  );
+  return <MenuList />;
 };
 
 export default HorizontalBar;
