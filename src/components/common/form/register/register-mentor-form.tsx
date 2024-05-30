@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { VerifyPassword } from '../verify-password';
+import { PostMentorRegister, PostMentorRegisterRequest } from 'package/api/mentor-register-request';
 
 export const MentorRegisterForm = () => {
 
@@ -17,26 +18,40 @@ export const MentorRegisterForm = () => {
 
   const router = useRouter();
 
-  const initialValues: UserRegisterRequest = {
+  const initialValues = {
     email: '',
-    firstName:  '',
+    firstName: '',
     lastName: '',
-    password: '',
-    rePassword: ''
+    phone: '',
   };
 
-  const handleFormSubmit = async (value: UserRegisterRequest) => {
+  const RegisterHandle = async (value: string) => {
+    const register = await PostMentorRegister({ email: value }, '');
+    console.log("POST REGISTER: ", register);
+  }
+
+  const handleFormSubmit = async (value: any) => {
     try {
       setIsLoading(true);
-      const data: UserRegisterResponse = await UserRegister(value);
-      if (data.status === 'error') {
-        throw new Error(data.responseText);
+      const register = await PostMentorRegister({ email: value.email }, '');
+      if (register.status === "success") {
+        enqueueSnackbar('Mẫu đăng ký đã được gửi tới email của bạn !', {
+          variant: 'success',
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+        });
       }
-      router.push('/register/verify?email=' + value.email);
     } catch (error: any) {
-      enqueueSnackbar(error.message, {
-        variant: 'error'
+      enqueueSnackbar('Đăng ký thất bại !', {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
       });
+      console.log("Đăng ký thất bại", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -91,31 +106,15 @@ export const MentorRegisterForm = () => {
           </Grid>
           <Grid item xs={12}>
             <Input
-              name="password"
+              name="phone"
               onBlur={handleBlur}
-              value={values.password}
               onChange={handleChange}
-              error={!!touched.password && !!errors.password}
-              helperText={(touched.password && errors.password) as string}
-              style={{ width: '100%' }}
-              placeholder="Mật khẩu"
-              type="password"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <VerifyPassword input={values.password} />
-          </Grid>
-          <Grid item xs={12}>
-            <Input
-              name="rePassword"
-              onBlur={handleBlur}
-              value={values.rePassword}
-              onChange={handleChange}
-              error={!!touched.rePassword && !!errors.rePassword}
-              helperText={(touched.rePassword && errors.rePassword) as string}
-              style={{ width: '100%' }}
-              placeholder="Xác nhận mật khẩu"
-              type="password"
+              value={values.phone}
+              error={!!touched.phone && !!errors.phone}
+              helperText={(touched.phone && errors.phone) as string}
+              style={{ width: "100%" }}
+              placeholder="Số điện thoại"
+              type="phone"
             />
           </Grid>
         </Grid>
@@ -133,14 +132,6 @@ const formSchema = yup.object().shape({
   firstName: yup.string().required('Bắt buộc'),
   lastName: yup.string().required('Bắt buộc'),
   email: yup.string().email('invalid email').required('Email is required'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(8, 'Tối thiểu 8 kí tự')
-    .matches(/^(?=.*[0-9])/, 'Ít nhất 1 chữ số (0-9)')
-    .matches(/^(?=.*[A-Z])/, 'Ít nhất 1 kí tự viết hoa (A-Z)'),
-  rePassword: yup
-    .string()
-    .oneOf([yup.ref('password')], 'Passwords must match')
-    .required('Please re-type password')
+  phone: yup.string().matches(/^\d+$/, 'Số điện thoại không hợp lệ, chỉ chứa các chữ số').min(8, 'Phone number must be at least 8 characters')
+    .max(12, 'Phone number must be at most 12 characters').required("Bắt buộc"),
 });

@@ -44,7 +44,7 @@ const Login = () => {
               <Text
                 component={Link}
                 //@ts-ignore
-                href={'/mentor/register'}
+                href={'/register'}
                 fontSize={12}
                 color={PRIMARYCOLOR}
                 fontWeight={'700'}
@@ -60,7 +60,7 @@ const Login = () => {
               <Text
                 component={Link}
                 //@ts-ignore
-                href={'/register'}
+                href={'/register/mentor'}
                 fontSize={12}
                 color={PRIMARYCOLOR}
                 fontWeight={'700'}
