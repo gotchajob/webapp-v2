@@ -11,12 +11,23 @@ import Iconify from 'components/iconify/iconify';
 import { FlexBox } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
 import { useRouter } from 'next/navigation';
+import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
 
 export default function Layout({ children }: { children: ReactNode }) {
 
   const { categories } = useGetCategories({});
 
   useEffect(() => { }, [])
+
+  const { push } = useSearchParamsNavigation();
+
+  const handleChangeCategory = (categoryId: number, categoryName: string) => {
+    push([{
+      name: "category", value: `${categoryName.replace(/[^a-zA-Z0-9]/g, '')}-${categoryId}`
+    }])
+  }
+
+  const { category: paramsCategory } = useGetSearchParams(["category"]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -26,34 +37,33 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Iconify icon={'heroicons:home-20-solid'} width={25} color={PRIMARYCOLOR} />
           </Box>
           {categories.map((category, index) => (
-            <StyledLink key={index} href={`/blog/${category?.name.replace(/[^a-zA-Z0-9]/g, '')}-${category.id}`}>
-              <Text
-                minWidth={160}
-                textAlign={'center'}
-                fontSize={16}
-                fontWeight={'600'}
-                id={category.id}
-                sx={{
-                  p: 1,
-                  cursor: 'pointer',
-                  transition: 'all 200ms ease',
-                  ':hover': {
-                    bgcolor: '#f1f8fc'
-                  },
-                  ...(category.id == 1 ? {
-                    bgcolor: '#f1f8fc'
-                  } : {
-                    bgcolor: ''
-                  })
-                }}
-              >
-                {category.name}
-              </Text>
-            </StyledLink>
+            <Text
+              key={index}
+              minWidth={160}
+              textAlign={'center'}
+              fontSize={16}
+              fontWeight={'600'}
+              sx={{
+                p: 1,
+                cursor: 'pointer',
+                transition: 'all 200ms ease',
+                ':hover': {
+                  bgcolor: '#f1f8fc'
+                },
+                ...(category.id == paramsCategory.split("-")[1] ? {
+                  bgcolor: '#f1f8fc'
+                } : {
+                  bgcolor: ''
+                })
+              }}
+              onClick={() => { handleChangeCategory(category.id, category.name) }}
+            >
+              {category.name}
+            </Text>
           ))}
         </FlexBox>
         {children}
       </MainCard>
-    </Container>
+    </Container >
   );
 }

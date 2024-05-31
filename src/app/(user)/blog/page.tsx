@@ -29,7 +29,9 @@ export default function Page() {
     console.log("flterBlogbyCategory", data.data);
   }
 
-  useEffect(() => { flterBlogbyCategory(); }, [])
+  
+
+  useEffect(() => { flterBlogbyCategory(); }, []);
 
   return (
     <Grid container spacing={3}>

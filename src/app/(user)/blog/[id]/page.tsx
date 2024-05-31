@@ -8,9 +8,6 @@ import { SideBlogCard } from '../_components/side-blog-card';
 import Stack from '@mui/material/Stack';
 import { Text } from 'components/common/text/text';
 import Divider from '@mui/material/Divider';
-import { useSearchParamsNavigation } from 'hooks/use-get-params';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { GetBlogByCategory } from 'package/api/blog/category';
 
 export default function Page({ params }: { params: { id: string } }) {
 
@@ -33,17 +30,8 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const handleCommentLikes = async (id: number, comment: any) => { };
 
-  const searchParams = useSearchParams();
-
-  const router = useRouter();
-
-  const data = useSearchParamsNavigation();
-
   useEffect(() => {
     getClientBlog();
-    console.log("useSearchParamsNavigation", data);
-    console.log("useSearchParams", searchParams);
-    console.log("router", router);
   }, []);
 
   if (blog) {
