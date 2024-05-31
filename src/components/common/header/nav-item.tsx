@@ -52,12 +52,20 @@ export const LogoutButton = () => {
         throw new Error('Không thể đăng xuất');
       }
       enqueueSnackbar(res.responseText, {
-        variant: 'success'
+        variant: 'success',
+        anchorOrigin: {
+          horizontal: "right",
+          vertical: "top",
+        },
       });
       window.location.href = '/';
     } catch (error: any) {
       enqueueSnackbar(error.message, {
-        variant: 'error'
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
       });
     }
   };

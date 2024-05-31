@@ -8,27 +8,44 @@ import { SideBlogCard } from '../_components/side-blog-card';
 import Stack from '@mui/material/Stack';
 import { Text } from 'components/common/text/text';
 import Divider from '@mui/material/Divider';
+import { useSearchParamsNavigation } from 'hooks/use-get-params';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { GetBlogByCategory } from 'package/api/blog/category';
 
 export default function Page({ params }: { params: { id: string } }) {
+
   const [blog, setBlog] = useState<BlogDetailData | null>(null);
 
-  const { customerToken } = CustomerToken(); 
+  const { customerToken } = CustomerToken();
 
   const getClientBlog = async () => {
     const data = await getBlogDetail({ id: +params.id.split('-')[1] }, customerToken);
     setBlog(data.data);
   };
+
+  const blogCommentAdd = async (id: number, comment: any) => { };
+
+  const commentAdd = async (id: number, comment: any, reply: any) => {
+  };
+
+  const handlePostLikes = async (id: number) => {
+  };
+
+  const handleCommentLikes = async (id: number, comment: any) => { };
+
+  const searchParams = useSearchParams();
+
+  const router = useRouter();
+
+  const data = useSearchParamsNavigation();
+
   useEffect(() => {
     getClientBlog();
+    console.log("useSearchParamsNavigation", data);
+    console.log("useSearchParams", searchParams);
+    console.log("router", router);
   }, []);
 
-  const blogCommentAdd = async (id: number, comment: any) => {};
-
-  const commentAdd = async (id: number, comment: any, reply: any) => {};
-
-  const handlePostLikes = async (id: number) => {};
-
-  const handleCommentLikes = async (id: number, comment: any) => {};
   if (blog) {
     return (
       <Grid container spacing={3}>

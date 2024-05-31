@@ -12,8 +12,11 @@ import { useEffect, useState } from "react";
 
 export const Banner = () => {
   const [bannerHeight, setBannerHeight] = useState(753.36);
-  const [update, setUpdate] = useState(0)
+
+  const [update, setUpdate] = useState(0);
+
   const clientWidth = useWindowSize();
+
   useEffect(() => {
     if (document !== null) {
       const bannerHeight =
