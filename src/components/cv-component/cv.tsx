@@ -16,7 +16,9 @@ const numberColumnOptions = [1, 2, 3, 4, 5];
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 export const CreateCV = ({ data }: { data: CVTemplate }) => {
+
   const [template, setTemplate] = useState(data);
+
   const [numberColumn, setNumberColumn] = useState(1);
 
 
