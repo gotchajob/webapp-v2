@@ -36,6 +36,7 @@ export type UserProfile = {
   time?: string;
   tier?: string;
   Progress?: ProfileProgress;
+  rating?: any;
 };
 
 export type Profile = {

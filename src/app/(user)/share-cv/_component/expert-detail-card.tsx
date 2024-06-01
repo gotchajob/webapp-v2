@@ -29,24 +29,26 @@ import Avatar from 'ui-component/extended/Avatar';
 
 const avatarImage = '/assets/images/users';
 
+const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
+
 // ==============================|| USER DETAILS CARD ||============================== //
 
-const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role }: UserProfile) => {
+const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role, rating }: UserProfile) => {
   const theme = useTheme();
 
   const avatarProfile = avatar && `${avatarImage}/${avatar}`;
-
-  const [value, setValue] = useState<number | null>(4);
 
   return (
     <Card
       sx={{
         p: 2,
         bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'grey.50',
+        boxShadow: defaultShadow,
         border: '1px solid',
         borderColor: 'divider',
         '&:hover': { borderColor: 'primary.main' }
       }}
+
     >
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -87,7 +89,7 @@ const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role 
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
-              <Rating name="read-only" value={value} readOnly size='small' sx={{ pt: 1 }} />
+              <Rating name="read-only" value={rating} readOnly size='small' sx={{ pt: 1 }} />
             </Grid>
             <Grid item xs={6}>
               <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>

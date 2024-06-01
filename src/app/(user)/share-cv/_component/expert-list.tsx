@@ -15,7 +15,6 @@ import { Box } from '@mui/material';
 
 // types
 
-
 const experts_data = [
     {
         id: '#1Card_Phoebe',
@@ -25,7 +24,8 @@ const experts_data = [
         about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
         email: 'alia_shields25@yahoo.com',
         contact: '253-418-5940',
-        location: 'Mỹ'
+        location: 'Mỹ',
+        rating: "5"
     }, {
         id: '#9Card_Madyson',
         avatar: 'avatar-5.png',
@@ -34,7 +34,8 @@ const experts_data = [
         about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
         email: 'alia_shields25@yahoo.com',
         contact: '253-418-5940',
-        location: 'Nga'
+        location: 'Nga',
+        rating: "3"
     }, {
         id: '#6Card_Joanne',
         avatar: 'avatar-6.png',
@@ -43,7 +44,8 @@ const experts_data = [
         about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
         email: 'alia_shields25@yahoo.com',
         contact: '253-418-5940',
-        location: 'Trung Quốc'
+        location: 'Trung Quốc',
+        rating: "2"
     },
     {
         id: '#4Friends_Henderson',
@@ -53,16 +55,18 @@ const experts_data = [
         about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
         email: 'alia_shields25@yahoo.com',
         contact: '253-418-5940',
-        location: 'Việt Nam'
+        location: 'Việt Nam',
+        rating: "4"
     }, {
         id: '#4Followers_Henderson',
-        avatar: 'avatar-8.png',
+        avatar: 'avatar-3.png',
         name: 'Henderson',
         role: 'Investor Division Strategist',
         about: 'Try to connect the SAS transmitter, maybe it will index the optical hard drive!',
         email: 'alia_shields25@yahoo.com',
         contact: '253-418-5940',
-        location: 'Triều Tiên'
+        location: 'Triều Tiên',
+        rating: "3"
     }
 ]
 
