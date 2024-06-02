@@ -60,7 +60,7 @@ const Login = () => {
               <Text
                 component={Link}
                 //@ts-ignore
-                href={'/register/mentor'}
+                href={'/register/expert'}
                 fontSize={12}
                 color={PRIMARYCOLOR}
                 fontWeight={'700'}

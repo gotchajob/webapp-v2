@@ -30,9 +30,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       >
         <UpdateAccessServer accessTime={accessTime} />
         <ProviderWrapper>
-          {children}
+          <SnackbarProvider>{children}</SnackbarProvider>
         </ProviderWrapper>
       </body>
-    </html >
+    </html>
   );
 }

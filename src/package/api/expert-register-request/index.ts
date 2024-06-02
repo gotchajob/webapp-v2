@@ -36,7 +36,7 @@ export const GetMentorRegister = async (params: GetMentorRegisterRequest, access
     searchParams.set('page', params.page + '');
     searchParams.set('limit', params.limit + '');
 
-    const res = await apiServerFetch('/mentor-register-request?' + searchParams.toString(), 'GET', undefined, accessToken);
+    const res = await apiServerFetch('/expert-register-request?' + searchParams.toString(), 'GET', undefined, accessToken);
     if (res.status === 'error') {
       throw new Error('');
     }
@@ -46,9 +46,9 @@ export const GetMentorRegister = async (params: GetMentorRegisterRequest, access
   }
 };
 
-export const PostMentorRegister = async (params: PostMentorRegisterRequest, accessToken: string): Promise<PostMentorRegisterResponse> => {
+export const PostMentorRegister = async (params: PostMentorRegisterRequest): Promise<PostMentorRegisterResponse> => {
   try {
-    const res = await apiServerFetch('/mentor-register-request', 'POST', { email: params.email }, accessToken);
+    const res = await apiServerFetch('/expert-register-request', 'POST', { email: params.email });
     if (res.status === 'error') {
       throw new Error('');
     }
