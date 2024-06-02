@@ -44,6 +44,7 @@ import { CustomerToken } from 'hooks/use-login';
 import { formatDate } from 'package/util';
 import { GetUserCurrent, UserProfile } from 'package/api/user/current';
 import { enqueueSnackbar } from 'notistack';
+import { useRouter } from 'next/navigation';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Reply Field is Required')
@@ -108,6 +109,8 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
+  const route = useRouter();
+
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
 
   const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
@@ -152,6 +155,8 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
           handleCommentLikes={handleCommentLikes}
         />
       ));
+      //refresh
+      route.refresh();
       setRepliesResult(replies);
     } else {
       setRepliesResult([]);
@@ -191,6 +196,8 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
           horizontal: 'right',
         }
       });
+      //refresh
+      route.refresh();
     } catch (error: any) {
       enqueueSnackbar("Có lỗi xảy ra khi đăng bình luận", {
         variant: "error",
@@ -306,7 +313,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                   </Grid>
                   <Grid item>
                     <AnimateButton>
-                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }}>
+                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }} onClick={() => route.refresh()}>
                         Reply
                       </Button>
                     </AnimateButton>

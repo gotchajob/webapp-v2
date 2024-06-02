@@ -54,6 +54,8 @@ import { accessToken } from 'mapbox-gl';
 import { GetUserCurrent, UserProfile } from 'package/api/user/current';
 import { enqueueSnackbar } from 'notistack';
 import { ca } from 'date-fns/locale';
+import { Rating } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 
 const avatarImage = '/assets/images/users';
@@ -114,21 +116,29 @@ export interface BlogProps {
 
 const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blogCommentAdd }: BlogProps) => {
 
-  const { customerToken } = CustomerToken();
-
   const theme = useTheme();
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
+  //get customer token
+  const { customerToken } = CustomerToken();
+
+  //get customer info
+  const { customer } = useGetCustomer(customerToken);
+
   const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
 
-  const { customer } = useGetCustomer(customerToken);
+  //route
+  const route = useRouter();
 
   //check length comment > 0
   const [openComment, setOpenComment] = React.useState(!(blog && 5 > 0));
 
   //Set UserProfile
   const [user, setUser] = React.useState<UserProfile | null>();
+
+  //rating state
+  const [ratingValue, setRatingValue] = React.useState<number | null>(0);
 
   //Get User Profile by token
   const getCustomer = async () => {
@@ -148,6 +158,31 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
     };
   }
 
+  //handle rating change
+  const handleRating = (event: React.SyntheticEvent, value: number | null) => {
+    try {
+      setRatingValue(value);
+      console.log("rating:", value);
+      enqueueSnackbar("Đánh giá bài viết thành công", {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+      //refresh
+      route.refresh();
+    } catch (error: any) {
+      enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+    }
+  }
+
   //Open chat & show comment
   const handleChangeComment = async (id: number) => {
     if (blog) {
@@ -165,6 +200,8 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
             handleCommentLikes={handleCommentLikes}
           />
         ));
+        //refresh
+        route.refresh();
         setCommentsResult(comments);
       } else {
         setCommentsResult([]);
@@ -205,6 +242,8 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
           horizontal: 'right',
         }
       });
+      //refresh
+      route.refresh();
     } catch (error: any) {
       enqueueSnackbar("Có lỗi xảy ra khi đăng bình luận", {
         variant: 'error',
@@ -217,6 +256,10 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
       reset({ name: '' });
     }
   };
+
+  React.useEffect(() => {
+    console.log("blog : ", blog);
+  }, [])
 
   return (
     <Grid container spacing={1}>
@@ -235,6 +278,18 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                   <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} />{' '}
                   {formatDate(blog.createdAt, 'dd/MM/yyyy')}
                 </Typography>
+              </Grid>
+              <Grid item xs>
+                <Grid container direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
+                  <Grid item>
+                    <Rating value={blog.averageRating} size="small" readOnly />
+                  </Grid>
+                  <Grid item>
+                    <Grid item>
+                      <Typography variant="h5">({blog.ratingQuantity ? blog.ratingQuantity : 0}) Lượt đánh giá</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -277,16 +332,31 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 color="inherit"
                 startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
               >
-                {blog && blog?.comments ? blog.comments : 0} comments
+                {blog && blog.numberComment ? blog.numberComment : 0} comments
               </Button>
             </Stack>
           </Grid>
-          <Grid item>
-            <IconButton onClick={() => { }} size="large" aria-label="more options">
-              <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-            </IconButton>
+          <Grid item xs>
+            <Grid container direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
+              {customerToken && (
+                <>
+                  <Grid item>
+                    <Typography variant="h5">Đánh giá:</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Rating value={ratingValue} size="small" onChange={(e, v) => { handleRating(e, v) }} />
+                  </Grid>
+                </>
+              )}
+              <Grid item>
+                <IconButton onClick={() => { }} size="large" aria-label="more options">
+                  <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
+
       </Grid>
 
       {/* add new comment */}
@@ -310,7 +380,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 </Grid>
                 <Grid item>
                   <AnimateButton>
-                    <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }}>
+                    <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }} onClick={() => route.refresh()}>
                       Comment
                     </Button>
                   </AnimateButton>
@@ -318,11 +388,12 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
               </Grid>
             </form>
           </Grid>
-        )}
-      </Collapse>
+        )
+        }
+      </Collapse >
 
       {commentsResult && commentsResult}
-    </Grid>
+    </Grid >
   );
 };
 

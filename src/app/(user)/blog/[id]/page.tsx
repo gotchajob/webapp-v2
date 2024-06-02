@@ -8,6 +8,7 @@ import { SideBlogCard } from '../_components/side-blog-card';
 import Stack from '@mui/material/Stack';
 import { Text } from 'components/common/text/text';
 import Divider from '@mui/material/Divider';
+import { useRouter } from 'next/navigation';
 
 export default function Page({ params }: { params: { id: string } }) {
 
@@ -20,15 +21,18 @@ export default function Page({ params }: { params: { id: string } }) {
     setBlog(data.data);
   };
 
-  const blogCommentAdd = async (id: number, comment: any) => { };
-
-  const commentAdd = async (id: number, comment: any, reply: any) => {
+  const blogCommentAdd = async (id: number, comment: any) => {
   };
+
+  const commentAdd = async (id: number, comment: any) => {
+  };
+
 
   const handlePostLikes = async (id: number) => {
   };
 
-  const handleCommentLikes = async (id: number, comment: any) => { };
+  const handleCommentLikes = async (id: number, comment: any) => {
+  };
 
   useEffect(() => {
     getClientBlog();

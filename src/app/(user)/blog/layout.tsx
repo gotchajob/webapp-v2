@@ -15,26 +15,31 @@ import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-par
 
 export default function Layout({ children }: { children: ReactNode }) {
 
+  //fetchCategory
   const { categories } = useGetCategories({});
 
-  useEffect(() => { }, [])
-
+  //route hook
   const { push } = useSearchParamsNavigation();
 
+  //push params
   const handleChangeCategory = (categoryId: number, categoryName: string) => {
     push([{
       name: "category", value: `${categoryName.replace(/[^a-zA-Z0-9]/g, '')}-${categoryId}`
     }])
   }
 
+  //get params
   const { category: paramsCategory } = useGetSearchParams(["category"]);
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       <MainCard boxShadow hover>
         <FlexBox flexDirection={'row'} alignItems={'end'} mb={3} borderBottom={`2px solid ${PRIMARYCOLOR}`}>
           <Box pb={0.5} mr={1}>
-            <Iconify icon={'heroicons:home-20-solid'} width={25} color={PRIMARYCOLOR} />
+            <StyledLink href={`/blog`}>
+              <Iconify icon={'heroicons:home-20-solid'} width={25} color={PRIMARYCOLOR} />
+            </StyledLink>
           </Box>
           {categories.map((category, index) => (
             <Text
@@ -50,7 +55,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 ':hover': {
                   bgcolor: '#f1f8fc'
                 },
-                ...(category.id == paramsCategory.split("-")[1] ? {
+                ...(category.id == paramsCategory?.split("-")[1] ? {
                   bgcolor: '#f1f8fc'
                 } : {
                   bgcolor: ''

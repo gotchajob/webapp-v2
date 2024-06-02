@@ -7,7 +7,6 @@ export const useGetCustomer = (userToken: string) => {
 
   const getCustomer = async () => {
     try {
-      console.log(userToken);
       const res = await GetUserCurrent(userToken);
       if (res.status === 'error') {
         throw new Error('Không thể lấy token');
@@ -20,7 +19,6 @@ export const useGetCustomer = (userToken: string) => {
     if (userToken) {
       getCustomer();
     }
-    console.log('PROFILE:', customer);
   }, [userToken]);
 
   return {
