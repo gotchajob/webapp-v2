@@ -31,7 +31,7 @@ import useConfig from 'hooks/useConfig';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Avatar from 'ui-component/extended/Avatar';
 import ImageList from 'ui-component/extended/ImageList';
-import Comment from './Comment';
+import Comment from '../../Comment';
 
 // types
 import { FormInputProps } from 'types';
@@ -45,11 +45,18 @@ import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 import MainCard from 'ui-component/cards/MainCard';
 import { BlogDetailData } from 'package/api/blog/id';
-import { GetBlogComment } from 'package/api/comment';
+import { GetBlogComment, PostBlogComment } from 'package/api/blog/id/comment';
 import { CustomerToken } from 'hooks/use-login';
 import Box from '@mui/material/Box';
 import { formatDate } from 'package/util';
 import { useGetCustomer } from 'hooks/use-get-current-user';
+import { accessToken } from 'mapbox-gl';
+import { GetUserCurrent, UserProfile } from 'package/api/user/current';
+import { enqueueSnackbar } from 'notistack';
+import { ca } from 'date-fns/locale';
+import { Rating } from '@mui/material';
+import { useRouter } from 'next/navigation';
+
 
 const avatarImage = '/assets/images/users';
 
@@ -108,35 +115,93 @@ export interface BlogProps {
 }
 
 const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blogCommentAdd }: BlogProps) => {
+
   const theme = useTheme();
 
-  
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
-  const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
-  
-  const { customer } = useGetCustomer();
 
+  //get customer token
   const { customerToken } = CustomerToken();
+
+  //get customer info
+  const { customer } = useGetCustomer(customerToken);
+
+  const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
+
+  //route
+  const route = useRouter();
 
   //check length comment > 0
   const [openComment, setOpenComment] = React.useState(!(blog && 5 > 0));
 
+  //Set UserProfile
+  const [user, setUser] = React.useState<UserProfile | null>();
+
+  //rating state
+  const [ratingValue, setRatingValue] = React.useState<number | null>(0);
+
+  //Get User Profile by token
+  const getCustomer = async () => {
+    if (customerToken) {
+      try {
+        const res = await GetUserCurrent(customerToken);
+        setUser(res.data);
+      } catch (error: any) {
+        enqueueSnackbar("Có lỗi khi lấy thông tin từ tài khoản của bạn", {
+          variant: 'error',
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'right',
+          }
+        });
+      }
+    };
+  }
+
+  //handle rating change
+  const handleRating = (event: React.SyntheticEvent, value: number | null) => {
+    try {
+      setRatingValue(value);
+      console.log("rating:", value);
+      enqueueSnackbar("Đánh giá bài viết thành công", {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+      //refresh
+      route.refresh();
+    } catch (error: any) {
+      enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+    }
+  }
+
   //Open chat & show comment
   const handleChangeComment = async (id: number) => {
     if (blog) {
+      getCustomer();
       const blogComments = await GetBlogComment({ id, pageNumber: 1, pageSize: 10 }, customerToken);
       if (blogComments.data.list.length > 0) {
         const comments = blogComments.data.list.map((comment, index) => (
           <Comment
             comment={comment}
             key={index}
-            blogId={blog.id}
+            blogId={id}
             user={comment.profile}
             level={0}
             commentAdd={commentAdd}
             handleCommentLikes={handleCommentLikes}
           />
         ));
+        //refresh
+        route.refresh();
         setCommentsResult(comments);
       } else {
         setCommentsResult([]);
@@ -155,16 +220,53 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
     reset
   } = methods;
 
-  const onSubmit = async (comment: CommentData, e: any) => {
-    reset({ name: '' });
+  const onSubmit = async (content: any, e: any) => {
+    if (!customerToken) {
+      enqueueSnackbar("Bạn cần đăng nhập để bình luận", {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      })
+      reset({ name: '' });
+      return;
+    }
+    try {
+      const comment_content = content.name;
+      const data = await PostBlogComment({ id: blog.id }, { content: comment_content }, customerToken);
+      enqueueSnackbar("Bình luận của bạn đã được đăng", {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+      //refresh
+      route.refresh();
+    } catch (error: any) {
+      enqueueSnackbar("Có lỗi xảy ra khi đăng bình luận", {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+    } finally {
+      reset({ name: '' });
+    }
   };
+
+  React.useEffect(() => {
+    console.log("blog : ", blog);
+  }, [])
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
         <Grid container wrap="nowrap" alignItems="center" spacing={1}>
           <Grid item>
-            <Avatar alt="User 1" src={`${avatarImage}/${blog.profile.avatar}`} />
+            <Avatar alt="User 1" src={`${blog?.profile.avatar}`} />
           </Grid>
           <Grid item xs zeroMinWidth>
             <Grid container alignItems="center" spacing={1}>
@@ -176,6 +278,18 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                   <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} />{' '}
                   {formatDate(blog.createdAt, 'dd/MM/yyyy')}
                 </Typography>
+              </Grid>
+              <Grid item xs>
+                <Grid container direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
+                  <Grid item>
+                    <Rating value={blog.averageRating} size="small" readOnly />
+                  </Grid>
+                  <Grid item>
+                    <Grid item>
+                      <Typography variant="h5">({blog.ratingQuantity ? blog.ratingQuantity : 0}) Lượt đánh giá</Typography>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -218,16 +332,31 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 color="inherit"
                 startIcon={<ChatBubbleTwoToneIcon color="secondary" />}
               >
-                {blog && blog?.comments ? blog.comments : 0} comments
+                {blog && blog.numberComment ? blog.numberComment : 0} comments
               </Button>
             </Stack>
           </Grid>
-          <Grid item>
-            <IconButton onClick={() => {}} size="large" aria-label="more options">
-              <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-            </IconButton>
+          <Grid item xs>
+            <Grid container direction="row" alignItems="center" justifyContent="flex-end" spacing={1}>
+              {customerToken && (
+                <>
+                  <Grid item>
+                    <Typography variant="h5">Đánh giá:</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Rating value={ratingValue} size="small" onChange={(e, v) => { handleRating(e, v) }} />
+                  </Grid>
+                </>
+              )}
+              <Grid item>
+                <IconButton onClick={() => { }} size="large" aria-label="more options">
+                  <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
+                </IconButton>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
+
       </Grid>
 
       {/* add new comment */}
@@ -240,7 +369,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                   <Avatar
                     sx={{ mt: 0.75 }}
                     alt="User 1"
-                    src={customer && customer.avatar ? `${customer.avatar}` : `${avatarImage}/avatar-1.png`}
+                    src={user && user.avatar ? `${user.avatar}` : ``}
                     size="xs"
                   />
                 </Grid>
@@ -251,7 +380,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 </Grid>
                 <Grid item>
                   <AnimateButton>
-                    <Button type="submit" variant="contained" color="secondary" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }}>
+                    <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }} onClick={() => route.refresh()}>
                       Comment
                     </Button>
                   </AnimateButton>
@@ -259,11 +388,12 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
               </Grid>
             </form>
           </Grid>
-        )}
-      </Collapse>
+        )
+        }
+      </Collapse >
 
       {commentsResult && commentsResult}
-    </Grid>
+    </Grid >
   );
 };
 

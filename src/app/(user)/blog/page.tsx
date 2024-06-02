@@ -1,8 +1,8 @@
 'use client';
 
 import Container from '@mui/material/Container';
-import { useGetBlogs } from 'hooks/use-get-blog';
-import { useState } from 'react';
+import { useGetBlogs, useGetBlogsByCategory } from 'hooks/use-get-blog';
+import { useEffect, useState } from 'react';
 import { BlogCard } from './_components/blog-card';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -15,40 +15,127 @@ import Iconify from 'components/iconify/iconify';
 import { FlexBox, FlexCenter } from 'components/common/box/flex-box';
 import Grid from '@mui/material/Grid';
 import { SideBlogCard } from './_components/side-blog-card';
+import { GetBlogByCategory } from 'package/api/blog/category';
+import { useGetSearchParams } from 'hooks/use-get-params';
+import { BlogList } from 'package/api/blog';
+import { Typography } from '@mui/material';
+import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
 
 export default function Page() {
   const [pageNumber, setPageNumber] = useState(1);
+
   const [pageSize, setPageSize] = useState(10);
+
+  const [loading, setLoading] = useState<boolean>();
+
+  //hook get blogs
   const { blogs, totalPage } = useGetBlogs({ pageNumber, pageSize });
 
-  return (
-      <Grid container spacing={3}>
-        <Grid item xs={8}>
-          {blogs.map((blog, index) => {
-            const isLastChild = index === blogs.length - 1;
-            return (
-              <Stack key={blog.id} spacing={2} mb={2}>
-                <BlogCard params={blog} />
-                {!isLastChild ? <Divider /> : <></>}
-              </Stack>
-            );
-          })}
-        </Grid>
-        <Grid item xs={4}>
-          <Stack spacing={2}>
-            <Text fontSize={20} fontWeight={'500'}>
-              Lượt xem nhiều nhất
-            </Text>
-            <Divider />
-            {blogs.map((blog, index) => {
-              return (
-                <Stack key={blog.id} spacing={2} mb={2}>
-                  <SideBlogCard params={blog} />
-                </Stack>
-              );
-            })}
-          </Stack>
-        </Grid>
+  //get params
+  const { category: paramsCategory } = useGetSearchParams(["category"]);
+
+  //hook get blogs by category
+  const { blogs: blogsByCategory } = useGetBlogsByCategory({ categoryId: paramsCategory?.split("-")[1], limit: 10 });
+
+  const renderBlogList = (blogList: BlogList[]) => (
+    <>
+      <Grid item xs={8}>
+        {blogList.map((blog, index) => {
+          const isLastChild = index === blogList.length - 1;
+          return (
+            <Stack key={blog.id} spacing={2} mb={2}>
+              <BlogCard params={blog} />
+              {!isLastChild && <Divider />}
+            </Stack>
+          );
+        })}
       </Grid>
+      <Grid item xs={4}>
+        <Stack spacing={2}>
+          <Text fontSize={20} fontWeight={'500'}>
+            Lượt xem nhiều nhất
+          </Text>
+          <Divider />
+          {blogList.map((blog, index) => (
+            <Stack key={blog.id} spacing={2} mb={2}>
+              <SideBlogCard params={blog} />
+            </Stack>
+          ))}
+        </Stack>
+      </Grid>
+    </>
+  );
+
+  // const renderContent = () => {
+  //   switch (true) {
+  //     case paramsCategory !== undefined && blogsByCategory.length > 0:
+  //       return renderBlogList(blogsByCategory)
+  //       break;
+  //     case paramsCategory == undefined && blogs.length > 0:
+  //       return renderBlogList(blogs);
+  //       break;
+  //     default:
+  //       return (
+  //         <Grid item xs={12}>
+  //           <Typography variant="h6" align="center">
+  //             Hiện chưa có bài viết nào
+  //           </Typography>
+  //         </Grid>
+
+  //       );
+  //   }
+  // };
+
+  const renderContent = () => {
+
+    let content;
+
+    switch (true) {
+      case paramsCategory !== undefined && blogsByCategory.length > 0:
+        content = renderBlogList(blogsByCategory);
+        break;
+      case paramsCategory == undefined && blogs.length > 0:
+        content = renderBlogList(blogs);
+        break;
+      default:
+        content = (
+          <Grid item xs={12}>
+            <Typography variant="h6" align="center">
+              Hiện chưa có bài viết nào
+            </Typography>
+          </Grid>
+        );
+    }
+
+
+    return content;
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    // Simulating data fetch delay
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000); // You can adjust the timeout based on your data fetching time
+  }, [paramsCategory, blogs, blogsByCategory]);
+
+  return (
+    <Grid container spacing={3}>
+      {loading ? (<Grid item xs={12}>
+        <Grid container spacing={3} mt={1} justifyContent="center" alignItems='center'>
+          <Box>
+            <CircularProgress aria-label="progress" />
+          </Box>
+        </Grid>
+      </Grid>) : (renderContent())}
+      {/* {loading && (<Grid item xs={12}>
+        <Grid container spacing={3} mt={1} justifyContent="center" alignItems='center'>
+          <Box>
+            <CircularProgress aria-label="progress" />
+          </Box>
+        </Grid>
+      </Grid>)}
+      {renderContent()} */}
+    </Grid>
   );
 }

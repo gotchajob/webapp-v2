@@ -14,7 +14,7 @@ export interface Category {
 
 export const getCategory = async (): Promise<GetCategoryRes> => {
   try {
-    const res = await apiServerFetch('/comment', 'GET');
+    const res = await apiServerFetch('/category', 'GET');
     return res;
   } catch (error: any) {
     return errorSystem('Lấy danh sách thất bại', []);

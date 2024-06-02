@@ -33,7 +33,9 @@ export interface BlogDetailData {
   createdAt: string;
   likes: Like;
   profile: Profile;
-  comments?: number;
+  numberComment?: number;
+  averageRating?:number;
+  ratingQuantity?: number;
   relateBlog: RelatedBlog[];
 }
 

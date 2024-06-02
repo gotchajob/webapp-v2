@@ -56,7 +56,7 @@ const Login = () => {
               </Text>
             </Text>
             <Text fontSize={12} mt={2} fontWeight={'700'}>
-              Bạn muốn trở thành một mentor của chúng tối ? Đăng ký {``}
+              Bạn muốn trở thành một chuyên gia của chúng tối ? Đăng ký {``}
               <Text
                 component={Link}
                 //@ts-ignore

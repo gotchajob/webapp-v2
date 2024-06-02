@@ -33,9 +33,9 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
         </FlexBox>
         {alreadyLogin ? (
           <FlexBox>
-            <IconButton size="small">
+            {/* <IconButton size="small">
               <CartIcon width={36} />
-            </IconButton>
+            </IconButton> */}
             <IconButton size="small">
               <UserIcon width={36} />
             </IconButton>

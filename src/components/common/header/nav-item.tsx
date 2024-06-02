@@ -17,7 +17,7 @@ export const NavigationItem = () => {
   const navItemList = [
     { name: 'Dịch vụ', targetId: 'serviceDiv', icon: ArrowDropDownIcon },
     { name: 'Tạo CV', targetId: 'create-cv', icon: ArrowDropDownIcon },
-    { name: 'Chia sẻ CV', targetId: 'cv', icon: ArrowDropDownIcon },
+    { name: 'Chia sẻ CV', targetId: 'share-cv', icon: ArrowDropDownIcon },
     { name: 'Blog', targetId: 'blog' }
   ];
 
@@ -52,12 +52,20 @@ export const LogoutButton = () => {
         throw new Error('Không thể đăng xuất');
       }
       enqueueSnackbar(res.responseText, {
-        variant: 'success'
+        variant: 'success',
+        anchorOrigin: {
+          horizontal: "right",
+          vertical: "top",
+        },
       });
       window.location.href = '/';
     } catch (error: any) {
       enqueueSnackbar(error.message, {
-        variant: 'error'
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
       });
     }
   };

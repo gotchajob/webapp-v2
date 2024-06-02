@@ -19,8 +19,8 @@ export const SideBlogCard = ({ params }: { params: BlogList }) => {
       <Box sx={{ height: 60 }}>
         <Text fontSize={16}>{params.title}</Text>
         <Text variant="subtitle2">
-            {formatDate(params.createdAt, 'dd/MM/yyyy')}
-          </Text>
+          {formatDate(params.createdAt, 'dd/MM/yyyy')}
+        </Text>
       </Box>
     </FlexBox>
   );

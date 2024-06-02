@@ -9,7 +9,6 @@ export const UpdateAccessServer = ({ accessTime }: { accessTime: string }) => {
     const currentDate = new Date();
     if (accessTime !== formatDate(currentDate.toISOString(), "dd/MM/yyyy")) {
       const res = await UpdateAccess({});
-      console.log(res);
     }
   };
   useEffect(() => {
