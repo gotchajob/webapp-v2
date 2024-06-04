@@ -17,7 +17,7 @@ export const NavigationItem = () => {
   const navItemList = [
     { name: 'Dịch vụ', targetId: 'serviceDiv', icon: ArrowDropDownIcon },
     { name: 'Tạo CV', targetId: 'create-cv', icon: ArrowDropDownIcon },
-    { name: 'Chia sẻ CV', targetId: 'share-cv', icon: ArrowDropDownIcon },
+    { name: 'Chia sẻ CV', targetId: 'cv', icon: ArrowDropDownIcon },
     { name: 'Blog', targetId: 'blog' }
   ];
 
