@@ -16,7 +16,6 @@ import Rating from '@mui/material/Rating';
 // project imports
 import { gridSpacing } from 'store/constant';
 
-
 // types
 import { ThemeMode } from 'types/config';
 import { UserProfile } from 'types/user-profile';
@@ -26,6 +25,7 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import NotInterestedTwoToneIcon from '@mui/icons-material/NotInterestedTwoTone';
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import Avatar from 'ui-component/extended/Avatar';
+import { ExpertMatching } from 'package/api/expert/match';
 
 const avatarImage = '/assets/images/users';
 
@@ -33,11 +33,15 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 // ==============================|| USER DETAILS CARD ||============================== //
 
-const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role, rating }: UserProfile) => {
+const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
   const theme = useTheme();
-
-  const avatarProfile = avatar && `${avatarImage}/${avatar}`;
-
+  const formatNation = () => {
+    let nation = '';
+    expert.nationSupport.forEach((e) => {
+      nation = nation + e.nation;
+    });
+    return nation;
+  };
   return (
     <Card
       sx={{
@@ -48,13 +52,12 @@ const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role,
         borderColor: 'divider',
         '&:hover': { borderColor: 'primary.main' }
       }}
-
     >
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Avatar
-            alt={name}
-            src={avatarProfile}
+            alt={'avatar'}
+            src={expert.avatar}
             sx={{
               width: theme.spacing(15),
               height: theme.spacing(15)
@@ -62,36 +65,28 @@ const ExpertDetailCard = ({ about, avatar, contact, email, location, name, role,
           />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h3">{name}</Typography>
-          <Typography variant="caption">{role}</Typography>
+          <Typography variant="h3">{expert.fullName}</Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="subtitle2" sx={{ color: 'grey.700' }}>
-            {about}
+            {expert?.bio || ''}
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="caption">Email</Typography>
-          <Typography variant="h6">{email}</Typography>
+          <Typography variant="h6">{expert.email}</Typography>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
             <Grid item xs={6}>
-              <Typography variant="caption">Liên lạc</Typography>
-              <Typography variant="h6">{contact}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="caption">Quốc gia</Typography>
-              <Typography variant="h6">{location}</Typography>
+              <Typography variant="caption">Quốc gia hỗ trợ</Typography>
+              <Typography variant="h6">{formatNation()}</Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Rating name="read-only" value={rating} readOnly size='small' sx={{ pt: 1 }} />
-            </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
                 Book
               </Button>
