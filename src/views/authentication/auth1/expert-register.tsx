@@ -18,11 +18,11 @@ import { Text } from 'components/common/text/text';
 import { PRIMARYCOLOR } from 'components/common/config';
 
 import { LoginForm } from 'components/common/form/login/login-form';
-import { MentorRegisterForm } from 'components/common/form/register/register-mentor-form';
+import { ExpertRegisterForm } from 'components/common/form/register/register-expert-form';
 
 // ================================|| AUTH1 - LOGIN ||================================ //
 
-const MentorRegister = () => {
+const ExpertRegister = () => {
   return (
     <AuthWrapper1>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
@@ -39,7 +39,7 @@ const MentorRegister = () => {
                 Hãy đồng hành cùng chúng tôi
               </Text>
             </Box>
-            <MentorRegisterForm />
+            <ExpertRegisterForm />
             <Text fontSize={12} mt={12} fontWeight={'700'}>
               Đã có tài khoản? Đăng nhập
               <Text
@@ -67,4 +67,4 @@ const MentorRegister = () => {
   );
 };
 
-export default MentorRegister;
+export default ExpertRegister;

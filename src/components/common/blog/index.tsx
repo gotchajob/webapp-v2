@@ -57,6 +57,7 @@ import { ca } from 'date-fns/locale';
 import { Rating } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { PatchBlogReaction } from 'package/api/blog-reaction';
+import { useRefresh } from 'hooks/use-refresh';
 
 
 const avatarImage = '/assets/images/users';
@@ -124,22 +125,15 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
   //get customer token
   const { customerToken } = CustomerToken();
 
-  //get customer info
-  const { customer } = useGetCustomer(customerToken);
-
   const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
 
-  //route
-  const route = useRouter();
+  const { refreshTime, refresh } = useRefresh();
 
   //check length comment > 0
   const [openComment, setOpenComment] = React.useState(!(blog && 5 > 0));
 
   //Set UserProfile
   const [user, setUser] = React.useState<UserProfile | null>();
-
-  //rating state
-  const [ratingValue, setRatingValue] = React.useState<number | null>(0);
 
   //Get User Profile by token
   const getCustomer = async () => {
@@ -150,66 +144,38 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
       } catch (error: any) {
         enqueueSnackbar("Có lỗi khi lấy thông tin từ tài khoản của bạn", {
           variant: 'error',
-          anchorOrigin: {
-            vertical: 'bottom',
-            horizontal: 'right',
-          }
         });
       }
     };
   }
 
-  //handle rating change
-  const handleRating = (event: React.SyntheticEvent, value: number | null) => {
-    try {
-      setRatingValue(value);
-      console.log("rating:", value);
-      enqueueSnackbar("Đánh giá bài viết thành công", {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
-      });
-      //refresh
-      route.refresh();
-    } catch (error: any) {
-      enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
-        variant: 'error',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
-      });
-    }
-  }
-
   //Open chat & show comment
   const handleChangeComment = async (id: number) => {
-    if (blog) {
-      getCustomer();
-      const blogComments = await GetBlogComment({ id, pageNumber: 1, pageSize: 10 }, customerToken);
+    refresh();
+    setOpenComment((prev) => !prev);
+  };
+
+  //handle refresh after comment
+  React.useEffect(() => {
+    const fetchComment = async () => {
+      const blogComments = await GetBlogComment({ id: blog.id, pageNumber: 1, pageSize: 10 }, customerToken);
       if (blogComments.data.list.length > 0) {
         const comments = blogComments.data.list.map((comment, index) => (
           <Comment
             comment={comment}
             key={index}
-            blogId={id}
+            blogId={blog.id}
             user={comment.profile}
             level={0}
             commentAdd={commentAdd}
             handleCommentLikes={handleCommentLikes}
           />
         ));
-        //refresh
-        route.refresh();
         setCommentsResult(comments);
-      } else {
-        setCommentsResult([]);
       }
-      setOpenComment((prev) => !prev);
     }
-  };
+    fetchComment();
+  }, [refreshTime])
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -222,84 +188,79 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
   } = methods;
 
   const onSubmit = async (content: any, e: any) => {
-    if (!customerToken) {
-      enqueueSnackbar("Bạn cần đăng nhập để bình luận", {
-        variant: 'error',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
-      })
-      reset({ name: '' });
-      return;
-    }
     try {
+      if (!customerToken) {
+        throw new Error("Phải đăng nhập để bình luận")
+      }
       const comment_content = content.name;
       const data = await PostBlogComment({ id: blog.id }, { content: comment_content }, customerToken);
+      refresh();
       enqueueSnackbar("Bình luận của bạn đã được đăng", {
         variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
       });
-      //refresh
-      route.refresh();
     } catch (error: any) {
-      enqueueSnackbar("Có lỗi xảy ra khi đăng bình luận", {
-        variant: 'error',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
-      });
+      enqueueSnackbar(error.message, { variant: "error" });
     } finally {
       reset({ name: '' });
     }
   };
 
-  const handleLike = async (blogId: number) => {
+  //handle like change
+  const handleLike = async () => {
+    //handle like
     try {
+      if (customerToken === null) {
+        throw new Error("Phải đăng nhập");
+      }
       const like = await PatchBlogReaction({
-        blogId: blogId,
-        rating: ratingValue ? ratingValue : undefined,
-        reactionId: 1,
-        userId: customer.id
+        blogId: blog.id,
+        reactionId: blog.likes.liked ? null : 1,
+        rating: null,
       }, customerToken);
       if (like.status == "error") {
         throw new Error(like.responseText);
       }
-      enqueueSnackbar("React bài viết thành công", {
-        variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
+      enqueueSnackbar("Like bài viết thành công", {
+        variant: 'success'
       });
-      //refresh
-      route.refresh();
     } catch (error: any) {
-      console.error("Error during blog like handling:", error);
-      enqueueSnackbar("Có lỗi xảy ra khi react bài viết", {
-        variant: 'error',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
+      enqueueSnackbar(error.message, {
+        variant: 'error'
       });
     }
   }
 
-  const handelTrueFalse = (blogId: number, blogLiked: boolean) => {
-    console.log("blogId", blogId);
-    console.log("blogLiked", blogLiked ? null : 1);
+  //handle rating change
+  const handleRating = async (event: any, value: number | null) => {
+    try {
+      if (customerToken === null) {
+        throw new Error("Phải đăng nhập");
+      }
+      const rating = await PatchBlogReaction({
+        blogId: blog.id,
+        rating: value ? value : 0,
+        reactionId: null
+      }, customerToken);
+      if (rating.status == "error") {
+        throw new Error(rating.responseText);
+      }
+      enqueueSnackbar("Đánh giá bài viết thành công", {
+        variant: 'success',
+      });
+      console.log("RATE status", rating.status);
+    } catch (error: any) {
+      enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
+        variant: 'error',
+      });
+    }
   }
 
   React.useEffect(() => {
+    getCustomer();
     console.log("blog : ", blog);
-    console.log("Customer id:", customer);
-    console.log("Customer:", customerToken);
-  }, [])
+    console.log("Customer token:", customerToken);
+    console.log("user:", user);
+  }, [customerToken])
 
   return (
     <Grid container spacing={1}>
@@ -358,8 +319,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
             <Stack direction="row" spacing={2}>
               <Button
                 variant="text"
-                // onClick={() => handleLike(blog.id)}
-                onClick={() => handelTrueFalse(blog.id, blog.likes.liked)}
+                onClick={handleLike}
                 color="inherit"
                 size="small"
                 startIcon={<ThumbUpAltTwoToneIcon color={blog && blog.likes && blog.likes.liked ? 'primary' : 'inherit'} />}
@@ -385,7 +345,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                     <Typography variant="h5">Đánh giá:</Typography>
                   </Grid>
                   <Grid item>
-                    <Rating value={ratingValue} size="small" onChange={(e, v) => { handleRating(e, v) }} />
+                    <Rating value={blog.rated} size="small" onChange={handleRating} />
                   </Grid>
                 </>
               )}
@@ -421,7 +381,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 </Grid>
                 <Grid item>
                   <AnimateButton>
-                    <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }} onClick={() => route.refresh()}>
+                    <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 0.5 }} onClick={() => { }}>
                       Comment
                     </Button>
                   </AnimateButton>

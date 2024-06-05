@@ -1,5 +1,5 @@
-import MentorRegister from 'views/authentication/auth1/mentor-register';
+import ExpertRegister from 'views/authentication/auth1/expert-register';
 
 export default function Page() {
-  return <MentorRegister />;
+  return <ExpertRegister />;
 }

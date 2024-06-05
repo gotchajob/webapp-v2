@@ -4,9 +4,8 @@ import { apiServerFetch, errorSystem } from '../api-fetch';
 
 export interface blogReactionRq {
   blogId: number;
-  userId: number;
-  reactionId: number;
-  rating?: number;
+  reactionId?: number | null;
+  rating?: number | null;
 }
 
 export interface blogReactionResponse {

@@ -1,50 +1,47 @@
 'use client';
 
-import { useState, ReactElement, useEffect } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ButtonBase from '@mui/material/ButtonBase';
 import Card from '@mui/material/Card';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
-import * as yup from 'yup';
-import uniqueId from 'lodash/uniqueId';
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import * as yup from 'yup';
 
 // project imports
-import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import Avatar from 'ui-component/extended/Avatar';
+
 // assets
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';
-import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
-import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
 import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
+import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 
 const avatarImage = '/assets/images/users';
 // types
+import { useGetCustomer } from 'hooks/use-get-current-user';
+import { CustomerToken } from 'hooks/use-login';
+import { useRefresh } from 'hooks/use-refresh';
+import { enqueueSnackbar } from 'notistack';
+import { CommentList, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
+import { PatchCommentReaction } from 'package/api/comment-reaction';
+import { formatDate } from 'package/util';
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { CommentList, GetBlogComment, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
-import { CustomerToken } from 'hooks/use-login';
-import { formatDate } from 'package/util';
-import { GetUserCurrent, UserProfile } from 'package/api/user/current';
-import { enqueueSnackbar } from 'notistack';
-import { useRouter } from 'next/navigation';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Reply Field is Required')
@@ -109,60 +106,50 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  const route = useRouter();
-
   const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
-
-  const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
-
-  const { customerToken } = CustomerToken();
 
   const [openReply, setOpenReply] = useState(false);
 
-  //Set UserProfile
-  const [user_, setUser_] = useState<UserProfile | null>();
+  const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
 
-  //Get User Profile by token
-  const getCustomer = async () => {
-    if (customerToken) {
-      try {
-        const res = await GetUserCurrent(customerToken);
-        setUser_(res.data);
-      } catch (error: any) {
-        enqueueSnackbar("Có lỗi khi lấy thông tin từ tài khoản của bạn", {
-          variant: 'error',
-          anchorOrigin: {
-            vertical: 'bottom',
-            horizontal: 'right',
-          }
-        });
-      }
-    };
-  }
+  //get token
+  const { customerToken } = CustomerToken();
 
-  const handleChangeReply = async (id: number) => {
-    getCustomer();
-    const data = await GetReplyComment({ id: blogId, parentCommentId: comment.id, pageNumber: 1, pageSize: 10 }, customerToken);
-    if (data.data.list.length > 0) {
-      const replies = data.data.list.map((reply) => (
-        <Comment
-          level={level + 1}
-          blogId={blogId}
-          comment={reply}
-          key={reply.id}
-          user={user}
-          commentAdd={commentAdd}
-          handleCommentLikes={handleCommentLikes}
-        />
-      ));
-      //refresh
-      route.refresh();
-      setRepliesResult(replies);
-    } else {
-      setRepliesResult([]);
-    }
+  //get profile customer
+  const { customer } = useGetCustomer(customerToken);
+
+  //refresh page
+  const { refreshTime, refresh } = useRefresh();
+
+  //Open chat & show reply
+  const handleChangeReply = async () => {
+    refresh();
     setOpenReply((prev) => !prev);
   };
+
+  //handle refresh after reply
+  useEffect(() => {
+    const fetchComment = async () => {
+      const data = await GetReplyComment({ id: blogId, parentCommentId: comment.id, pageNumber: 1, pageSize: 10 }, customerToken);
+      if (data?.data.list.length > 0) {
+        const replies = data.data.list.map((reply) => (
+          <Comment
+            level={level + 1}
+            blogId={blogId}
+            comment={reply}
+            key={reply.id}
+            user={user}
+            commentAdd={commentAdd}
+            handleCommentLikes={handleCommentLikes}
+          />
+        ));
+        setRepliesResult(replies);
+      } else {
+        setRepliesResult([]);
+      }
+    }
+    fetchComment();
+  }, [refreshTime])
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -176,41 +163,41 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
 
   const onSubmit = async (reply: any, e: any) => {
     if (!customerToken) {
-      enqueueSnackbar("Bạn cần đăng nhập để bình luận", {
-        variant: "error",
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
-      });
-      reset({ name: '' });
-      return;
+      throw new Error();
     }
     try {
       const comment_content = reply.name;
       const data = await PostBlogComment({ id: blogId }, { commentId: comment.id, content: comment_content }, customerToken);
       enqueueSnackbar("Bình luận của bạn đã được đăng", {
         variant: 'success',
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: 'right',
-        }
       });
-      //refresh
-      route.refresh();
     } catch (error: any) {
-      enqueueSnackbar("Có lỗi xảy ra khi đăng bình luận", {
+      enqueueSnackbar(error.message, {
         variant: "error",
-        anchorOrigin: {
-          vertical: 'bottom',
-          horizontal: "right"
-        }
       })
-      console.log(error);
     } finally {
       reset({ name: '' });
     }
   };
+
+  const handleLike = async () => {
+    if (!customerToken) {
+      throw new Error();
+    }
+    try {
+      const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? null : 1 }, customerToken);
+      if (like.status == "error") {
+        throw new Error();
+      }
+      enqueueSnackbar("Like comment thành công", {
+        variant: "success",
+      })
+    } catch (error: any) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+      })
+    }
+  }
 
   return (
     <>
@@ -252,17 +239,17 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
               <Grid item xs={12}>
                 <Stack direction="row" spacing={2} sx={{ color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}>
                   <Button
-                    onClick={() => handleCommentLikes(blogId, comment.id)}
+                    onClick={handleLike}
                     variant="text"
                     color="inherit"
                     size="small"
-                    startIcon={<ThumbUpAltTwoToneIcon color={comment?.likes ? 'secondary' : 'inherit'} />}
+                    startIcon={<ThumbUpAltTwoToneIcon color={comment.likes.liked ? 'secondary' : 'inherit'} />}
                   >
-                    {comment?.likes ? comment.likes.value : 0} likes
+                    {comment.likes ? comment.likes.value : 0} likes
                   </Button>
                   <Button
                     variant="text"
-                    onClick={() => handleChangeReply(comment?.id)}
+                    onClick={handleChangeReply}
                     color="inherit"
                     size="small"
                     startIcon={<ReplyTwoToneIcon color="primary" />}
@@ -289,7 +276,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                     <Avatar
                       sx={{ mt: 1.5 }}
                       alt="User 1"
-                      src={user_?.avatar && user_?.avatar && `${user_.avatar}`}
+                      src={customer?.avatar && customer?.avatar && `${customer.avatar}`}
                     />
                   </Grid>
                   <Grid item xs zeroMinWidth sx={{ mt: 1 }}>
@@ -313,7 +300,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                   </Grid>
                   <Grid item>
                     <AnimateButton>
-                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }} onClick={() => route.refresh()}>
+                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }} onClick={() => { }}>
                         Reply
                       </Button>
                     </AnimateButton>

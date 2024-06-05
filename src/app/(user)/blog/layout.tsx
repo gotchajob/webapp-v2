@@ -31,6 +31,9 @@ export default function Layout({ children }: { children: ReactNode }) {
   //get params
   const { category: paramsCategory } = useGetSearchParams(["category"]);
 
+  useEffect(() => {
+    console.log("layout.tss:", paramsCategory);
+  }, [])
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>

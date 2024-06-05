@@ -10,9 +10,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { VerifyPassword } from '../verify-password';
-import { PostMentorRegister, PostMentorRegisterRequest } from 'package/api/expert-register-request';
+import { PostExpertRegister, PostExpertRegisterRequest } from 'package/api/expert-register-request';
 
-export const MentorRegisterForm = () => {
+export const ExpertRegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -24,7 +24,7 @@ export const MentorRegisterForm = () => {
   const handleFormSubmit = async (value: any) => {
     try {
       setIsLoading(true);
-      const register = await PostMentorRegister({ email: value.email });
+      const register = await PostExpertRegister({ email: value.email });
       if (register.status === 'success') {
         enqueueSnackbar('Đăng kí thành công, vui lòng chờ email phản hồi của chúng tôi!', {
           variant: 'success',
