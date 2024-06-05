@@ -56,6 +56,7 @@ import { enqueueSnackbar } from 'notistack';
 import { ca } from 'date-fns/locale';
 import { Rating } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { PatchBlogReaction } from 'package/api/blog-reaction';
 
 
 const avatarImage = '/assets/images/users';
@@ -257,8 +258,47 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
     }
   };
 
+  const handleLike = async (blogId: number) => {
+    try {
+      const like = await PatchBlogReaction({
+        blogId: blogId,
+        rating: ratingValue ? ratingValue : undefined,
+        reactionId: 1,
+        userId: customer.id
+      }, customerToken);
+      if (like.status == "error") {
+        throw new Error(like.responseText);
+      }
+      enqueueSnackbar("React bài viết thành công", {
+        variant: 'success',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+      //refresh
+      route.refresh();
+    } catch (error: any) {
+      console.error("Error during blog like handling:", error);
+      enqueueSnackbar("Có lỗi xảy ra khi react bài viết", {
+        variant: 'error',
+        anchorOrigin: {
+          vertical: 'bottom',
+          horizontal: 'right',
+        }
+      });
+    }
+  }
+
+  const handelTrueFalse = (blogId: number, blogLiked: boolean) => {
+    console.log("blogId", blogId);
+    console.log("blogLiked", blogLiked ? null : 1);
+  }
+
   React.useEffect(() => {
     console.log("blog : ", blog);
+    console.log("Customer id:", customer);
+    console.log("Customer:", customerToken);
   }, [])
 
   return (
@@ -318,7 +358,8 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
             <Stack direction="row" spacing={2}>
               <Button
                 variant="text"
-                onClick={() => handleBlogLikes(blog.id)}
+                // onClick={() => handleLike(blog.id)}
+                onClick={() => handelTrueFalse(blog.id, blog.likes.liked)}
                 color="inherit"
                 size="small"
                 startIcon={<ThumbUpAltTwoToneIcon color={blog && blog.likes && blog.likes.liked ? 'primary' : 'inherit'} />}

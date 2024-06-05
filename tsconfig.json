@@ -32,6 +32,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../adminapp-v2_Branch/adminapp-v2/src/package/api/user/verify-expert.ts"],
   "exclude": ["node_modules"]
 }
