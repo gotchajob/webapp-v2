@@ -23,48 +23,48 @@ import { ExpertRegisterForm } from 'components/common/form/register/register-exp
 // ================================|| AUTH1 - LOGIN ||================================ //
 
 const ExpertRegister = () => {
-  return (
-    <AuthWrapper1>
-      <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
-        <Grid item justifyContent="center" alignItems={'center'} md={6} lg={7}>
-          <FlexCenter>
-            <Link href={'/'}>
-              <ImageCard src="/assets/images/logo.png" width={'250px'} />
-            </Link>
-            <Box py={5}>
-              <Text color={PRIMARYCOLOR} textAlign={'center'} fontWeight={'700'} fontSize={30}>
-                Chào mừng đến với Gotcha Job!
-              </Text>
-              <Text mt={1} fontSize={12} textAlign={'center'} fontWeight={'700'}>
-                Hãy đồng hành cùng chúng tôi
-              </Text>
-            </Box>
-            <ExpertRegisterForm />
-            <Text fontSize={12} mt={12} fontWeight={'700'}>
-              Đã có tài khoản? Đăng nhập
-              <Text
-                component={Link}
-                //@ts-ignore
-                href={'/login'}
-                fontSize={12}
-                color={PRIMARYCOLOR}
-                fontWeight={'700'}
-                ml={0.5}
-                sx={{
-                  textDecoration: 'underline'
-                }}
-              >
-                tại đây
-              </Text>
-            </Text>
-          </FlexCenter>
-        </Grid>
-        <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-          <FlexCenter bgcolor={'#D9D9D9'} height={'100vh'}></FlexCenter>
-        </Grid>
-      </Grid>
-    </AuthWrapper1>
-  );
+    return (
+        <AuthWrapper1>
+            <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
+                <Grid item justifyContent="center" alignItems={'center'} md={6} lg={7}>
+                    <FlexCenter>
+                        <Link href={'/'}>
+                            <ImageCard src="/assets/images/logo.png" width={'250px'} />
+                        </Link>
+                        <Box py={5}>
+                            <Text color={PRIMARYCOLOR} textAlign={'center'} fontWeight={'700'} fontSize={30}>
+                                Chào mừng đến với Gotcha Job!
+                            </Text>
+                            <Text mt={1} fontSize={12} textAlign={'center'} fontWeight={'700'}>
+                                Hãy đồng hành cùng chúng tôi
+                            </Text>
+                        </Box>
+                        <ExpertRegisterForm />
+                        <Text fontSize={12} mt={12} fontWeight={'700'}>
+                            Đã có tài khoản? Đăng nhập
+                            <Text
+                                component={Link}
+                                //@ts-ignore
+                                href={'/login'}
+                                fontSize={12}
+                                color={PRIMARYCOLOR}
+                                fontWeight={'700'}
+                                ml={0.5}
+                                sx={{
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                tại đây
+                            </Text>
+                        </Text>
+                    </FlexCenter>
+                </Grid>
+                <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
+                    <FlexCenter bgcolor={'#D9D9D9'} height={'100vh'}></FlexCenter>
+                </Grid>
+            </Grid>
+        </AuthWrapper1>
+    );
 };
 
 export default ExpertRegister;
