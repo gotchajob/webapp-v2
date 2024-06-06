@@ -31,17 +31,19 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ReplyTwoToneIcon from '@mui/icons-material/ReplyTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 
-const avatarImage = '/assets/images/users';
 // types
 import { useGetCustomer } from 'hooks/use-get-current-user';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
 import { enqueueSnackbar } from 'notistack';
-import { CommentList, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
+import { CommentList, GetBlogComment, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
 import { PatchCommentReaction } from 'package/api/comment-reaction';
 import { formatDate } from 'package/util';
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
+import { getBlogDetail } from 'package/api/blog/id';
+
+const avatarImage = '/assets/images/users';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Reply Field is Required')
@@ -65,7 +67,6 @@ const FormInput = ({ bug, label, name, required, ...others }: FormInputProps) =>
     <>
       <Controller
         name={name}
-        control={control}
         defaultValue=""
         render={({ field }) => (
           <TextField
@@ -106,10 +107,10 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [anchorEl, setAnchorEl] = useState<Element | (() => Element) | null | undefined>(null);
+  //check length reply > 0
+  const [openReply, setOpenReply] = useState(!(comment && 5 > 0));
 
-  const [openReply, setOpenReply] = useState(false);
-
+  //set state reply
   const [repliesResult, setRepliesResult] = useState<ReactElement[]>([]);
 
   //get token
@@ -122,14 +123,14 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
   const { refreshTime, refresh } = useRefresh();
 
   //Open chat & show reply
-  const handleChangeReply = async () => {
+  const handleChangeReply = () => {
     refresh();
     setOpenReply((prev) => !prev);
   };
 
   //handle refresh after reply
   useEffect(() => {
-    const fetchComment = async () => {
+    const refreshReplies = async () => {
       const data = await GetReplyComment({ id: blogId, parentCommentId: comment.id, pageNumber: 1, pageSize: 10 }, customerToken);
       if (data?.data.list.length > 0) {
         const replies = data.data.list.map((reply) => (
@@ -148,8 +149,27 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
         setRepliesResult([]);
       }
     }
-    fetchComment();
+    refreshReplies();
   }, [refreshTime])
+
+  //hanlde like change
+  const handleLike = async () => {
+    if (!customerToken) {
+      throw new Error();
+    }
+    try {
+      const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? null : 1 }, customerToken);
+      if (like.status == "error") {
+        throw new Error();
+      }
+      refresh();
+      console.log("like comment status: ", like.status);
+    } catch (error: any) {
+      enqueueSnackbar(error.message, {
+        variant: "error",
+      })
+    }
+  }
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -168,6 +188,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
     try {
       const comment_content = reply.name;
       const data = await PostBlogComment({ id: blogId }, { commentId: comment.id, content: comment_content }, customerToken);
+      refresh();
       enqueueSnackbar("Bình luận của bạn đã được đăng", {
         variant: 'success',
       });
@@ -179,25 +200,6 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
       reset({ name: '' });
     }
   };
-
-  const handleLike = async () => {
-    if (!customerToken) {
-      throw new Error();
-    }
-    try {
-      const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? null : 1 }, customerToken);
-      if (like.status == "error") {
-        throw new Error();
-      }
-      enqueueSnackbar("Like comment thành công", {
-        variant: "success",
-      })
-    } catch (error: any) {
-      enqueueSnackbar(error.message, {
-        variant: "error",
-      })
-    }
-  }
 
   return (
     <>
@@ -245,7 +247,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                     size="small"
                     startIcon={<ThumbUpAltTwoToneIcon color={comment.likes.liked ? 'secondary' : 'inherit'} />}
                   >
-                    {comment.likes ? comment.likes.value : 0} likes
+                    {comment ? comment.likes.value : 0} likes
                   </Button>
                   <Button
                     variant="text"
@@ -254,7 +256,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                     size="small"
                     startIcon={<ReplyTwoToneIcon color="primary" />}
                   >
-                    {comment?.reply ? comment.reply : 0} reply
+                    {comment ? comment.reply : 0} reply
                   </Button>
                 </Stack>
               </Grid>
@@ -300,7 +302,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                   </Grid>
                   <Grid item>
                     <AnimateButton>
-                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }} onClick={() => { }}>
+                      <Button type="submit" variant="contained" color="info" size={downMD ? 'small' : 'large'} sx={{ mt: 1.5 }}>
                         Reply
                       </Button>
                     </AnimateButton>

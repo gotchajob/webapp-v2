@@ -25,15 +25,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   const handleChangeCategory = (categoryId: number, categoryName: string) => {
     push([{
       name: "category", value: `${categoryName.replace(/[^a-zA-Z0-9]/g, '')}-${categoryId}`
-    }])
+    }], false);
   }
 
   //get params
   const { category: paramsCategory } = useGetSearchParams(["category"]);
-
-  useEffect(() => {
-    console.log("layout.tss:", paramsCategory);
-  }, [])
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>

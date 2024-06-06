@@ -22,8 +22,7 @@ import { Pagination, Typography } from '@mui/material';
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
 
 export default function Page() {
-  const [loading, setLoading] = useState<boolean>();
-  
+
   //route hook
   const { push } = useSearchParamsNavigation();
 
@@ -31,7 +30,7 @@ export default function Page() {
   const { category, pageNumber } = useGetSearchParams(["category", "pageNumber"]);
 
   //hook get blogs
-  const { blogs, totalPage } = useGetBlogs({ pageNumber, pageSize: 10, categoryId: category?.split("-")[1] });
+  const { blogs, totalPage, loading } = useGetBlogs({ pageNumber, pageSize: 10, categoryId: category?.split("-")[1] });
 
   const handleChangePage = (event: any, newPage: number) => {
     push([{
@@ -42,7 +41,7 @@ export default function Page() {
   const renderBlogList = (blogList: BlogList[]) => (
     <>
       <Grid item xs={8}>
-        {blogList.map((blog, index) => {
+        {blogList.length > 0 ? blogList.map((blog, index) => {
           const isLastChild = index === blogList.length - 1;
           return (
             <Stack key={blog.id} spacing={2} mb={2}>
@@ -50,9 +49,11 @@ export default function Page() {
               {!isLastChild && <Divider />}
             </Stack>
           );
-        })}
+        }) : (<Typography variant="h5" align="center" sx={{ pb: 20 }}>
+          Hiện chưa có bài viết nào
+        </Typography>)}
         <FlexCenter sx={{ pt: 3 }}>
-          <Pagination count={totalPage + 1} onChange={handleChangePage} shape="rounded" />
+          <Pagination page={+pageNumber} count={totalPage + 1} onChange={handleChangePage} shape="rounded" />
         </FlexCenter>
       </Grid>
       <Grid item xs={4}>
@@ -71,29 +72,6 @@ export default function Page() {
     </>
   );
 
-  const renderContent = () => {
-    switch (true) {
-      case blogs.length > 0:
-        return renderBlogList(blogs);
-        break;
-      default:
-        return (
-          <Grid item xs={12}>
-            <Typography variant="h6" align="center">
-              Hiện chưa có bài viết nào
-            </Typography>
-          </Grid>
-        );
-    }
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1200);
-  }, [blogs])
-
   return (
     <Grid container spacing={3}>
       {loading ? (<Grid item xs={12}>
@@ -102,7 +80,7 @@ export default function Page() {
             <CircularProgress aria-label="progress" />
           </Box>
         </Grid>
-      </Grid>) : (renderContent())}
+      </Grid>) : (renderBlogList(blogs))}
     </Grid>
   );
 }
