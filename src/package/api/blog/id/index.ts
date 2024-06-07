@@ -36,6 +36,7 @@ export interface BlogDetailData {
   numberComment?: number;
   averageRating?:number;
   ratingQuantity?: number;
+  rated?: number;
   relateBlog: RelatedBlog[];
 }
 

@@ -102,9 +102,9 @@ export const Feedback = () => {
             maxWidth={800}
             fontStyle={"italic"}
           >
-            Dịch vụ thuê mentor để hỗ trợ làm đồ án bên GotchaJob thật sự rất
+            Dịch vụ thuê chuyên gia để hỗ trợ làm đồ án bên GotchaJob thật sự rất
             hữu ích và tiết kiệm thời gian cũng như công sức của mình. Giá cả
-            thuê mentor cũng tương đối phù hợp với túi tiền của mình, anh/chị hỗ
+            thuê chuyên gia cũng tương đối phù hợp với túi tiền của mình, anh/chị hỗ
             trợ cũng rất thân thiện, giúp mình tận tình. Mình chắc chắn sẽ sử
             dụng dịch vụ khi có những dự án riêng hoặc khi mình tham gia cuộc
             thi học thuật.
