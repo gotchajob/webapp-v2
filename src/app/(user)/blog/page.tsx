@@ -18,7 +18,6 @@ import { SideBlogCard } from './_components/side-blog-card';
 import { GetBlogByCategory } from 'package/api/blog/category';
 import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
 import { BlogList } from 'package/api/blog';
-import { Pagination, Typography } from '@mui/material';
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Pagination from '@mui/material/Pagination';
