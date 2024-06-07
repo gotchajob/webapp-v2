@@ -36,7 +36,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     getClientBlog();
-  }, []);
+  }, [customerToken]);
 
   if (blog) {
     return (

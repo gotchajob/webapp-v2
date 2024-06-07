@@ -9,6 +9,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const params = await req.json();
   const customerToken = await getUserToken(cookies());
+  console.log(customerToken)
   const path = searchParams.get('path') as string;
   const data = await response(params, customerToken, path);
   return NextResponse.json(data);
