@@ -1,41 +1,22 @@
-import { json } from "stream/consumers"
+import { Certificate } from "crypto"
+import { Point } from "mapbox-gl"
 
 expert {
-    nationSupport: ["" , ""]
-    skillEvaluate: [{
-        skillOption: {},
-        rating
-    }, {}] -> category,
-
-    yearExperience: 10
+    experience,
+    nation: string[],
+    
+    skillOptionList: [
+        {
+            skillOptionId
+            skillOptionName,
+            categoryId,
+            categoryName,
+            skillId,
+            skillName
+            point,
+            rating,
+            Certificate
+        }
+    ]
+    totalRating
 }
-
-
-matchingRequest {
-    category,
-    skillOption?: [],
-    nationSupport?,
-    yearExperirence?,
-}
-
-output {
-    expert: []
-}
-
-{
-    category: 1;
-    nationSupport?: 2;
-    skillOption?: [
-        {}
-    ]:3;
-    yearExperirence?: 3;
-}
-
-vào vị trí FE
-
-chọn ngôn ngữ : js, java, go
-
-
-ưu tiên vị trí -> điểm cao hơn
-
-

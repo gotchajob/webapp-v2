@@ -5,15 +5,15 @@ import { useEffect, useState } from 'react';
 
 export const useGetSearchParams = (keys: string[]): any => {
   const searchParams = useSearchParams();
-  const [res, setRes] = useState<any>({ page: 1, rowsPerPage: 5 });
+  const [res, setRes] = useState<any>({ pageNumber: 1, pageSize: 5 });
 
   useEffect(() => {
     let newRes = { ...res };
     keys.forEach((e) => {
       const data = searchParams.get(e);
-      if (data === null && e === 'page') {
+      if (data === null && e === 'pageNumber') {
         newRes = { ...newRes, page: 1 };
-      } else if (e === 'rowsPerPage' && data === null) {
+      } else if (e === 'pageSize' && data === null) {
         newRes = { ...newRes, rowsPerPage: 5 };
       } else {
         newRes = { ...newRes, [e]: data };

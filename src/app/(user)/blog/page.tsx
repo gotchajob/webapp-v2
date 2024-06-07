@@ -16,15 +16,15 @@ import { FlexBox, FlexCenter } from 'components/common/box/flex-box';
 import Grid from '@mui/material/Grid';
 import { SideBlogCard } from './_components/side-blog-card';
 import { GetBlogByCategory } from 'package/api/blog/category';
-import { useGetSearchParams } from 'hooks/use-get-params';
+import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
 import { BlogList } from 'package/api/blog';
-import { Typography } from '@mui/material';
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Pagination from '@mui/material/Pagination';
 
 export default function Page() {
-  const [pageNumber, setPageNumber] = useState(1);
-
-  const [pageSize, setPageSize] = useState(10);
+  const { push } = useSearchParamsNavigation();
+  const { pageNumber, pageSize } = useGetSearchParams(['pageNumber', 'pageSize']);
 
   const [loading, setLoading] = useState<boolean>();
 
@@ -32,10 +32,10 @@ export default function Page() {
   const { blogs, totalPage } = useGetBlogs({ pageNumber, pageSize });
 
   //get params
-  const { category: paramsCategory } = useGetSearchParams(["category"]);
+  const { category: paramsCategory } = useGetSearchParams(['category']);
 
   //hook get blogs by category
-  const { blogs: blogsByCategory } = useGetBlogsByCategory({ categoryId: paramsCategory?.split("-")[1], limit: 10 });
+  const { blogs: blogsByCategory } = useGetBlogsByCategory({ categoryId: paramsCategory?.split('-')[1], limit: 10 });
 
   const renderBlogList = (blogList: BlogList[]) => (
     <>
@@ -63,6 +63,21 @@ export default function Page() {
           ))}
         </Stack>
       </Grid>
+      <FlexCenter>
+        <Pagination
+          onChange={(e, page) => {
+            push([
+              {
+                name: 'pageNumber',
+                value: page + ''
+              }
+            ], true);
+          }}
+          count={totalPage + 1}
+          variant="outlined"
+          shape="rounded"
+        />
+      </FlexCenter>
     </>
   );
 
@@ -87,7 +102,6 @@ export default function Page() {
   // };
 
   const renderContent = () => {
-
     let content;
 
     switch (true) {
@@ -107,7 +121,6 @@ export default function Page() {
         );
     }
 
-
     return content;
   };
 
@@ -121,13 +134,17 @@ export default function Page() {
 
   return (
     <Grid container spacing={3}>
-      {loading ? (<Grid item xs={12}>
-        <Grid container spacing={3} mt={1} justifyContent="center" alignItems='center'>
-          <Box>
-            <CircularProgress aria-label="progress" />
-          </Box>
+      {loading ? (
+        <Grid item xs={12}>
+          <Grid container spacing={3} mt={1} justifyContent="center" alignItems="center">
+            <Box>
+              <CircularProgress aria-label="progress" />
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>) : (renderContent())}
+      ) : (
+        renderContent()
+      )}
       {/* {loading && (<Grid item xs={12}>
         <Grid container spacing={3} mt={1} justifyContent="center" alignItems='center'>
           <Box>

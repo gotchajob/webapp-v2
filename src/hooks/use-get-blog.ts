@@ -33,7 +33,6 @@ export const useGetBlogsByCategory = (params: BlogByCategoryReq) => {
 
   const getClientBlogs = async () => {
     const data = await GetBlogByCategory(params, customerToken);
-    console.log('data', data.data);
     setBlogs(data.data);
   };
 
