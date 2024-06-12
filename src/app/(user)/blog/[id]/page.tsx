@@ -9,6 +9,8 @@ import Stack from '@mui/material/Stack';
 import { Text } from 'components/common/text/text';
 import Divider from '@mui/material/Divider';
 import { useRouter } from 'next/navigation';
+import { useRefresh } from 'hooks/use-refresh';
+import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
 
 export default function Page({ params }: { params: { id: string } }) {
 
@@ -16,9 +18,15 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const { customerToken } = CustomerToken();
 
+  const { refreshTime, refresh } = useRefresh();
+
+  //get params
+  const { isRefresh } = useGetSearchParams(["isRefresh"]);
+
   const getClientBlog = async () => {
     const data = await getBlogDetail({ id: +params.id.split('-')[1] }, customerToken);
     setBlog(data.data);
+    console.log("Refresh");
   };
 
   const blogCommentAdd = async (id: number, comment: any) => {
@@ -26,7 +34,6 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const commentAdd = async (id: number, comment: any) => {
   };
-
 
   const handlePostLikes = async (id: number) => {
   };
@@ -36,7 +43,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     getClientBlog();
-  }, [customerToken]);
+  }, [customerToken, isRefresh]);
 
   if (blog) {
     return (

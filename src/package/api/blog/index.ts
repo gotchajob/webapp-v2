@@ -46,7 +46,7 @@ export const GetBlog = async (params: BlogGetRequest, accessToken: string): Prom
     const searchParams = new URLSearchParams();
     searchParams.set('pageNumber', params.pageNumber + '');
     searchParams.set('pageSize', params.pageSize + '');
-    if(params.categoryId){
+    if (params.categoryId) {
       searchParams.set('categoryId', params.categoryId + '');
     }
     const res = await apiServerFetch('/blog?' + searchParams.toString(), 'GET', undefined, accessToken);

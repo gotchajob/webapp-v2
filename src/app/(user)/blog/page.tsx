@@ -70,21 +70,6 @@ export default function Page() {
           ))}
         </Stack>
       </Grid>
-      <FlexCenter>
-        <Pagination
-          onChange={(e, page) => {
-            push([
-              {
-                name: 'pageNumber',
-                value: page + ''
-              }
-            ], true);
-          }}
-          count={totalPage + 1}
-          variant="outlined"
-          shape="rounded"
-        />
-      </FlexCenter>
     </>
   );
 
