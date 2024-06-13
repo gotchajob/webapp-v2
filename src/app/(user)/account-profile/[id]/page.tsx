@@ -177,22 +177,6 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
                   />
                 ))}
               </Tabs>
-              <Grid container justifyContent="space-between" spacing={2} sx={{ mt: 2 }}>
-                <Grid item>
-                  {value > 0 && (
-                    <Button variant="outlined" size="large" onClick={(e) => handleChange(e, value - 1)}>
-                      Back
-                    </Button>
-                  )}
-                </Grid>
-                <Grid item>
-                  {value < tabsOption.length - 1 && (
-                    <Button variant="contained" size="large" onClick={(e) => handleChange(e, value + 1)}>
-                      Continue
-                    </Button>
-                  )}
-                </Grid>
-              </Grid>
             </CardContent>
           </Grid>
           <Grid item xs={12} lg={8} >
