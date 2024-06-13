@@ -110,9 +110,8 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         boxShadow
         hover
         sx={{
-          backgroundColor: 'transparent',
           minWidth: "100%",
-          maxHeight: "80%",
+          maxHeight: "70%",
         }}
       >
         <Grid container spacing={gridSpacing} >
