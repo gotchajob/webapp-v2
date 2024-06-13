@@ -33,15 +33,15 @@ import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
 
 // types
 import { useGetCustomer } from 'hooks/use-get-current-user';
+import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
 import { enqueueSnackbar } from 'notistack';
-import { CommentList, GetBlogComment, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
+import { CommentList, GetReplyComment, PostBlogComment, Profile } from 'package/api/blog/id/comment';
 import { PatchCommentReaction } from 'package/api/comment-reaction';
 import { formatDate } from 'package/util';
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { getBlogDetail } from 'package/api/blog/id';
 
 const avatarImage = '/assets/images/users';
 
@@ -119,6 +119,12 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
   //get profile customer
   const { customer } = useGetCustomer(customerToken);
 
+  //route hook
+  const { push } = useSearchParamsNavigation();
+
+  //get params
+  const { isRefresh } = useGetSearchParams(["isRefresh"]);
+
   //refresh page
   const { refreshTime, refresh } = useRefresh();
 
@@ -128,10 +134,20 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
     setOpenReply((prev) => !prev);
   };
 
+  //Handle push isRefresh
+  const handlePushRefresh = () => {
+    const currentParam = isRefresh;
+    let randomNumber;
+    do {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+    } while (randomNumber === currentParam);
+    push([{ name: 'isRefresh', value: randomNumber + "" }], true);
+  }
+
   //handle refresh after reply
   useEffect(() => {
     const refreshReplies = async () => {
-      const data = await GetReplyComment({ id: blogId, parentCommentId: comment.id, pageNumber: 1, pageSize: 10 }, customerToken);
+      const data = await GetReplyComment({ id: blogId, parentCommentId: comment.id, pageNumber: 1, pageSize: 100 }, customerToken);
       if (data?.data.list.length > 0) {
         const replies = data.data.list.map((reply) => (
           <Comment
@@ -159,9 +175,6 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
     }
     try {
       const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? null : 1 }, customerToken);
-      if (like.status == "error") {
-        throw new Error();
-      }
       refresh();
       console.log("like comment status: ", like.status);
     } catch (error: any) {
@@ -200,6 +213,10 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
       reset({ name: '' });
     }
   };
+
+  // useEffect(() => {
+  //   console.log("comment :", comment);
+  // }, [refreshTime])
 
   return (
     <>
