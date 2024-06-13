@@ -30,7 +30,7 @@ const UserProfile = ({ user }: { user: User }) => {
         <Grid item xs={12}>
           <Grid container spacing={2} alignItems="center">
             <Grid item>
-              <Avatar alt="User 1" src={user.avatar} sx={{ height: 80, width: 80 }} />
+              <Avatar alt="User 1" src={user?.avatar} sx={{ height: 80, width: 80 }} />
             </Grid>
             <Grid item sm zeroMinWidth>
               <Grid container spacing={1}>
@@ -50,7 +50,7 @@ const UserProfile = ({ user }: { user: User }) => {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="Tên" value={user.fullName} />
+          <TextField fullWidth label="Tên" value={user?.fullName} />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField fullWidth label="Địa chỉ Email" value={user.email} />

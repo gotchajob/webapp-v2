@@ -5,24 +5,32 @@ import React, { useState } from 'react';
 // material-ui
 import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
-import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Stack from '@mui/material/Stack';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+// project imports
+import SubCard from 'ui-component/cards/SubCard';
+
 // third-party
-import { PatternFormat, usePatternFormat, NumberFormatBase } from 'react-number-format';
+import { NumberFormatBase, usePatternFormat } from 'react-number-format';
 
 // project imports
 import { gridSpacing } from 'store/constant';
+import { PaymentOptionsProps } from 'types/e-commerce';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // assets
-import LockTwoToneIcon from '@mui/icons-material/LockTwoTone';
 import CreditCardTwoToneIcon from '@mui/icons-material/CreditCardTwoTone';
+import { Autocomplete, FormControl } from '@mui/material';
+import PaymentSelect from 'components/application/e-commerce/Checkout/PaymentSelect';
 
 function CardExpiry(props: any) {
   const { format, ...rest } = usePatternFormat({ ...props, format: '##/##' });
@@ -34,7 +42,6 @@ function CardExpiry(props: any) {
     if (month.length === 1 && month[0] > 1) {
       month = `0${month[0]}`;
     } else if (month.length === 2) {
-      // set the lower and upper boundary
       if (Number(month) === 0) {
         month = `01`;
       } else if (Number(month) > 12) {
@@ -51,103 +58,151 @@ function CardExpiry(props: any) {
 // ==============================|| PROFILE 2 - PAYMENT ||============================== //
 
 const Payment = () => {
-  const [cvv, setCvv] = React.useState<string | undefined>('123');
-  const handleChangeCVV = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCvv(event?.target.value);
-  };
 
-  const [value1, setValue1] = React.useState<string | undefined>('visa');
+  const [amount, setAmount] = useState('');
+
+  const Amounts = ["50.000", "100.000", "200.000", "500.000"];
+
+  const [value1, setValue1] = React.useState<string | undefined>('vnpay');
+
   const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue1(event.target.value);
   };
 
-  const [valuesObj, setValuesObj] = useState({});
+  const handleChangeAmount = (event: any, newValue: any) => {
+    setAmount(newValue);
+    console.log("newValue:", newValue);
+  };
 
   return (
     <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
-        <RadioGroup aria-label="gender" name="gender1" value={value1} onChange={handleChange1}>
-          <Grid container spacing={0}>
-            <Grid item>
-              <FormControlLabel value="visa" control={<Radio />} label="Visa Credit/Debit Card" />
-            </Grid>
-            <Grid item>
-              <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
-            </Grid>
-            <Grid item>
-              <FormControlLabel value="vnpay" control={<Radio />} label="VNPay" />
-            </Grid>
-          </Grid>
-        </RadioGroup>
-      </Grid>
-      <Collapse in={value1 === 'visa'} sx={{ width: '100%' }}>
-        {value1 === 'visa' && (
-          <Grid item xs={12} sx={{ p: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Name on Card" defaultValue="Selena Litten" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <PatternFormat
-                  defaultValue={4012888888881881}
-                  format="#### #### #### ####"
-                  prefix=""
-                  fullWidth
-                  customInput={TextField}
-                  label="Card Number"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <CardExpiry
-                  key={valuesObj}
-                  defaultValue={1022}
-                  customInput={TextField}
-                  allowEmptyFormatting
-                  onValueChange={(values: any) => {
-                    setValuesObj(values);
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField id="standard-select-ccv" label="CCV Code" value={cvv} fullWidth onChange={handleChangeCVV} />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item>
-                    <LockTwoToneIcon sx={{ width: 50, height: 50, color: 'primary.main' }} />
-                  </Grid>
-                  <Grid item sm zeroMinWidth>
-                    <Typography variant="h5">Secure Checkout</Typography>
-                    <Typography variant="caption">Secure by Google.</Typography>
-                  </Grid>
+      {/*RadioGroup */}
+      <Grid item xs={12} md={6}>
+        <FormControl>
+          <RadioGroup
+            aria-label="delivery-options"
+            name="delivery-options"
+          >
+            <Grid container spacing={gridSpacing} alignItems="center">
+              {PaymentOptions.map((item: PaymentOptionsProps, index) => (
+                <Grid item xs={12} key={index}>
+                  <PaymentSelect item={item} />
                 </Grid>
+              ))}
+            </Grid>
+          </RadioGroup>
+        </FormControl>
+      </Grid>
+      {/*Collapse content */}
+      <Grid item xs={12} md={6}>
+        <Collapse in={value1 === 'vnpay'} sx={{ width: '100%' }}>
+          {value1 === 'vnpay' && (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Autocomplete
+                  freeSolo
+                  options={Amounts.map((option) => option.toString())}
+                  value={amount}
+                  onChange={handleChangeAmount}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Số tiền cần nạp"
+                      fullWidth
+                      onChange={(e) => handleChangeAmount(null, e.target.value)}
+                    />
+                  )}
+                />
               </Grid>
               <Grid item xs={12}>
-                <Stack direction="row" justifyContent="flex-start">
+                <SubCard>
+                  <TableContainer>
+                    <Table sx={{ minWidth: 'auto' }} size="small" aria-label="simple table">
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>
+                            <Typography variant="subtitle1">Order Summary</Typography>
+                          </TableCell>
+                          <TableCell />
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Sub Total</TableCell>
+                          <TableCell align="right">
+                            <Typography variant="subtitle1">{amount && amount}vnd</Typography>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Coupon Discount</TableCell>
+                          <TableCell align="right">
+                            <Typography variant="subtitle1">0</Typography>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell sx={{ borderBottom: 'none' }}>
+                            <Typography variant="subtitle1">Total</Typography>
+                          </TableCell>
+                          <TableCell align="right" sx={{ borderBottom: 'none' }}>
+                            <Typography variant="subtitle1">{amount && amount}vnd</Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </SubCard>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack direction="row" justifyContent="flex-end">
                   <AnimateButton>
-                    <Button variant="outlined" size="large" startIcon={<CreditCardTwoToneIcon />}>
-                      Add New card
+                    <Button variant="contained" size="large" startIcon={<CreditCardTwoToneIcon />} sx={{ color: 'white' }}>
+                      Nạp vào ví gotchajob
                     </Button>
                   </AnimateButton>
                 </Stack>
               </Grid>
             </Grid>
-          </Grid>
-        )}
-      </Collapse>
-      <Collapse in={value1 === 'paypal'} sx={{ width: '100%' }}>
-        {value1 === 'paypal' && (
-          <Grid item xs={12} sx={{ p: 3 }}>
-            <Grid container spacing={3}>
+          )}
+        </Collapse>
+
+        <Collapse in={value1 === 'momo'} sx={{ width: '100%' }}>
+          {value1 === 'momo' && (
+            <Grid container spacing={3} sx={{ p: 3 }}>
               <Grid item xs={12}>
                 <TextField fullWidth label="Paypal Mail" defaultValue="demo@company.paypal.com" />
               </Grid>
             </Grid>
-          </Grid>
-        )}
-      </Collapse>
+          )}
+        </Collapse>
+      </Grid>
     </Grid>
   );
 };
 
 export default Payment;
+
+const vnpay = 'https://vnpay.vn/s1/statics.vnpay.vn/2023/6/0oxhzjmxbksr1686814746087.png';
+const momo = 'https://downloadr2.apkmirror.com/wp-content/uploads/2022/06/14/62a2fd170d655.png';
+
+const PaymentOptions: PaymentOptionsProps[] = [
+  {
+    id: 1,
+    value: 'VNPay',
+    title: 'VNPay',
+    caption: 'Bạn sẽ nạp tiền vào ví Gotchajob bằng VNPay để hoàn tất giao dịch mua hàng một cách an toàn.',
+    image: vnpay,
+    size: {
+      width: 36,
+      height: 36
+    }
+  },
+  {
+    id: 2,
+    value: 'MoMo',
+    title: 'MoMo',
+    caption: 'Bạn sẽ nạp tiền vào ví Gotchajob bằng MoMo để hoàn tất giao dịch mua hàng một cách an toàn.',
+    image: momo,
+    size: {
+      width: 36,
+      height: 36
+    }
+  },
+];
