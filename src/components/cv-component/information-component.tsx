@@ -10,6 +10,7 @@ const FlexBox = styled(Box)({
   display: 'flex',
   alignItems: 'center'
 });
+
 export const InformationComponent = ({ component, information }: { component: CVComponent; information: PersonalComponent[] }) => {
   return (
     <Stack py={2} direction={'column'} spacing={1.5}>

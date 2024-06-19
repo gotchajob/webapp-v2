@@ -1,17 +1,25 @@
 import { Editor } from '@tinymce/tinymce-react';
 
 export const EnchantInput = ({ initValue, onChange }: { initValue: string; onChange?: (value: string) => void }) => {
-  const handleEditorChange = (e: any) => {
-    console.log('Content was updated:', e); // In ra nội dung hiện tại của editor
-    // if (onChange) {
-    //   onChange(content); // Gọi hàm onChange nếu được truyền vào từ props
-    // }
-  };
-  return (
+  
+  // const handleEditorChange = (e: any) => {
+  //   console.log('Content was updated:', e); // In ra nội dung hiện tại của editor
+  //   // if (onChange) {
+  //   //   onChange(content); // Gọi hàm onChange nếu được truyền vào từ props
+  //   // }
+  // };
 
+  const handleEditorChange = (content: string) => {
+    if (onChange) {
+      onChange(content);
+    }
+  };
+
+  return (
     <Editor
       inline={true}
-      onEditorChange={(e: any) => handleEditorChange(e)}
+      // onEditorChange={(e: any) => handleEditorChange(e)}
+      onEditorChange={handleEditorChange}
       apiKey="e2f3pntb5ogxx9hu1lba5p8ef4c29vnogx4n8lid5dw71i4v"
       initialValue={initValue}
       init={{
