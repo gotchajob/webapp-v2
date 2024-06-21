@@ -276,13 +276,3 @@ export default function Page() {
     </>
   );
 }
-
-// useEffect(() => {
-//   console.log("categories:", categories);
-//   console.log("Skill:", skill);
-//   console.log("skillOptions", skillOptions);
-// }, [categories, skillOptions, skill]);
-
-// useEffect(() => {
-//   console.log("Selected Skills:", selectedSkills);
-// }, [selectedSkills]);
