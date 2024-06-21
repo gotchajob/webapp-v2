@@ -36,6 +36,8 @@ import WalletCard from './_components/WalletCard';
 import { ThemeMode } from 'types/config';
 import { useSearchParamsNavigation } from 'hooks/use-get-params';
 import { StyledLink } from 'components/common/link/styled-link';
+import { apiClientFetch } from 'package/api/api-fetch';
+import { enqueueSnackbar } from 'notistack';
 
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
@@ -89,6 +91,20 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
   //   push([{ name: "" }, false]);
   // }
 
+  //Sign Out
+  const handleLogout = async () => {
+    try {
+      const res = await apiClientFetch('logout', {});
+      if (res.status === 'error') {
+        throw new Error('Không thể đăng xuất');
+      }
+      enqueueSnackbar('Đăng xuất thành công', { variant: 'success' });
+      window.location.href = "/login"
+    } catch (err) {
+      enqueueSnackbar('Đăng xuất thất bại', { variant: 'error' });
+    }
+  };
+
   useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current?.focus();
@@ -126,7 +142,6 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                 src={customer.avatar}
               />) : (<UserIcon width={36} />)}
             </IconButton>
-            <LogoutButton />
           </FlexBox>
         ) : (
           <>
@@ -269,7 +284,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                           borderRadius: `${borderRadius}px`,
                         }}
                         selected={selectedIndex === 0}
-                        onClick={() => { }}>
+                        onClick={handleLogout}>
                         <ListItemIcon>
                           <LogoutIcon />
                         </ListItemIcon>

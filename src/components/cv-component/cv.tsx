@@ -1,23 +1,22 @@
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { CVTemplate } from 'components/cv-component/interface';
-import { useEffect, useMemo, useState } from 'react';
-import MainCard from 'ui-component/cards/MainCard';
-import Chip from 'ui-component/extended/Chip';
+import CreateCVHeader from 'app/(user)/create-cv/_component/CreateCVHeader';
+import TabsTable from 'app/(user)/create-cv/_component/TabsTable';
+import { CVTemplate, Column, PersonalComponent } from 'components/cv-component/interface';
+import { useState } from 'react';
 import { CVUploadImage } from './avatar';
-import { InformationComponent } from './information-component';
 import { HeaderComponent } from './header-component';
-import { StyledLink } from 'components/common/link/styled-link';
+import { InformationComponent } from './information-component';
 
 const numberColumnOptions = [1, 2, 3, 4, 5];
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 export const CreateCV = ({ data }: { data: CVTemplate }) => {
-  const [template, setTemplate] = useState(data);
+
+  const [historyTemplate, setHistoryTemplate] = useState<CVTemplate[]>([]);
+
+  const [currentTemplate, setCurrentTemplate] = useState(data);
 
   const [numberColumn, setNumberColumn] = useState(1);
 
@@ -25,55 +24,66 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
     setNumberColumn(value);
   };
 
+  // const handelChangeComponent = (newCVComponent: CVComponent, componentIndex: number, columnIndex: number) => {
+  //   console.log("handelChangeComponentList value:", newCVComponent);
+  //   const newTemplate = { ...currentTemplate };
+  //   setHistoryTemplate([...historyTemplate, currentTemplate]);
+  //   newTemplate.layout[columnIndex].componentList[componentIndex] = newCVComponent;
+  //   setCurrentTemplate(newTemplate);
+  // }
+
+  const handelChangeHeaderComponent = (newCVLayout: Column[]) => {
+    if (newCVLayout) {
+      const newTemplate = { ...currentTemplate, layout: [...newCVLayout] };
+      setHistoryTemplate([...historyTemplate, currentTemplate]);
+      setCurrentTemplate(newTemplate);
+    }
+  }
+
+  const handleChangeInformationComponent = (newCVPersonal: PersonalComponent[]) => {
+    console.log(" handleChangeInformationComponent:", newCVPersonal);
+    if (newCVPersonal) {
+      const newTemplate = { ...currentTemplate, }
+    }
+  }
+
+
   return (
-    <Grid container padding={3}>
-      <Grid item xs={8}>
-        <Grid container component={Paper} maxWidth={900} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
-          {template.layout.map((e) => {
-            return (
-              <Grid key={e.id} xs={e.size} minHeight={100} bgcolor={e.color} borderRadius={'inherit'} p={2}>
-                {e.componentList.map((e, index) => {
-                  if (e.dataType === 'image') {
-                    return <CVUploadImage key={index} avatar={e.description} />;
-                  }
-                  if (e.dataType === 'information') {
-                    return <InformationComponent key={index} component={e} information={template.personal} />;
-                  }
-                  if (e.dataType === 'text') {
-                    return <HeaderComponent key={index} component={e} />;
-                  }
-                })}
-              </Grid>
-            );
-          })}
+    <>
+      <CreateCVHeader />
+
+      <Grid container padding={3}>
+        <Grid item xs={4} spacing={3} >
+          <TabsTable />
+        </Grid>
+
+        <Grid item xs={8}>
+          <Grid container component={Paper} maxWidth={900} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
+            {currentTemplate && currentTemplate.layout ? (
+              currentTemplate.layout.map((column, columnIndex) => {
+                return (
+                  <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.color} borderRadius={'inherit'} p={2}>
+                    {column.componentList.map((row, rowIndex) => {
+                      if (row.dataType === 'image') {
+                        return <CVUploadImage key={rowIndex} avatar={row.description} />;
+                      }
+                      if (row.dataType === 'information') {
+                        return <InformationComponent key={rowIndex} columnIndex={columnIndex} componentIndex={rowIndex} component={row} information={currentTemplate.personal} onChangePersonal={handleChangeInformationComponent} />;
+                      }
+                      if (row.dataType === 'text') {
+                        return <HeaderComponent key={rowIndex} columnIndex={columnIndex} componentIndex={rowIndex} component={row} onChangeLayout={handelChangeHeaderComponent} />;
+                      }
+                    })}
+                  </Grid>
+                );
+              })
+            ) : (
+              <>loading</>
+            )}
+          </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <Stack spacing={3}>
-          <MainCard title={'Column'} boxShadow hover>
-            <Stack direction={'row'} spacing={2}>
-              {numberColumnOptions.map((e) => (
-                <Button
-                  key={e}
-                  onClick={() => {
-                    handleSelectNumberColumn(e);
-                  }}
-                  variant={numberColumn === e ? 'contained' : 'outlined'}
-                  sx={{
-                    cursor: 'pointer'
-                  }}
-                  color="primary"
-                >
-                  {e}
-                </Button>
-              ))}
-            </Stack>
-          </MainCard>
-          <StyledLink href="share-cv">
-            <Button variant="outlined">Tìm kiếm Expert</Button>
-          </StyledLink>
-        </Stack>
-      </Grid>
-    </Grid>
+
+    </>
   );
 };

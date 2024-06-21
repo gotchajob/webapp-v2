@@ -115,7 +115,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         }}
       >
         <Grid container spacing={gridSpacing} >
-          <Grid item xs={12} lg={4} >
+          <Grid item xs={12} lg={3} >
             <CardContent>
               <Tabs
                 value={value}
@@ -178,7 +178,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
               </Tabs>
             </CardContent>
           </Grid>
-          <Grid item xs={12} lg={8} >
+          <Grid item xs={12} lg={9} >
             <CardContent>
               <TabPanel value={value} index={0}>
                 <UserProfile user={user[0]} />
