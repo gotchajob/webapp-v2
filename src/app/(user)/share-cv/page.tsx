@@ -8,8 +8,8 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { TreeItem, TreeView } from '@mui/x-tree-view';
-
+import { TreeView } from '@mui/x-tree-view/TreeView';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
 // assets
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -57,6 +57,25 @@ export default function Page() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const handleToggle = (event: React.SyntheticEvent, nodeIds: string[]) => {
+    setExpanded(nodeIds);
+  };
+
+  const handleSelect = (event: React.SyntheticEvent, nodeIds: string[]) => {
+    setSelected(nodeIds);
+  };
+
+  const handleExpandClick = () => {
+    setExpanded((oldExpanded) => (oldExpanded.length === 0 ? ['1', '5', '6', '7'] : []));
+  };
+
+  const handleSelectClick = () => {
+    setSelected((oldSelected) => (oldSelected.length === 0 ? ['1', '2', '3', '4', '5', '6', '7', '8', '9'] : []));
   };
 
   return (
@@ -112,20 +131,56 @@ export default function Page() {
               }}
             />
           </Grid>
-          <Grid item xs={8}>
-            <Autocomplete
-              multiple
-              options={skillOptions}
-              getOptionLabel={(option) => option.name}
-              filterSelectedOptions
-              renderInput={(params) => <TextField {...params} label="Kĩ năng" />}
-              defaultValue={[]}
-              onChange={(e, v) => {
-                const data: number[] = [];
-                v.forEach((skillOption) => data.push(skillOption.id));
-                setSkillOptionIdList(data);
-              }}
-            />
+          <Grid item xs={12}>
+            <TreeView
+              aria-label="controlled"
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              expanded={expanded}
+              selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
+              multiSelect
+            >
+              <TreeItem nodeId="1" label="Applications">
+                <Grid container spacing={2}>
+                  <Grid item xs={3}>
+                    <Button variant="outlined">hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                </Grid>
+              </TreeItem>
+              <TreeItem nodeId="5" label="Documents">
+                <Grid container spacing={2}>
+                  <Grid item xs={3}>
+                    <Button variant="outlined">hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button>hello</Button>
+                  </Grid>
+                </Grid>
+              </TreeItem>
+            </TreeView>
           </Grid>
           <Grid item xs={12} justifyContent={'center'} display={'flex'}>
             <LoadingButton loading={isLoading} variant="contained" onClick={getClientExpertMatching}>

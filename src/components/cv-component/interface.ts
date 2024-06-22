@@ -55,7 +55,7 @@ export const CVTemplate: CVTemplate = {
       id: '4',
       field: 'email',
       icon: 'ic:baseline-email',
-      title: 'kietly1901@gmail.com'
+      title: 'kietly1901@gmail.com 123' 
     }
   ],
   layout: [
