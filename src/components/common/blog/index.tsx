@@ -5,13 +5,10 @@ import { ReactElement } from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';
-import CardMedia from '@mui/material/CardMedia';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -20,45 +17,34 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
 import { yupResolver } from '@hookform/resolvers/yup';
-import uniqueId from 'lodash/uniqueId';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import * as yup from 'yup';
 
 // project imports
-import useConfig from 'hooks/useConfig';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import Avatar from 'ui-component/extended/Avatar';
-import ImageList from 'ui-component/extended/ImageList';
 import Comment from '../../Comment';
 
 // types
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { CommentData, CommentType, PostDataType, comments_post } from './interface';
+import { CommentType } from './interface';
 
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
-import MainCard from 'ui-component/cards/MainCard';
+import { Rating } from '@mui/material';
+import { useGetCustomer } from 'hooks/use-get-current-user';
+import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
+import { CustomerToken } from 'hooks/use-login';
+import { useRefresh } from 'hooks/use-refresh';
+import { enqueueSnackbar } from 'notistack';
+import { PatchBlogReaction } from 'package/api/blog-reaction';
 import { BlogDetailData, getBlogDetail } from 'package/api/blog/id';
 import { GetBlogComment, PostBlogComment } from 'package/api/blog/id/comment';
-import { CustomerToken } from 'hooks/use-login';
-import Box from '@mui/material/Box';
 import { formatDate } from 'package/util';
-import { useGetCustomer } from 'hooks/use-get-current-user';
-import { accessToken } from 'mapbox-gl';
-import { GetUserCurrent, UserProfile } from 'package/api/user/current';
-import { enqueueSnackbar } from 'notistack';
-import { ca } from 'date-fns/locale';
-import { Rating } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { PatchBlogReaction } from 'package/api/blog-reaction';
-import { useRefresh } from 'hooks/use-refresh';
-
 
 const avatarImage = '/assets/images/users';
 
@@ -152,6 +138,22 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
   //check length comment > 0s
   const [openComment, setOpenComment] = React.useState(!(blog && 5 > 0));
 
+  //route hook
+  const { push } = useSearchParamsNavigation();
+
+  //get params
+  const { isRefresh } = useGetSearchParams(["isRefresh"]);
+
+  //Handle push isRefresh
+  const handlePushRefresh = () => {
+    const currentParam = isRefresh;
+    let randomNumber;
+    do {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+    } while (randomNumber === currentParam);
+    push([{ name: 'isRefresh', value: randomNumber + "" }], true);
+  }
+
   //Open chat & show comment
   const handleChangeComment = async () => {
     refresh();
@@ -183,13 +185,13 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
   }, [refreshTime])
 
   //refresh data after like or rating
-  const getClientBlog = async () => {
-    const data = await getBlogDetail({ id: blog.id }, customerToken);
-    setLiked(data.data.likes.value);
-    setRated(data.data.rated);
-    setAvgRate(data.data.averageRating);
-    setQuantityRate(data.data.ratingQuantity);
-  };
+  // const getClientBlog = async () => {
+  //   const data = await getBlogDetail({ id: blog.id }, customerToken);
+  //   setLiked(data.data.likes.value);
+  //   setRated(data.data.rated);
+  //   setAvgRate(data.data.averageRating);
+  //   setQuantityRate(data.data.ratingQuantity);
+  // };
 
   //handle like change
   const handleLike = async () => {
@@ -205,7 +207,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
       if (like.status == "error") {
         throw new Error(like.responseText);
       }
-      getClientBlog();
+      handlePushRefresh();
     } catch (error: any) {
       enqueueSnackbar(error.message, {
         variant: 'error'
@@ -227,11 +229,10 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
       if (rating.status == "error") {
         throw new Error(rating.responseText);
       }
-      getClientBlog();
+      handlePushRefresh();
       enqueueSnackbar("Đánh giá bài viết thành công", {
         variant: 'success',
       });
-      console.log("RATE status", rating.status);
     } catch (error: any) {
       enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
         variant: 'error',

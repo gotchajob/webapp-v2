@@ -14,7 +14,7 @@ import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useGetExpertMatching } from 'hooks/use-get-expert-matching';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetCountry } from 'hooks/use-address';
 import { useGetCategories } from 'hooks/use-get-category';
 import ExpertDetailCard from './_component/expert-detail-card';
@@ -23,6 +23,9 @@ import Container from '@mui/material/Container';
 import { ExpertMatching, GetExpertMatching } from 'package/api/expert/match';
 import { useGetSkillOptions } from 'hooks/use-get-skill-option';
 import { LoadingButton } from '@mui/lab';
+import { useGetSkill } from 'hooks/use-get-skill';
+import { Skill } from 'package/api/skill';
+import { SkillOption } from 'package/api/skill-option';
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
@@ -33,17 +36,93 @@ const yearOption = [
 ];
 
 export default function Page() {
-  const [categoryId, setCategoryId] = useState(0);
-  const [minYearExperience, setMinYearExperience] = useState(0);
-  const [nation, setNation] = useState<string[]>([]);
-  const [skillOptionIdList, setSkillOptionIdList] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { countries } = useGetCountry();
-  const { categories } = useGetCategories({});
-  const { skillOptions } = useGetSkillOptions({ categoryId });
+  const [categoryId, setCategoryId] = useState(0);
+
+  const [skillId, setSkillId] = useState(0);
+
+  const [optionById, setOptionById] = useState<SkillOption[] | null>([]);
+
+  const [skillOptionIdList, setSkillOptionIdList] = useState<number[]>([]);
+
+  const [minYearExperience, setMinYearExperience] = useState(0);
 
   const [expertMatchingList, setExpertMatchingList] = useState<ExpertMatching[]>([]);
+
+  //skill selection state
+  const [selectOptions, setSelectOptions] = useState<{ id: number, name: string }[]>([]);
+
+  const { skill } = useGetSkill();
+
+  const [skillByCategory, setSkillByCategory] = useState<Skill[] | null>(skill);
+
+  const { categories } = useGetCategories({});
+
+  const [nation, setNation] = useState<string[]>([]);
+
+  const { countries } = useGetCountry();
+
+  const { skillOptions } = useGetSkillOptions({ categoryId });
+
+  //skill options selection handle
+  const handleSkillOptionSelection = (skill: { id: number, name: string }) => {
+    setSelectOptions(prevSkills => {
+      const skillIndex = prevSkills.findIndex(s => s.id === skill.id);
+      if (skillIndex !== -1) {
+        const updatedSkills = [...prevSkills];
+        updatedSkills.splice(skillIndex, 1);
+        return updatedSkills;
+      } else {
+        return [...prevSkills, skill];
+      }
+    });
+  };
+
+  //Category selection handle
+  const handleCategorySelection = (e: any, v: any) => {
+    const selectedCategoryId = v?.id || 0;
+    setCategoryId(selectedCategoryId);
+    if (!skill) {
+      return
+    }
+    let filteredSkill = [...skill];
+    filteredSkill = skill.filter(item => item.categoryId === selectedCategoryId);
+    handleSkillByCategory(filteredSkill);
+  };
+
+  //Category selection handle
+  const handleSkillByCategory = (filteredSkill: Skill[]) => {
+    setSkillByCategory(filteredSkill);
+  };
+
+  //Skill selection handle
+  const handleSkillSelection = (e: any, v: any) => {
+    const selectedSkillId = v?.id || 0;
+    setSkillId(selectedSkillId);
+    if (!skillOptions) {
+      return
+    }
+    let filteredOption = [...skillOptions];
+    filteredOption = skillOptions.filter(item => item.skillId === selectedSkillId);
+    handleOptionBySkill(filteredOption);
+  }
+
+  //Skill selection handle
+  const handleOptionBySkill = (filterdOption: SkillOption[]) => {
+    setOptionById(filterdOption);
+  }
+
+
+  useEffect(() => {
+    console.log("handleOptionBySkill :", optionById);
+    console.log("skill Id :", skillId);
+  }, [skillId, optionById]);
+
+  useEffect(() => {
+    console.log("Selected Options:", selectOptions);
+  }, [selectOptions]);
+
   const getClientExpertMatching = async () => {
     try {
       setIsLoading(true);
@@ -91,9 +170,9 @@ export default function Page() {
         }}
       />
 
-      {/* Filter section 2 */}
+      {/* Filter section */}
       <Container maxWidth="md">
-        <Grid container spacing={3} justifyContent={'center'} mt={5}>
+        <Grid container spacing={3} mt={3}>
           <Grid item xs={6}>
             <Autocomplete
               multiple
@@ -107,7 +186,7 @@ export default function Page() {
               }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <Autocomplete
               options={yearOption}
               getOptionLabel={(option) => option.name}
@@ -119,69 +198,79 @@ export default function Page() {
               }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Autocomplete
               options={categories}
               getOptionLabel={(option) => option.name}
               filterSelectedOptions
               renderInput={(params) => <TextField {...params} label="Ngành nghề" />}
-              defaultValue={categories[0]}
               onChange={(e, v) => {
-                setCategoryId(v?.id || 0);
+                handleCategorySelection(e, v);
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={8}>
+            <Autocomplete
+              multiple
+              options={skillOptions}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
+              renderInput={(params) => <TextField {...params} label="Kĩ năng" />}
+              defaultValue={[]}
+              onChange={(e, v) => {
+                const data: number[] = [];
+                v.forEach((skillOption) => data.push(skillOption.id));
+                setSkillOptionIdList(data);
+              }}
+            />
+          </Grid> */}
+          {categoryId !== 0 && (<Grid item xs={3}>
+            <Autocomplete
+              options={skillByCategory ? skillByCategory : []}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
+              renderInput={(params) => <TextField {...params} label="Lĩnh vực" />}
+              onChange={(e, v) => {
+                handleSkillSelection(e, v)
+              }}
+            />
+          </Grid>)}
+          {skillId !== 0 && (<Grid item xs={9}>
             <TreeView
-              aria-label="controlled"
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
-              multiSelect
+              sx={{
+                '& .MuiTreeItem-root': {
+                  margin: '4px 0',
+                },
+              }}
             >
-              <TreeItem nodeId="1" label="Applications">
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
-                    <Button variant="outlined">hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                </Grid>
-              </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <Grid container spacing={2}>
-                  <Grid item xs={3}>
-                    <Button variant="outlined">hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button>hello</Button>
-                  </Grid>
+              <TreeItem nodeId="skills" label="Kỹ năng">
+                <Grid container spacing={1} sx={{ my: 1, mx: 2 }}>
+                  {optionById && optionById.map((skill) => (
+                    <Grid item key={skill.id}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: selectOptions.some(s => s.id === skill.id) ? '#1976d2' : '#ffffff',
+                          color: selectOptions.some(s => s.id === skill.id) ? '#ffffff' : '#000000',
+                          '&:hover': {
+                            backgroundColor: selectOptions.some(s => s.id === skill.id) ? '#1976d2' : '#e0e0e0',
+                          },
+                          width: '100%',
+                          height: '100%'
+                        }}
+                        onClick={() => handleSkillOptionSelection(skill)}
+                      >
+                        {skill.name}
+                      </Button>
+                    </Grid>
+                  ))}
                 </Grid>
               </TreeItem>
             </TreeView>
-          </Grid>
+          </Grid>)}
+
           <Grid item xs={12} justifyContent={'center'} display={'flex'}>
             <LoadingButton loading={isLoading} variant="contained" onClick={getClientExpertMatching}>
               Áp dụng
