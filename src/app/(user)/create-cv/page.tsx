@@ -168,7 +168,7 @@ export default function Page() {
                 <Grid component={Box} container spacing={5} sx={{ my: 2 }}>
                     {data.map((item, index) => (
                         <Grid item xs={3} key={index}>
-                            <StyledLink href={`/create-cv/${index}`}>
+                            <StyledLink href={`/create-cv/cv-template`}>
                                 <SubCard sx={{ borderColor: PRIMARYCOLOR }}>
                                     <Stack
                                         sx={{

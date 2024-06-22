@@ -8,8 +8,6 @@ import { CVUploadImage } from './avatar';
 import { HeaderComponent } from './header-component';
 import { InformationComponent } from './information-component';
 
-const numberColumnOptions = [1, 2, 3, 4, 5];
-
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 export const CreateCV = ({ data }: { data: CVTemplate }) => {
@@ -47,7 +45,6 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
     }
   }
 
-
   return (
     <>
       <CreateCVHeader />
@@ -62,7 +59,7 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
             {currentTemplate && currentTemplate.layout ? (
               currentTemplate.layout.map((column, columnIndex) => {
                 return (
-                  <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.color} borderRadius={'inherit'} p={2}>
+                  <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.color} p={2}>
                     {column.componentList.map((row, rowIndex) => {
                       if (row.dataType === 'image') {
                         return <CVUploadImage key={rowIndex} avatar={row.description} />;
