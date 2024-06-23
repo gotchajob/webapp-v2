@@ -12,6 +12,7 @@
     outline: 0px;
     border: 0px;
     margin: 0px;
+    opacity: 0;
     cursor: pointer;
     width: 100%;
     user-select: none;

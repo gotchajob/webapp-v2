@@ -19,7 +19,8 @@ export const EnchantInput = ({ initValue, onChange, onBlur }: { initValue: strin
       inline={true}
       onEditorChange={handleEditorChange}
       onBlur={handleEditorBlur}
-      apiKey="e2f3pntb5ogxx9hu1lba5p8ef4c29vnogx4n8lid5dw71i4v"
+      // apiKey="e2f3pntb5ogxx9hu1lba5p8ef4c29vnogx4n8lid5dw71i4v"
+      apiKey="zfphfurbpyxwxhxa19ktnrh20ls5h2l3wk1tcx5upmv14pht"
       initialValue={initValue}
       init={{
         width: 500,
@@ -45,11 +46,9 @@ export const EnchantInput = ({ initValue, onChange, onBlur }: { initValue: strin
           'wordcount'
         ],
         toolbar:
-          'undo redo  | ' +
           'fontsize |' +
           'bold italic forecolor |' +
-          'bullist numlist |',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          'bullist numlist lineheight',
       }}
     />
   );
