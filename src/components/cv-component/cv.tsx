@@ -16,7 +16,7 @@ import Tooltip from '@mui/material/Tooltip';
 import WestIcon from '@mui/icons-material/West';
 const defaultShadow = '0 2px 14px 0 rgb(33 150 243 / 10%)';
 
-export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
+export const CreateCV = ({ cv, onChangeCV, cvRef }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void; cvRef: any }) => {
   const handelChangeHeaderComponent = (newCVComponent: CVComponent, columnIndex: number, componentIndex: number) => {
     const newCV: CVTemplate = { ...cv };
     newCV.layout[columnIndex].componentList[componentIndex] = newCVComponent;
@@ -124,7 +124,7 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
     );
   };
   return (
-    <Grid container component={Paper} maxWidth={800} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
+    <Grid ref={cvRef} container maxWidth={800} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
       {cv.layout.map((column, columnIndex) => {
         return (
           <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.backgroudColor} borderRadius={'inherit'}>

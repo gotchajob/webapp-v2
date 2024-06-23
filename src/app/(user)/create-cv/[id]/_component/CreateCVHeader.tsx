@@ -7,41 +7,53 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import UndoIcon from '@mui/icons-material/Undo';
-import { Autocomplete, Box, Divider, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import { FlexBetween, FlexBox } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
 import { CVTemplate } from 'components/cv-component/interface';
+import IconButton from '@mui/material/IconButton';
+import { PRIMARYCOLOR } from 'components/common/config';
 
-const fontOptions = [
-  { label: 'Arial' },
-  { label: 'Verdana' },
-  { label: 'Times New Roman' },
-  { label: 'Courier New' },
-  { label: 'Roboto' },
-  { label: 'Open Sans' },
-  { label: 'Montserrat' }
-];
+const CreateCVHeader = ({
+  cv,
+  onChangeCV,
+  printOnClick,
+  review
+}: {
+  cv: CVTemplate;
+  onChangeCV: (cv: CVTemplate) => void;
+  printOnClick: () => void;
+  review: () => void;
+}) => {
+  const handleSaveAndDowload = () => {
+    if (printOnClick) {
+      printOnClick();
+    }
+  };
 
-const spacingData = [
-  { spacing: 1.2 },
-  { spacing: 1.3 },
-  { spacing: 1.4 },
-  { spacing: 1.5 },
-  { spacing: 1.6 },
-  { spacing: 1.7 },
-  { spacing: 1.8 }
-];
-
-const CreateCVHeader = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
+  const handleReview = () => {
+    review();
+  };
   return (
     <FlexBetween>
-      <TextField placeholder="CV chưa đặt tên" />
+      <TextField placeholder="CV chưa đặt tên" value={cv.name} />
+      <Stack flexDirection={'row'}>
+        <IconButton>
+          <UndoIcon sx={{ color: PRIMARYCOLOR }} />
+        </IconButton>
+        <IconButton>
+          <RedoIcon sx={{ color: PRIMARYCOLOR }} />
+        </IconButton>
+      </Stack>
+      <Divider orientation="vertical" variant="middle" flexItem />
       <Stack direction="row" spacing={2}>
         <Button
           variant="contained"
+          onClick={handleReview}
           sx={{
             paddingX: '10px',
             backgroundColor: '#59ABD9',
@@ -56,6 +68,7 @@ const CreateCVHeader = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: C
         </Button>
         <Button
           variant="contained"
+          onClick={handleSaveAndDowload}
           sx={{
             paddingX: '10px',
             backgroundColor: '#59ABD9',

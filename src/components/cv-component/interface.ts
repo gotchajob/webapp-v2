@@ -198,3 +198,72 @@ export const CVTemplateData: CVTemplate = {
     }
   ]
 };
+
+export const introduction = `<h2 style={{color: '#2196f3'}}>Hướng dẫn viết CV cho IT:</h2>
+  <p><em><strong style={{color: '#2196f3'}}>Lưu ý chung</strong></em>:</p>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Đặt tên file: <em>CV_HoTen_ViTriUngTuyen</em></li>
+    <li>Kiểm tra lỗi chính tả và ngữ pháp</li>
+    <li>Sử dụng font chữ và định dạng nhất quán</li>
+    <li>Giới hạn CV trong 1-2 trang</li>
+    <li>Tránh sử dụng từ ngữ chung chung, tập trung vào thành tích cụ thể</li>
+    <li>Cập nhật CV theo yêu cầu của từng vị trí ứng tuyển</li>
+  </ul>
+  <ol>
+    <li><strong style={{color: '#2196f3'}}>Thông tin cá nhân</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Họ và tên</li>
+    <li>Số điện thoại</li>
+    <li>Email</li>
+    <li>Địa chỉ</li>
+    <li>GitHub/Portfolio (nếu có)</li>
+  </ul>
+  <ol start={2}>
+    <li><strong style={{color: '#2196f3'}}>Mục tiêu nghề nghiệp</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Nêu rõ vị trí cụ thể (ví dụ: Lập trình viên Full-stack, Kỹ sư DevOps, Chuyên viên An ninh mạng)</li>
+    <li>Mô tả ngắn gọn mong muốn đóng góp vào dự án/công ty</li>
+  </ul>
+  <ol start={3}>
+    <li><strong style={{color: '#2196f3'}}>Kỹ năng</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Ngôn ngữ lập trình (ví dụ: Java, Python, JavaScript)</li>
+    <li>Công nghệ/Framework (ví dụ: React, Node.js, Docker)</li>
+    <li>Cơ sở dữ liệu (ví dụ: MySQL, MongoDB)</li>
+    <li>Công cụ phát triển (ví dụ: Git, Jenkins, Jira)</li>
+  </ul>
+  <ol start={4}>
+    <li><strong style={{color: '#2196f3'}}>Học vấn</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Tên trường, chuyên ngành, thời gian học</li>
+    <li>GPA (nếu ấn tượng)</li>
+    <li>Các khóa học online/chứng chỉ IT liên quan</li>
+  </ul>
+  <ol start={5}>
+    <li><strong style={{color: '#2196f3'}}>Kinh nghiệm làm việc</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Sắp xếp từ gần nhất đến xa nhất</li>
+    <li>Tên công ty, vị trí, thời gian làm việc</li>
+    <li>Mô tả dự án: công nghệ sử dụng, vai trò, trách nhiệm</li>
+    <li>Thành tích: tối ưu hóa hiệu suất, giảm thời gian phát triển, số lượng người dùng</li>
+  </ul>
+  <ol start={6}>
+    <li><strong style={{color: '#2196f3'}}>Dự án cá nhân</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Tên dự án, mô tả ngắn gọn</li>
+    <li>Công nghệ sử dụng</li>
+    <li>Link GitHub/demo (nếu có)</li>
+  </ul>
+  <ol start={7}>
+    <li><strong style={{color: '#2196f3'}}>Chứng chỉ IT (nếu có)</strong>:</li>
+  </ol>
+  <ul style={{listStyleType: 'disc', paddingLeft: '30px'}}>
+    <li>Tên chứng chỉ (ví dụ: AWS Certified, CCNA)</li>
+    <li>Đơn vị cấp, năm nhận</li>
+  </ul>`;

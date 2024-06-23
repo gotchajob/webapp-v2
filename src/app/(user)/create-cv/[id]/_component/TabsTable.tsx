@@ -20,21 +20,19 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
 import {
   CVComponent,
   CVTemplate,
   ComponentTemplateList,
   PersonalComponent,
-  PersonalInformationTemplate
+  PersonalInformationTemplate,
+  introduction
 } from 'components/cv-component/interface';
 import Iconify from 'components/iconify/iconify';
 import { PRIMARYCOLOR } from 'components/common/config';
+import { StyledLink } from 'components/common/link/styled-link';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -112,8 +110,8 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
       <Grid container spacing={2}>
         <Grid item xs={9}>
           <TabPanel value={value} index={0}>
-            <SubCard title={'Hướng dẫn viết CV'} sx={{ width: '100%', boxShadow: defaultShadow }}>
-              dw
+            <SubCard title={'Hướng dẫn viết CV'} sx={{ width: '100%', boxShadow: defaultShadow }} contentSX={{ py: 0, px: 1 }}>
+              <div dangerouslySetInnerHTML={{ __html: introduction }}></div>
             </SubCard>
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -189,6 +187,16 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </FlexCenter>
               </Button>
             ))}
+            <StyledLink href="/share-cv">
+              <Button fullWidth sx={{ textTransform: 'none' }} variant={'outlined'}>
+                <FlexCenter>
+                  <Iconify width={24} icon="tabler:user-search" color={PRIMARYCOLOR} />
+                  <Text fontSize={10} mt={1}>
+                    Tìm kiếm
+                  </Text>
+                </FlexCenter>
+              </Button>
+            </StyledLink>
           </Stack>
         </Grid>
       </Grid>
