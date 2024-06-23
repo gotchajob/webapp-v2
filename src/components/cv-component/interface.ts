@@ -109,6 +109,7 @@ export const PersonalInformationTemplate: PersonalComponent[] = [
     fieldName: 'Git'
   }
 ];
+
 export const CVTemplateData: CVTemplate = {
   id: '1',
   name: "Kiet's CV",

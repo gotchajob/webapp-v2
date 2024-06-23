@@ -35,7 +35,7 @@ const CVTemplatePage = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3 }}>
+    <Container maxWidth="xl" sx={{ py: 3 }}>
       <MainCard boxShadow hover>
         <CardContent>
           <Typography variant="h2">Mẫu CV</Typography>
