@@ -8,6 +8,7 @@ import CreateCVHeader from './_component/CreateCVHeader';
 import TabsTable from './_component/TabsTable';
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
+import MainCard from 'ui-component/cards/MainCard';
 
 export default function Page() {
   const [historyTemplate, setHistoryTemplate] = useState<CVTemplate[]>([]);
@@ -22,20 +23,21 @@ export default function Page() {
     console.log(currentTemplate);
   }, [currentTemplate]);
   return (
-    <>
-      <Grid container spacing={3} p={3}>
+    <MainCard boxShadow hover sx={{m:3}}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
-          <CreateCVHeader />
+          <CreateCVHeader cv={currentTemplate} onChangeCV={onChangeCV} />
         </Grid>
         <Grid item xs={12}>
+          <Divider/>
         </Grid>
         <Grid item xs={8}>
           <CreateCV onChangeCV={onChangeCV} cv={currentTemplate} />
         </Grid>
         <Grid item xs={4}>
-          <TabsTable />
+          <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
         </Grid>
       </Grid>
-    </>
+    </MainCard>
   );
 }

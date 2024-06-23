@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { FlexBetween, FlexBox } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
+import { CVTemplate } from 'components/cv-component/interface';
 
 const fontOptions = [
   { label: 'Arial' },
@@ -34,7 +35,7 @@ const spacingData = [
   { spacing: 1.8 }
 ];
 
-const CreateCVHeader = () => {
+const CreateCVHeader = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
   return (
     <FlexBetween>
       <TextField placeholder="CV chưa đặt tên" />
@@ -50,7 +51,7 @@ const CreateCVHeader = () => {
             color: 'white'
           }}
         >
-          <RemoveRedEyeIcon sx={{ fontSize: 35, paddingX: '5px' }} />
+          <RemoveRedEyeIcon sx={{ fontSize: 35, pr: '5px' }} />
           Xem trước
         </Button>
         <Button
@@ -64,7 +65,7 @@ const CreateCVHeader = () => {
             color: 'white'
           }}
         >
-          <SaveAltIcon sx={{ fontSize: 35, paddingX: '5px' }} />
+          <SaveAltIcon sx={{ fontSize: 35, pr: '5px' }} />
           Lưu và tải xuống
         </Button>
         <Button
@@ -75,7 +76,7 @@ const CreateCVHeader = () => {
             color: 'white'
           }}
         >
-          <SaveIcon sx={{ fontSize: 35, paddingX: '5px' }} />
+          <SaveIcon sx={{ fontSize: 35, pr: '5px' }} />
           Lưu lại
         </Button>
       </Stack>

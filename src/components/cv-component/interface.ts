@@ -14,7 +14,6 @@ export interface PersonalComponent {
   fieldName: string;
 }
 export interface Column {
-  column: number;
   backgroudColor: string;
   size: number;
   componentList: CVComponent[];
@@ -144,18 +143,11 @@ export const CVTemplateData: CVTemplate = {
   ],
   layout: [
     {
-      backgroudColor: '#59ABD9',
-      column: 0,
-      size: 0.5,
-      componentList: []
-    },
-    {
       backgroudColor: '#faf5f5',
-      column: 1,
-      size: 4,
+      size: 4.5,
       componentList: [
         {
-          componentName: 'Avatar',
+          componentName: 'avatar',
           dataType: 'image',
           header: 'Image',
           description: 'https://th.bing.com/th/id/OIP.BHI-bf_xIJUNIsSCsVH58AHaHa?w=193&h=193&c=7&r=0&o=5&dpr=1.3&pid=1.7',
@@ -183,7 +175,6 @@ export const CVTemplateData: CVTemplate = {
     },
     {
       backgroudColor: '#ffffff',
-      column: 2,
       size: 7.5,
       componentList: [
         {

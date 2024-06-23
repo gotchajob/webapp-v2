@@ -26,7 +26,13 @@ import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
-import { ComponentTemplateList, PersonalInformationTemplate } from 'components/cv-component/interface';
+import {
+  CVComponent,
+  CVTemplate,
+  ComponentTemplateList,
+  PersonalComponent,
+  PersonalInformationTemplate
+} from 'components/cv-component/interface';
 import Iconify from 'components/iconify/iconify';
 import { PRIMARYCOLOR } from 'components/common/config';
 
@@ -55,7 +61,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const TabsTable = () => {
+const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
   const [value, setValue] = React.useState(0);
 
   const handleTabChange = (tabIndex: number) => {
@@ -74,6 +80,33 @@ const TabsTable = () => {
     setOpenInformation(!openInformation);
   };
 
+  const allComponent = React.useMemo(() => {
+    const componentList: CVComponent[] = [];
+    cv.layout.forEach((column) => {
+      column.componentList.forEach((component) => {
+        componentList.push(component);
+      });
+    });
+    return componentList;
+  }, [cv]);
+
+  const handleUpdateInformation = (information: PersonalComponent, isAdded: boolean) => {
+    const newCV = { ...cv };
+    let newPersonal: PersonalComponent[] = [];
+    if (isAdded) {
+      newPersonal = newCV.personal.filter((value) => value.field !== information.field);
+    } else {
+      newPersonal = [...newCV.personal, information];
+    }
+    newCV.personal = newPersonal;
+    onChangeCV(newCV);
+  };
+
+  const handleUpdateComponent = (component: CVComponent) => {
+    const newCV = { ...cv };
+    newCV.layout[newCV.layout.length - 1].componentList.push(component);
+    onChangeCV(newCV);
+  };
   return (
     <>
       <Grid container spacing={2}>
@@ -92,14 +125,23 @@ const TabsTable = () => {
                 </ListItemButton>
                 <Collapse in={openComponent} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {PersonalInformationTemplate.map((information) => (
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <Iconify color={PRIMARYCOLOR} icon={information.icon} />
-                        </ListItemIcon>
-                        <ListItemText primary={'Thêm ' + information.fieldName} />
-                      </ListItemButton>
-                    ))}
+                    {PersonalInformationTemplate.map((information) => {
+                      const isAdded = cv.personal.find((value) => value.field === information.field);
+                      return (
+                        <ListItemButton
+                          onClick={() => {
+                            handleUpdateInformation(information, Boolean(isAdded));
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Iconify color={isAdded ? 'red' : PRIMARYCOLOR} icon={information.icon} />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={<Text color={isAdded ? 'error' : ''}>{`${isAdded ? 'Xoá' : 'Thêm'} ${information.fieldName}`}</Text>}
+                          />
+                        </ListItemButton>
+                      );
+                    })}
                   </List>
                 </Collapse>
                 <ListItemButton onClick={handleOpenInformation}>
@@ -108,21 +150,29 @@ const TabsTable = () => {
                 </ListItemButton>
                 <Collapse in={openInformation} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {ComponentTemplateList.map((component) => (
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <Iconify color={PRIMARYCOLOR} icon={component.icon} />
-                        </ListItemIcon>
-                        <ListItemText primary={'Thêm ' + component.title} />
-                      </ListItemButton>
-                    ))}
+                    {ComponentTemplateList.map((component) => {
+                      const isAdded = allComponent.find((value) => value.componentName === component.componentName);
+                      return (
+                        <ListItemButton
+                          disabled={Boolean(isAdded)}
+                          onClick={() => {
+                            handleUpdateComponent(component);
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Iconify color={PRIMARYCOLOR} icon={component.icon} />
+                          </ListItemIcon>
+                          <ListItemText primary={'Thêm ' + component.title} />
+                        </ListItemButton>
+                      );
+                    })}
                   </List>
                 </Collapse>
               </List>
             </SubCard>
           </TabPanel>
         </Grid>
-        <Grid item xs={2.5}>
+        <Grid item xs={3}>
           <Stack spacing={2}>
             {tabs.map((content, index) => (
               <Button

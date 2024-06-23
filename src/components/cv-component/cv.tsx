@@ -11,7 +11,9 @@ import Box from '@mui/material/Box';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import { PRIMARYCOLOR } from 'components/common/config';
-
+import NorthIcon from '@mui/icons-material/North';
+import Tooltip from '@mui/material/Tooltip';
+import WestIcon from '@mui/icons-material/West';
 const defaultShadow = '0 2px 14px 0 rgb(33 150 243 / 10%)';
 
 export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
@@ -41,15 +43,29 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
 
   const handleDeleteComponent = (columnIndex: number, componentIndex: number) => {
     const newCV: CVTemplate = { ...cv };
-    newCV.layout[columnIndex].componentList.splice(componentIndex, componentIndex === 0 ? componentIndex + 1 : componentIndex);
+    newCV.layout[columnIndex].componentList.splice(componentIndex, 1);
+    onChangeCV(newCV);
+  };
+
+  const handleMoveTopComponent = (columnIndex: number, componentIndex: number) => {
+    const newCV: CVTemplate = { ...cv };
+    const moveComponent = newCV.layout[columnIndex].componentList.splice(componentIndex, 1);
+    newCV.layout[columnIndex].componentList.splice(componentIndex - 1, 0, moveComponent[0]);
+    onChangeCV(newCV);
+  };
+
+  const handleMoveLeftComponent = (columnIndex: number, componentIndex: number) => {
+    const newCV: CVTemplate = { ...cv };
+    const moveComponent = newCV.layout[columnIndex].componentList.splice(componentIndex, 1);
+    newCV.layout[columnIndex - 1].componentList.splice(componentIndex - 1, 0, moveComponent[0]);
     onChangeCV(newCV);
   };
 
   const [onClickComponent, setOnClickComponent] = useState('');
 
-  const ComponentWarper = ({ children, index }: { children: ReactNode; index: string }) => {
-    const isClicked = index == onClickComponent;
-    const [componentIndex, columnIndex] = index.split('-');
+  const ComponentWarper = ({ children, index, componentName }: { children: ReactNode; index: number[]; componentName: string }) => {
+    const isClicked = componentName == onClickComponent;
+    const [componentIndex, columnIndex] = index;
     return (
       <Box
         p={2}
@@ -58,20 +74,50 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
         borderRadius={1}
         border={isClicked ? `1px solid ${PRIMARYCOLOR}` : 'none'}
         onClick={() => {
-          setOnClickComponent(index);
+          setOnClickComponent(componentName);
         }}
       >
+        {isClicked && componentIndex !== 0 ? (
+          <Tooltip title="Di chuyển lên">
+            <IconButton
+              color="success"
+              size="small"
+              sx={{ position: 'absolute', top: -17, right: 18, backgroundColor: '#f5fefa' }}
+              onClick={() => {
+                handleMoveTopComponent(columnIndex, componentIndex);
+              }}
+            >
+              <NorthIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {isClicked && columnIndex !== 0 ? (
+          <Tooltip title="Di chuyển sang trái">
+            <IconButton
+              color="success"
+              size="small"
+              sx={{ position: 'absolute', top: -17, left: -16, backgroundColor: '#f5fefa' }}
+              onClick={() => {
+                handleMoveLeftComponent(columnIndex, componentIndex);
+              }}
+            >
+              <WestIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
         {isClicked ? (
-          <IconButton
-            color="error"
-            size="small"
-            sx={{ position: 'absolute', top: -17, right: -16 }}
-            onClick={() => {
-              handleDeleteComponent(+columnIndex, +componentIndex);
-            }}
-          >
-            <ClearIcon />
-          </IconButton>
+          <Tooltip title="Xoá">
+            <IconButton
+              color="error"
+              size="small"
+              sx={{ position: 'absolute', top: -17, right: -16, backgroundColor: '#f5fefa' }}
+              onClick={() => {
+                handleDeleteComponent(columnIndex, componentIndex);
+              }}
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
         ) : null}
         {children}
       </Box>
@@ -85,7 +131,7 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
             {column.componentList.map((component, componentIndex) => {
               if (component.dataType === 'image') {
                 return (
-                  <ComponentWarper key={componentIndex} index={componentIndex + '-' + columnIndex}>
+                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
                     <CVUploadImage
                       avatar={component.description}
                       handleChangeAvatar={(value) => {
@@ -97,7 +143,7 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
               }
               if (component.dataType === 'information') {
                 return (
-                  <ComponentWarper key={componentIndex} index={componentIndex + '-' + columnIndex}>
+                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
                     <InformationComponent
                       component={component}
                       primaryColor={cv.primaryColor}
@@ -111,7 +157,7 @@ export const CreateCV = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: 
               }
               if (component.dataType === 'text') {
                 return (
-                  <ComponentWarper key={componentIndex} index={componentIndex + '-' + columnIndex}>
+                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
                     <HeaderComponent
                       component={component}
                       onChangeComponent={(newCVComponent) => {
