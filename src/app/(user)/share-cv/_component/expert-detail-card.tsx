@@ -26,6 +26,7 @@ import NotInterestedTwoToneIcon from '@mui/icons-material/NotInterestedTwoTone';
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import Avatar from 'ui-component/extended/Avatar';
 import { ExpertMatching } from 'package/api/expert/match';
+import { Box } from '@mui/material';
 
 const avatarImage = '/assets/images/users';
 
@@ -68,17 +69,18 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
           <Typography variant="h3">{expert.fullName}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle2" sx={{ color: 'grey.700' }}>
-            {expert?.bio || ''}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="caption">Email</Typography>
-          <Typography variant="h6">{expert.email}</Typography>
+          <Box sx={{ height: 50, overflow: 'auto' }}>
+            <Typography variant="caption" sx={{ color: 'grey.700' }}>
+              Bio
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'grey.700' }}>
+              {expert?.bio || ''}
+            </Typography>
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Typography variant="caption">Quốc gia hỗ trợ</Typography>
               <Typography variant="h6">{formatNation()}</Typography>
             </Grid>
