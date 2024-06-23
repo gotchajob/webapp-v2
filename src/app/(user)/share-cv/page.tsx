@@ -280,13 +280,13 @@ export default function Page() {
       </Container>
 
       {/* Expert List */}
-      <Grid container spacing={3} minHeight={300} mt={15}>
+      <Grid container spacing={3} minHeight={300} mt={15} px={30}>
         {expertMatchingList?.map((expert, index) => (
           <Grid key={index} item xs={3}>
             <ExpertDetailCard expert={expert} />
           </Grid>
         ))}
-        <Grid container item justifyContent="center" alignItems="center" mt={4}>
+        <Grid container item justifyContent="center" alignItems="center" py={4}>
           <Box>
             <Pagination count={10} color="primary" size="large" />
           </Box>
