@@ -34,6 +34,7 @@ const SubCard = React.forwardRef(
   ) => {
     const { mode } = useConfig();
     const defaultShadow = mode === ThemeMode.DARK ? '0 2px 14px 0 rgb(33 150 243 / 10%)' : '0 2px 14px 0 rgb(32 40 45 / 8%)';
+
     return (
       <Card ref={ref} sx={{ border: '1px solid', borderColor: 'divider', ':hover': { boxShadow: defaultShadow }, ...sx }} {...others}>
         {/* card header and action */}

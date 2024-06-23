@@ -9,57 +9,47 @@ import { EnchantInput } from 'components/common/enchant-input';
 import { useEffect, useState } from 'react';
 import { CVTemplate } from 'components/cv-component/interface';
 import { ContactlessOutlined } from '@mui/icons-material';
+import { FlexBox } from 'components/common/box/flex-box';
 
-const cvTemplate = CVTemplate;
-
-const FlexBox = styled(Box)({
-  display: 'flex',
-  alignItems: 'center'
-});
-
-export const InformationComponent = ({ columnIndex, componentIndex, component, information, onChangePersonal }: { columnIndex: number, componentIndex: number, component: CVComponent; information: PersonalComponent[]; onChangePersonal: (CVPersonal: PersonalComponent[]) => void }) => {
-
-  const [CVEditPersonal, setCVEditPersonal] = useState<any | null>();
-
+export const InformationComponent = ({
+  component,
+  information,
+  onChangeComponent,
+  primaryColor
+}: {
+  primaryColor: string;
+  component: CVComponent;
+  information: PersonalComponent[];
+  onChangeComponent: (newCVPersonalComponent: PersonalComponent[], newCVComponent: CVComponent) => void;
+}) => {
   const handleChangeHeader = (newHeader: string) => {
-    if (newHeader) {
-      let newCV = { ...cvTemplate };
-      newCV.layout[columnIndex].componentList[componentIndex].header = newHeader;
-      setCVEditPersonal(newCV.layout);
-      handleChangeLayout();
-    }
-  }
+    const newCVComponent = { ...component };
+    newCVComponent.header = newHeader;
+    onChangeComponent(information, newCVComponent);
+  };
 
-  const handleChangePersonalComponent = (newPersonalComponent: string, index: number) => {
-    if (newPersonalComponent) {
-      let newCV = { ...cvTemplate };
-      newCV.personal[index].title = newPersonalComponent;
-      setCVEditPersonal(newCV.personal);
-      handleChangeLayout();
-    }
-  }
-
-  const handleChangeLayout = () => {
-    if (onChangePersonal) {
-      onChangePersonal(CVEditPersonal);
-    }
-  }
+  const handleChangePersonalComponent = (newPersonalInformation: string, index: number) => {
+    const newCVPersonalComponent = information;
+    newCVPersonalComponent[index].title = newPersonalInformation;
+    onChangeComponent(newCVPersonalComponent, component);
+  };
 
   return (
-    <Stack py={2} direction={'column'}>
-      <EnchantInput
-        initValue={component.header}
-        onBlur={handleChangeHeader}
-      />
-      <Divider />
+    <Stack direction={'column'}>
+      <EnchantInput initValue={component.header} onBlur={handleChangeHeader} />
+      <Divider sx={{ mb: '8px' }} />
       {information.map((e, index) => (
-        <FlexBox key={index}>
-          <Iconify icon={e.icon} width={20} color={component.color} />
+        <FlexBox
+          key={index}
+          sx={{
+            ' p': {
+              my: 1.5
+            }
+          }}
+        >
+          <Iconify icon={e.icon} width={20} color={primaryColor} />
           <Box pl={1}>
-            <EnchantInput
-              initValue={e.title}
-              onBlur={(value) => handleChangePersonalComponent(value, index)}
-            />
+            <EnchantInput initValue={e.title} onBlur={(value) => handleChangePersonalComponent(value, index)} />
           </Box>
         </FlexBox>
       ))}

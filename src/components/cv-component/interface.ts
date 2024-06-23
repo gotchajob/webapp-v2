@@ -1,9 +1,9 @@
-
 export interface CVTemplate {
   id: string;
   subject: string;
   status: boolean;
   name: string;
+  primaryColor: string;
   personal: PersonalComponent[];
   layout: Column[];
 }
@@ -11,195 +11,199 @@ export interface PersonalComponent {
   title: string;
   field: string;
   icon: string;
+  fieldName: string;
 }
 export interface Column {
   column: number;
-  color: string;
+  backgroudColor: string;
   size: number;
   componentList: CVComponent[];
 }
 export interface CVComponent {
+  componentName: string;
+  icon: string;
+  title: string;
   header: string;
-  color?: string;
   dataType: 'image' | 'information' | 'text';
   description: string;
 }
 
-export const CVTemplate: CVTemplate = {
-  "id": "1",
-  "name": "Kiet's CV",
-  "status": true,
-  "subject": "IT",
-  "personal": [
+export const ComponentTemplateList: CVComponent[] = [
+  {
+    componentName: 'avatar',
+    dataType: 'image',
+    header: 'Image',
+    description: 'https://th.bing.com/th/id/OIP.BHI-bf_xIJUNIsSCsVH58AHaHa?w=193&h=193&c=7&r=0&o=5&dpr=1.3&pid=1.7',
+    icon: 'icon-park-outline:avatar',
+    title: 'Ảnh đại diện'
+  },
+  {
+    componentName: 'information',
+    dataType: 'information',
+    header: '<p><strong><span style="font-size: 14pt; color: rgb(35, 111, 161);">Personal Details</span></strong></p>',
+    description: '',
+    icon: 'tdesign:personal-information',
+    title: 'Thông tin cá nhân'
+  },
+  {
+    componentName: 'skill',
+    dataType: 'text',
+    header: '<p><span style="font-size: 14pt; color: rgb(35, 111, 161);"><strong>Skill</strong></span></p>',
+    icon: 'mingcute:pencil-line',
+    title: 'Kĩ năng cá nhân',
+    description:
+      '<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill A</span></strong>: &nbsp; Skill 1</span></p>\n<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill B</span></strong>: &nbsp; Skill 2</span></p>\n<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill C</span></strong>: &nbsp; Skill 3</span></p>'
+  },
+  {
+    componentName: 'objective',
+    dataType: 'text',
+    header: '<p><strong><span style="font-size: 14pt; color: rgb(35, 111, 161);">Profile&nbsp;</span></strong></p>',
+    description: '<p><span style="font-size: 10pt;">Profile Bio</span></p>',
+    icon: 'ph:target',
+    title: 'Mục tiêu nghề nghiệp'
+  },
+  {
+    componentName: 'experience',
+    dataType: 'text',
+    icon: 'bytesize:work',
+    title: 'Kinh nghiệm',
+    header: '<p><span style="color: rgb(35, 111, 161);"><strong><span style="font-size: 14pt;">Employment</span></strong></span></p>',
+    description:
+      '<p><span style="font-size: 10pt;"><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color: rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></span></p>\n<p><span style="color: rgb(89, 171, 217); font-size: 10pt;">Nanelle, Marseille</span></p>\n<ul>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Gestion du portefeuille clients B2B France et international</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n</ul>\n<p>&nbsp;</p>\n<p><span style="font-size: 10pt;"><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color: rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></span></p>\n<p><span style="color: rgb(89, 171, 217); font-size: 10pt;">Nanelle, Marseille</span></p>\n<ul>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Gestion du portefeuille clients B2B France et international</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n</ul>'
+  }
+];
+export const PersonalInformationTemplate: PersonalComponent[] = [
+  {
+    field: 'address',
+    icon: 'mdi:location',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">L&yacute; Anh Kiệt</span></p>',
+    fieldName: 'Địa chỉ'
+  },
+  {
+    field: 'name',
+    icon: 'ic:baseline-person',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">L&yacute; Anh Kiệt</span></p>',
+    fieldName: 'Họ tên'
+  },
+  {
+    field: 'birthday',
+    icon: 'ic:baseline-calendar-month',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">19/01/2002</span></p>',
+    fieldName: 'Năm sinh'
+  },
+  {
+    field: 'phone',
+    icon: 'ic:baseline-phone',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">0123456789</span></p>',
+    fieldName: 'Số điện thoại'
+  },
+  {
+    field: 'email',
+    icon: 'ic:baseline-email',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">kietly1901@gmail.com</span></p>',
+    fieldName: 'Email'
+  },
+  {
+    field: 'git',
+    icon: 'fluent-mdl2:git-hub-logo',
+    title: '<p style="line-height: 1;"><span style="font-size: 10pt;">kietly1901@gmail.com</span></p>',
+    fieldName: 'Git'
+  }
+];
+export const CVTemplateData: CVTemplate = {
+  id: '1',
+  name: "Kiet's CV",
+  status: true,
+  subject: 'IT',
+  primaryColor: '#59ABD9',
+  personal: [
     {
-      "field": "name",
-      "icon": "ic:baseline-person",
-      "title": "Lý Anh Kiệt"
+      field: 'name',
+      icon: 'ic:baseline-person',
+      title: '<p style="line-height: 1;"><span style="font-size: 10pt;">L&yacute; Anh Kiệt</span></p>',
+      fieldName: 'Họ tên'
     },
     {
-      "field": "birthday",
-      "icon": "ic:baseline-calendar-month",
-      "title": "19/01/2002"
+      field: 'birthday',
+      icon: 'ic:baseline-calendar-month',
+      title: '<p style="line-height: 1;"><span style="font-size: 10pt;">19/01/2002</span></p>',
+      fieldName: 'Năm sinh'
     },
     {
-      "field": "phone",
-      "icon": "ic:baseline-phone",
-      "title": "0123456789"
+      field: 'phone',
+      icon: 'ic:baseline-phone',
+      title: '<p style="line-height: 1;"><span style="font-size: 10pt;">0123456789</span></p>',
+      fieldName: 'Số điện thoại'
     },
     {
-      "field": "email",
-      "icon": "ic:baseline-email",
-      "title": "kietly1901@gmail.com"
+      field: 'email',
+      icon: 'ic:baseline-email',
+      title: '<p style="line-height: 1;"><span style="font-size: 10pt;">kietly1901@gmail.com</span></p>',
+      fieldName: 'Email'
     }
   ],
-  "layout": [
+  layout: [
     {
-      "color": "#59ABD9",
-      "column": 0,
-      "size": 0.5,
-      "componentList": []
+      backgroudColor: '#59ABD9',
+      column: 0,
+      size: 0.5,
+      componentList: []
     },
     {
-      "color": "#faf5f5",
-      "column": 1,
-      "size": 3.5,
-      "componentList": [
+      backgroudColor: '#faf5f5',
+      column: 1,
+      size: 4,
+      componentList: [
         {
-          "dataType": "image",
-          "header": "Image",
-          "description": "https://th.bing.com/th/id/R.41921164a5125add470627e30d1286cc?rik=FzPBS2DwEt5Dfw&pid=ImgRaw&r=0"
+          componentName: 'Avatar',
+          dataType: 'image',
+          header: 'Image',
+          description: 'https://th.bing.com/th/id/OIP.BHI-bf_xIJUNIsSCsVH58AHaHa?w=193&h=193&c=7&r=0&o=5&dpr=1.3&pid=1.7',
+          icon: 'icon-park-solid:avatar',
+          title: 'Ảnh đại diện'
         },
         {
-          "dataType": "information",
-          "color": "#59ABD9",
-          "header": "Personal Details",
-          "description": "<p>This is the initial content of the editor.</p>"
+          componentName: 'information',
+          dataType: 'information',
+          header: '<p><strong><span style="font-size: 14pt; color: rgb(35, 111, 161);">Personal Details</span></strong></p>',
+          description: '',
+          icon: 'tdesign:personal-information',
+          title: 'Thông tin cá nhân'
         },
         {
-          "dataType": "text",
-          "color": "#59ABD9",
-          "header": "<p>Skill</p>",
-          "description": "<p><strong><span style=\"color: rgb(89, 171, 217);\">Skill A</span></strong>: &nbsp; Skill 1</p>\n<p><strong><span style=\"color: rgb(89, 171, 217);\">Skill B</span></strong>: &nbsp; Skill 2</p>\n<p><strong><span style=\"color: rgb(89, 171, 217);\">Skill C</span></strong>: &nbsp; Skill 3</p>"
+          componentName: 'skill',
+          dataType: 'text',
+          header: '<p><span style="font-size: 14pt; color: rgb(35, 111, 161);"><strong>Skill</strong></span></p>',
+          icon: 'mingcute:pencil-line',
+          title: 'Kĩ năng cá nhân',
+          description:
+            '<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill A</span></strong>: &nbsp; Skill 1</span></p>\n<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill B</span></strong>: &nbsp; Skill 2</span></p>\n<p><span style="font-size: 10pt;"><strong><span style="color: rgb(89, 171, 217);">Skill C</span></strong>: &nbsp; Skill 3</span></p>'
         }
       ]
     },
     {
-      "color": "#ffffff",
-      "column": 2,
-      "size": 8,
-      "componentList": [
+      backgroudColor: '#ffffff',
+      column: 2,
+      size: 7.5,
+      componentList: [
         {
-          "dataType": "text",
-          "color": "#59ABD9",
-          "header": "<p>Profile</p>",
-          "description": "<p>Profile Bio</p>"
+          componentName: 'objective',
+          dataType: 'text',
+          header: '<p><strong><span style="font-size: 14pt; color: rgb(35, 111, 161);">Profile&nbsp;</span></strong></p>',
+          description: '<p><span style="font-size: 10pt;">Profile Bio</span></p>',
+          icon: 'ph:target',
+          title: 'Mục tiêu nghề nghiệp'
         },
         {
-          "dataType": "text",
-          "color": "#59ABD9",
-          "header": "Employment",
-          "description": "<p><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style=\"color:  rgb(89, 171, 217);\">Feb 2013 - May 2020</span></strong></p>\n          <p><span style=\"color:  rgb(89, 171, 217);\">Nanelle, Marseille</span></p>\n          <ul>\n          <li><span style=\"color: rgb(0, 0, 0);\">Gestion du portefeuille clients B2B France et international</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n          </ul>\n          <p>&nbsp;</p>\n          <p><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style=\"color:  rgb(89, 171, 217);\">Feb 2013 - May 2020</span></strong></p>\n          <p><span style=\"color:  rgb(89, 171, 217);\">Nanelle, Marseille</span></p>\n          <ul>\n          <li><span style=\"color: rgb(0, 0, 0);\">Gestion du portefeuille clients B2B France et international</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n          <li><span style=\"color: rgb(0, 0, 0);\">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n          </ul>"
+          componentName: 'experience',
+          dataType: 'text',
+          icon: 'bytesize:work',
+          title: 'Kinh nghiệm',
+          header: '<p><span style="color: rgb(35, 111, 161);"><strong><span style="font-size: 14pt;">Employment</span></strong></span></p>',
+          description:
+            '<p><span style="font-size: 10pt;"><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color: rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></span></p>\n<p><span style="color: rgb(89, 171, 217); font-size: 10pt;">Nanelle, Marseille</span></p>\n<ul>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Gestion du portefeuille clients B2B France et international</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n</ul>\n<p>&nbsp;</p>\n<p><span style="font-size: 10pt;"><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="color: rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></span></p>\n<p><span style="color: rgb(89, 171, 217); font-size: 10pt;">Nanelle, Marseille</span></p>\n<ul>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Gestion du portefeuille clients B2B France et international</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>\n<li style="font-size: 10pt; line-height: 2;"><span style="color: rgb(0, 0, 0); font-size: 10pt;">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>\n</ul>'
         }
       ]
     }
   ]
-}
-
-
-// export const CVTemplate: CVTemplate = {
-//   id: '1',
-//   name: "Kiet's CV",
-//   status: true,
-//   subject: 'IT',
-//   personal: [
-//     {
-//       field: 'name',
-//       icon: 'ic:baseline-person',
-//       title: 'Lý Anh Kiệt'
-//     },
-//     {
-//       field: 'birthday',
-//       icon: 'ic:baseline-calendar-month',
-//       title: '19/01/2002'
-//     },
-//     {
-//       field: 'phone',
-//       icon: 'ic:baseline-phone',
-//       title: '0123456789'
-//     },
-//     {
-//       field: 'email',
-//       icon: 'ic:baseline-email',
-//       title: 'kietly1901@gmail.com'
-//     }
-//   ],
-//   layout: [
-//     {
-//       color: '#59ABD9',
-//       column: 0,
-//       size: 0.5,
-//       componentList: []
-//     },
-//     {
-//       color: '#faf5f5',
-//       column: 1,
-//       size: 3.5,
-//       componentList: [
-//         {
-//           dataType: 'image',
-//           header: 'Image',
-//           description: 'https://th.bing.com/th/id/R.41921164a5125add470627e30d1286cc?rik=FzPBS2DwEt5Dfw&pid=ImgRaw&r=0',
-//         },
-//         {
-//           dataType: 'information',
-//           color: '#59ABD9',
-//           header: 'Personal Details',
-//           description: '<p>This is the initial content of the editor.</p>',
-//         },
-//         {
-//           dataType: 'text',
-//           color: '#59ABD9',
-//           header: 'Skill',
-//           description: `<p><strong><span style="color: rgb(89, 171, 217);">Skill A</span></strong>: &nbsp; Skill 1</p>
-//           <p><strong><span style="color: rgb(89, 171, 217);">Skill B</span></strong>: &nbsp; Skill 2</p>
-//           <p><strong><span style="color: rgb(89, 171, 217);">Skill C</span></strong>: &nbsp; Skill 3</p>`,
-//         }
-//       ]
-//     },
-//     {
-//       color: '#ffffff',
-//       column: 2,
-//       size: 8,
-//       componentList: [
-//         {
-//           dataType: 'text',
-//           color: '#59ABD9',
-//           header: 'Profile',
-//           description: `<p>Profile Bio</p>`,
-//         },
-//         {
-//           dataType: 'text',
-//           color: '#59ABD9',
-//           header: 'Employment',
-//           description: `<p><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:  rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></p>
-//           <p><span style="color:  rgb(89, 171, 217);">Nanelle, Marseille</span></p>
-//           <ul>
-//           <li><span style="color: rgb(0, 0, 0);">Gestion du portefeuille clients B2B France et international</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>
-//           </ul>
-//           <p>&nbsp;</p>
-//           <p><strong>Charg&eacute;e de client&egrave;le&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:  rgb(89, 171, 217);">Feb 2013 - May 2020</span></strong></p>
-//           <p><span style="color:  rgb(89, 171, 217);">Nanelle, Marseille</span></p>
-//           <ul>
-//           <li><span style="color: rgb(0, 0, 0);">Gestion du portefeuille clients B2B France et international</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">D&eacute;veloppement de la notori&eacute;t&eacute; de la marque : r&eacute;seaux sociaux, partenariat, concours</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">Mise en place et d&eacute;veloppement de partenariats institutionnels et co-brandings</span></li>
-//           <li><span style="color: rgb(0, 0, 0);">Mise &agrave; jour des outils analytiques afin de mesurer la performance du service client</span></li>
-//           </ul>`,
-//         }
-//       ]
-//     }
-//   ]
-// };
+};

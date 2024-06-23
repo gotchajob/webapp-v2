@@ -1,61 +1,35 @@
 import Box from '@mui/material/Box';
-import { CVComponent, Column, PersonalComponent } from './interface';
-import Typography from '@mui/material/Typography';
+import { CVComponent } from './interface';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import { EnchantInput } from 'components/common/enchant-input';
-import { useEffect, useState } from 'react';
-import { CVTemplate } from 'components/cv-component/interface';
 
-const cvTemplate = CVTemplate;
-
-export const HeaderComponent = ({ component, columnIndex, componentIndex, onChangeLayout }
-  : {
-    component: CVComponent; columnIndex: number; componentIndex: number
-    ; onChangeLayout: (CVLayout: Column[]) => void
-  }) => {
-
-  const [CVEditLayout, setCVEditLayout] = useState<any | null>();
-
+export const HeaderComponent = ({
+  component,
+  onChangeComponent
+}: {
+  component: CVComponent;
+  onChangeComponent: (newCVComponent: CVComponent) => void;
+}) => {
   const handleChangeDescription = (newDescription: string) => {
-    if (newDescription) {
-      let newCV = { ...cvTemplate };
-      newCV.layout[columnIndex].componentList[componentIndex].description = newDescription;
-      setCVEditLayout(newCV.layout);
-      handleChangeLayout();
-    }
-  }
+    const newCVComponent = { ...component };
+    newCVComponent.description = newDescription;
+    onChangeComponent(newCVComponent);
+  };
 
   const handleChangeHeader = (newHeader: string) => {
-    if (newHeader) {
-      let newCV = { ...cvTemplate };
-      newCV.layout[columnIndex].componentList[componentIndex].header = newHeader;
-      setCVEditLayout(newCV.layout);
-      handleChangeLayout();
-    }
-  }
-
-  const handleChangeLayout = () => {
-    if (onChangeLayout) {
-      onChangeLayout(CVEditLayout);
-    }
-  }
+    const newCVComponent = { ...component };
+    newCVComponent.header = newHeader;
+    onChangeComponent(newCVComponent);
+  };
 
   return (
-    <Stack py={2} direction={'column'}>
-      <EnchantInput
-        initValue={component.header}
-        onBlur={handleChangeHeader}
-      />
+    <Stack direction={'column'}>
+      <EnchantInput initValue={component.header} onBlur={handleChangeHeader} />
       <Divider />
       <Box mt={'0px !important'}>
-        <EnchantInput
-          initValue={component.description}
-          onBlur={handleChangeDescription}
-        />
+        <EnchantInput initValue={component.description} onBlur={handleChangeDescription} />
       </Box>
     </Stack>
   );
 };
-
-
