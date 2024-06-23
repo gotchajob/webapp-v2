@@ -33,7 +33,14 @@ const spacingData = [
     { spacing: 1.8 },
 ];
 
-const CreateCVHeader = () => {
+const CreateCVHeader = ({ printOnClick }: { printOnClick: () => void }) => {
+
+    const handleSaveAndDowload = () => {
+        if (printOnClick) {
+            printOnClick();
+        }
+    }
+
     return (
         <Grid container item alignItems="center" sx={{ boxShadow: 3 }}>
             <Grid item xs={12} py={1} sx={{ borderBottom: '1px solid #E6E6E6', paddingBottom: "10px" }}>
@@ -71,6 +78,7 @@ const CreateCVHeader = () => {
                                 },
                                 color: 'white',
                             }}
+                            onClick={handleSaveAndDowload}
                         >
                             <SaveAltIcon sx={{ fontSize: 35, paddingX: "5px" }} />
                             Lưu và tải xuống

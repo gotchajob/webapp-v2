@@ -3,10 +3,14 @@ import Paper from '@mui/material/Paper';
 import CreateCVHeader from 'app/(user)/create-cv/_component/CreateCVHeader';
 import TabsTable from 'app/(user)/create-cv/_component/TabsTable';
 import { CVTemplate, Column, PersonalComponent } from 'components/cv-component/interface';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CVUploadImage } from './avatar';
 import { HeaderComponent } from './header-component';
 import { InformationComponent } from './information-component';
+import jsPDF from 'jspdf';
+import html2canvas from "html2canvas";
+import { useReactToPrint } from 'react-to-print';
+import { Button } from '@mui/material';
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
@@ -16,19 +20,12 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
 
   const [currentTemplate, setCurrentTemplate] = useState(data);
 
-  const [numberColumn, setNumberColumn] = useState(1);
+  const CVRef = useRef(null);
 
-  const handleSelectNumberColumn = (value: number) => {
-    setNumberColumn(value);
-  };
-
-  // const handelChangeComponent = (newCVComponent: CVComponent, componentIndex: number, columnIndex: number) => {
-  //   console.log("handelChangeComponentList value:", newCVComponent);
-  //   const newTemplate = { ...currentTemplate };
-  //   setHistoryTemplate([...historyTemplate, currentTemplate]);
-  //   newTemplate.layout[columnIndex].componentList[componentIndex] = newCVComponent;
-  //   setCurrentTemplate(newTemplate);
-  // }
+  const handlePrint = useReactToPrint({
+    content: () => CVRef.current,
+    documentTitle: 'CV',
+  })
 
   const handelChangeHeaderComponent = (newCVLayout: Column[]) => {
     if (newCVLayout) {
@@ -41,21 +38,21 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
   const handleChangeInformationComponent = (newCVPersonal: PersonalComponent[]) => {
     console.log(" handleChangeInformationComponent:", newCVPersonal);
     if (newCVPersonal) {
-      const newTemplate = { ...currentTemplate, }
+      const newTemplate = { ...currentTemplate, personal: newCVPersonal };
+      setHistoryTemplate([...historyTemplate, currentTemplate]);
+      setCurrentTemplate(newTemplate);
     }
   }
 
   return (
     <>
-      <CreateCVHeader />
-
+      <CreateCVHeader printOnClick={handlePrint} />
       <Grid container padding={3}>
         <Grid item xs={4} spacing={3} >
           <TabsTable />
         </Grid>
-
         <Grid item xs={8}>
-          <Grid container component={Paper} maxWidth={900} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
+          <Grid ref={CVRef} container component={Paper} maxWidth={900} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
             {currentTemplate && currentTemplate.layout ? (
               currentTemplate.layout.map((column, columnIndex) => {
                 return (
@@ -80,7 +77,27 @@ export const CreateCV = ({ data }: { data: CVTemplate }) => {
           </Grid>
         </Grid>
       </Grid>
-
     </>
   );
 };
+
+// const handelChangeComponent = (newCVComponent: CVComponent, componentIndex: number, columnIndex: number) => {
+//   console.log("handelChangeComponentList value:", newCVComponent);
+//   const newTemplate = { ...currentTemplate };
+//   setHistoryTemplate([...historyTemplate, currentTemplate]);
+//   newTemplate.layout[columnIndex].componentList[componentIndex] = newCVComponent;
+//   setCurrentTemplate(newTemplate);
+// }
+
+// const handlePrint = async () => {
+//   if (CVRef.current) {
+//     const canvas = await html2canvas(CVRef.current);
+//     const imgData = canvas.toDataURL('image/png');
+//     const pdf = new jsPDF('p', 'mm', 'a4');
+//     const imgProps = pdf.getImageProperties(imgData);
+//     const pdfWidth = pdf.internal.pageSize.getWidth();
+//     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+//     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+//     pdf.save('cv.pdf');
+//   }
+// };
