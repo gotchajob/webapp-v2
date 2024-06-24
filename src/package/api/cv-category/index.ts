@@ -1,6 +1,7 @@
 import { apiServerFetch, errorSystem } from '../api-fetch';
 
 export interface CVCategoryRequest {}
+
 export interface CVCategoryResponse {
   status: string;
   responseText: string;

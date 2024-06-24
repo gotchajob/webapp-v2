@@ -20,7 +20,7 @@ import Image from 'next/image';
 import SubCard from 'ui-component/cards/SubCard';
 import { PRIMARYCOLOR } from 'components/common/config';
 import { CVCategoryResponse, GetCVCategory } from 'package/api/cv-category';
-import { use } from 'react';
+import { use, useEffect } from 'react';
 
 const url = 'https://d3vpszern3jgjo.cloudfront.net/wp-content/uploads/2021/08/resume-reading-768x432.png';
 
@@ -114,6 +114,7 @@ const data_2 = [
 ];
 
 export default function Page() {
+  
   const CVCategory: CVCategoryResponse = use(GetCVCategory({}));
 
   return (
@@ -187,7 +188,7 @@ export default function Page() {
           {CVCategory &&
             CVCategory.data.map((item, index) => (
               <Grid item xs={3} key={index}>
-                <StyledLink href={`/create-cv/cv-template`}>
+                <StyledLink href={`/create-cv/cv-template/${item.id}`}>
                   <SubCard sx={{ borderColor: PRIMARYCOLOR }}>
                     <Stack
                       sx={{
@@ -197,13 +198,13 @@ export default function Page() {
                       }}
                       spacing={1}
                     >
-                      <Image
+                      {/* <Image
                         width={100}
                         height={100}
                         alt="image"
                         src={'https://static.topcv.vn/v4/image/cv_builder/choose-cv-data/item/case.png'}
-                      ></Image>
-                      {/* <WorkIcon sx={{ fontSize: 68, color: "#333333" }} /> */}
+                      ></Image> */}
+                      <WorkIcon sx={{ fontSize: 68, color: "#333333" }} />
                       <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 'bold' }}>
                         {item.description}
                       </Typography>
