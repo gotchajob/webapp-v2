@@ -37,11 +37,11 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
   const theme = useTheme();
   const formatNation = () => {
-    let nation = '';
+    let nation: string[] = [];
     expert.nationSupport.forEach((e) => {
-      nation = nation + e.nation;
+      nation.push(e.nation);
     });
-    return nation;
+    return nation.join(', ');
   };
   return (
     <Card

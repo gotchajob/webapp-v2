@@ -1,7 +1,6 @@
 import { apiServerFetch, errorSystem } from '../api-fetch';
 
 export interface GetSkillOptionRequest {
-  skillId?: number;
   categoryId?: number;
 }
 
