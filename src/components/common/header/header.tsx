@@ -38,6 +38,7 @@ import { useSearchParamsNavigation } from 'hooks/use-get-params';
 import { StyledLink } from 'components/common/link/styled-link';
 import { apiClientFetch } from 'package/api/api-fetch';
 import { enqueueSnackbar } from 'notistack';
+import ContactsIcon from '@mui/icons-material/Contacts';
 
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
@@ -259,6 +260,20 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                         '& .MuiListItemButton-root': { mt: 0.5 },
                       }}
                     >
+                      <StyledLink href={`/quan-ly-cv`} >
+                        <ListItemButton>
+                          <ListItemIcon>
+                            <ContactsIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">
+                                <FormattedMessage id="Quản lý CV" />
+                              </Typography>
+                            }>
+                          </ListItemText>
+                        </ListItemButton>
+                      </StyledLink>
                       <StyledLink href={`/account-profile/${customer?.id}`}>
                         <ListItemButton
                           sx={{
