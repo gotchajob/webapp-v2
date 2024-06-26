@@ -8,6 +8,8 @@ import { FlexCenter } from "components/common/box/flex-box";
 
 const url = "https://info.practicelink.com/hubfs/July%20Week%201%20-%20How%20to%20review%20a%20CV.png#keepProtocol";
 
+const url2 = ''
+
 const data = [
     {
         title: "6s",
@@ -42,12 +44,11 @@ const ReviewCVPage = () => {
             height: "650px",
             position: "relative",
             zIndex: 1,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(${url})`,
-            backgroundSize: "cover",
-            backgroundPosition: "right 20% center",
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(/assets/images/upload/reviewCV.png)`,
+            backgroundSize: "100% 100%",
         }}>
             <Stack
-                spacing={4}
+                spacing={3}
                 sx={{
                     position: 'absolute',
                     zIndex: 2,
@@ -107,12 +108,13 @@ const ReviewCVPage = () => {
                 </Stack>
             </Stack>
         </Box >
-        <Box py={10} px={20}>
+        <Box py={9} px={20}>
             <Box sx={{
                 width: '100%',
                 height: '500px',
                 position: "relative",
                 zIndex: 1,
+                borderRadius: 2,
                 backgroundImage: 'linear-gradient(to right bottom, #AAD4EB, #00CCFF, #0980C3)',
                 textAlign: "center",
             }}>
@@ -125,13 +127,16 @@ const ReviewCVPage = () => {
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                     }}>
-                    <Typography sx={{
-                        color: '#F3F5F7',
-                        fontWeight: 700,
-                        fontSize: "28px",
-                        fontFamily: "Inter, sans-serif",
-                    }}>
-                        Những <span style={{ color: '#1E88E5' }}>con số</span> biết nói
+                    <Typography
+                        sx={{
+                            color: '#F3F5F7',
+                            fontWeight: 700,
+                            fontSize: "28px",
+                            fontFamily: "Inter, sans-serif",
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
+                        }}
+                    >
+                        Những con số biết nói
                     </Typography>
                     <Stack direction="row" spacing={4} justifyContent="center">
                         {data.map((item, index) => (
@@ -143,9 +148,13 @@ const ReviewCVPage = () => {
                                 borderRadius: 2,
                                 display: "flex",
                                 flexDirection: "column",
+                                boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)'
                             }}>
                                 <Typography sx={{
-                                    color: '#1E88E5',
+                                    backgroundImage: 'linear-gradient(to right bottom, #AAD4EB, #00CCFF, #0980C3)',
+                                    WebkitBackgroundClip: 'text',
+                                    backgroundClip: 'text',
+                                    color: 'transparent',
                                     fontWeight: 700,
                                     fontSize: "32px",
                                     fontFamily: "Inter, sans-serif",
@@ -170,6 +179,7 @@ const ReviewCVPage = () => {
                             color: '#F3F5F7',
                             fontSize: "18px",
                             fontFamily: "Inter, sans-serif",
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
                         }}>
                             Bạn có thể thử, có thể sai, nhưng đừng mãi phí hoài thời gian, đánh mất cơ hội
                         </Typography>
@@ -178,24 +188,25 @@ const ReviewCVPage = () => {
                             fontWeight: 700,
                             fontSize: "18px",
                             fontFamily: "Inter, sans-serif",
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
                         }}>
                             Đi đúng hướng cùng GotchaJob ngay hôm nay!
                         </Typography>
                     </Stack>
                 </Stack>
             </Box>
-            <Box pt={7} px={30}>
+            <Box py={6} px={30}>
                 <Typography sx={{
                     fontWeight: 700,
                     fontSize: "28px",
                     fontFamily: "Inter, sans-serif",
-                    lineBreak: 0.6,
+                    letterSpacing: "0.05em",
                     textAlign: "center",
                 }}>
                     Lựa chọn <span style={{ color: '#00CCFF' }}>giải pháp</span> phù hợp <span style={{ color: '#00CCFF' }}>dành cho bạn</span>
                 </Typography>
             </Box>
-            <Grid container maxWidth={"100%"}>
+            <Grid container maxWidth={"100%"} sx={{ transform: "scale(1.4)" }}>
                 {serviceList.map((service) => (
                     <Grid item xs={12} sm={12} key={service.id}>
                         <FlexCenter>
