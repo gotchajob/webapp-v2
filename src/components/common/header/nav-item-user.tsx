@@ -15,9 +15,9 @@ import { useState } from "react";
 export const NavigationItem = () => {
 
   const navItemList = [
-    { name: "Dịch vụ", targetId: "serviceDiv", icon: ArrowDropDownIcon },
-    { name: "Đội ngũ", targetId: "mentorDiv", icon: ArrowDropDownIcon },
-    { name: "Blog", targetId: "blogDiv", icon: ArrowDropDownIcon },
+    { name: "Dịch vụ", targetId: "serviceDiv", icon: true },
+    { name: "Đội ngũ", targetId: "mentorDiv", icon: true },
+    { name: "Blog", targetId: "blogDiv", icon: true },
   ];
 
   const [activeNav, setActiveNav] = useState(false);

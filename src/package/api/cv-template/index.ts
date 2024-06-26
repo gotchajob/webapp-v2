@@ -31,3 +31,30 @@ export const GetCVTemplate = async (params: CVTemplateRequest) => {
         return errorSystem('Lấy thông tin thất bại', []);
     }
 };
+
+export interface PostCVTemplateRequest {
+    cvCategoryId: number,
+    templateJson: string,
+    name: string,
+    image: string,
+}
+
+export interface PostCVTemplateResponse {
+    status: string;
+    responseText: string;
+    data: string;
+}
+
+const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3MTkyMzg1MjAsImV4cCI6MTcxOTI4MTcyMH0.zjFwQW7TKuLUzYs0IX5osb7oPMAlGAQAyUEJO_3WJpg";
+
+export const PostCVTemplate = async (params: PostCVTemplateRequest) => {
+    try {
+        const res = await apiServerFetch(`/cv-template`, 'POST', params, token);
+        if (res.status === 'error') {
+            throw new Error('');
+        }
+        return res;
+    } catch (error: any) {
+        return errorSystem('Lấy thông tin thất bại', []);
+    }
+};

@@ -33,7 +33,7 @@ const data = [
 const CVTemplatePage = ({ params }: { params: { id: string } }) => {
   const cvTemplate: CVTemplateResponse = use(GetCVTemplate({ cvCategoryId: +params.id }));
 
-  const [selectId, setSelectId] = useState<number>(cvTemplate.data[1].id);
+  const [selectId, setSelectId] = useState<number>(cvTemplate.data[0]?.id);
 
   const categoryById: CVCategoryByIdResponse = use(GetCVCategoryById({ id: +params.id }));
 
@@ -47,10 +47,6 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
 
   const cvTempalteById: CVTemplateByIdResponse = use(GetCVTemplateById({ id: selectId }));
 
-  useEffect(() => {
-    console.log(" cvTempalteById :", cvTempalteById.data.templateJson);
-  }, [cvTempalteById])
-
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <MainCard boxShadow hover>
@@ -63,24 +59,24 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
           <Grid container spacing={2}>
             <Grid item xs={9}>
               {/* {selectCV ? (
-                <Box sx={{ textAlign: 'center' }}>
-                  <Image
-                    src={selectCV.img}
-                    alt={""}
-                    layout="intrinsic"
-                    width={800}
-                    height={1890}
-                    style={{
-                      borderRadius: 5,
-                      objectFit: 'cover',
-                      objectPosition: 'center'
-                    }}
-                  />
-                </Box>
               ) : (
                 <CVCurremtTemplate />
               )} */}
-              {/* {cvTempalteById && (<CreateCV onChangeCV={() => { }} cv={JSON.parse(cvTempalteById.data.templateJson)} cvRef={CVRef} />)} */}
+              {/* <Box sx={{ textAlign: 'center' }}>
+                <Image
+                  src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                  alt={""}
+                  layout="intrinsic"
+                  width={800}
+                  height={1890}
+                  style={{
+                    borderRadius: 5,
+                    objectFit: 'cover',
+                    objectPosition: 'center'
+                  }}
+                />
+              </Box> */}
+              {cvTempalteById && (<CreateCV onChangeCV={() => { }} cv={JSON.parse(cvTempalteById.data.templateJson)} cvRef={CVRef} />)}
               <Stack direction="row" spacing={1} sx={{ mt: 8 }} justifyContent="center" alignItems="center">
                 <StyledLink href={'/create-cv'}>
                   <Button variant="outlined" sx={{ minHeight: 40 }}>

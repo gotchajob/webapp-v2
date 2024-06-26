@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 export const NavigationItem = () => {
   const router = useRouter();
+
   const navItemList = [
     { name: 'Dịch vụ', targetId: 'serviceDiv', icon: ArrowDropDownIcon },
     { name: 'Tạo CV', targetId: 'create-cv', icon: ArrowDropDownIcon },
@@ -23,15 +24,14 @@ export const NavigationItem = () => {
 
   return (
     <>
-      {navItemList.map((navItem) => (
-        <Link href={`/${navItem.targetId}`} style={{ textDecoration: 'none' }}>
+      {navItemList.map((navItem, index) => (
+        <Link href={`/${navItem.targetId}`} style={{ textDecoration: 'none' }} key={index}>
           <FlexBetween
             sx={{ cursor: 'pointer' }}
             width={navItem.icon ? '170px' : 'fit-content'}
             p={1.5}
             pl={3}
             pr={3}
-            key={navItem.targetId}
           >
             <Text color={PRIMARYCOLOR} fontWeight={'bold'}>
               {navItem.name}

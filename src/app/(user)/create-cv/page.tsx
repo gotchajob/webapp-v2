@@ -19,88 +19,11 @@ import { StyledLink } from 'components/common/link/styled-link';
 import Image from 'next/image';
 import SubCard from 'ui-component/cards/SubCard';
 import { PRIMARYCOLOR } from 'components/common/config';
-import { CVCategoryResponse, GetCVCategory } from 'package/api/cv-category';
-import { use, useEffect } from 'react';
+import { CVCategory, CVCategoryResponse, GetCVCategory } from 'package/api/cv-category';
+import { use, useEffect, useState } from 'react';
+import { CVTemplateData } from 'components/cv-component/interface';
 
 const url = 'https://d3vpszern3jgjo.cloudfront.net/wp-content/uploads/2021/08/resume-reading-768x432.png';
-
-const data = [
-  {
-    title: 'IT',
-    job: 'Backend Development',
-    url: 'https://example.com/it-backend'
-  },
-  {
-    title: 'IT',
-    job: 'Frontend Development',
-    url: 'https://example.com/it-frontend'
-  },
-  {
-    title: 'Business',
-    job: 'Marketing',
-    url: 'https://example.com/business-marketing'
-  },
-  {
-    title: 'Business',
-    job: 'Product Management',
-    url: 'https://example.com/business-product-management'
-  },
-  {
-    title: 'Healthcare',
-    job: 'Internal Medicine Doctor',
-    url: 'https://example.com/healthcare-internal-medicine'
-  },
-  {
-    title: 'Healthcare',
-    job: 'Nurse',
-    url: 'https://example.com/healthcare-nurse'
-  },
-  {
-    title: 'Education',
-    job: 'Elementary School Teacher',
-    url: 'https://example.com/education-elementary-teacher'
-  },
-  {
-    title: 'Art',
-    job: 'Miss Universe',
-    url: 'https://example.com/art-miss-universe'
-  },
-  {
-    title: 'Art',
-    job: 'Comedian',
-    url: 'https://example.com/art-comedian'
-  },
-  {
-    title: 'Construction',
-    job: 'Architect',
-    url: 'https://example.com/construction-architect'
-  },
-  {
-    title: 'Construction',
-    job: 'Civil Engineer',
-    url: 'https://example.com/construction-civil-engineer'
-  },
-  {
-    title: 'Sports',
-    job: 'Football Player',
-    url: 'https://example.com/sports-football-player'
-  },
-  {
-    title: 'Sports',
-    job: 'Fitness Trainer',
-    url: 'https://example.com/sports-fitness-trainer'
-  },
-  {
-    title: 'Fashion',
-    job: 'Fashion Designer',
-    url: 'https://example.com/fashion-fashion-designer'
-  },
-  {
-    title: 'Fashion',
-    job: 'Model',
-    url: 'https://example.com/fashion-model'
-  }
-];
 
 const data_2 = [
   { title: 'IT' },
@@ -114,8 +37,19 @@ const data_2 = [
 ];
 
 export default function Page() {
-  
-  const CVCategory: CVCategoryResponse = use(GetCVCategory({}));
+
+  // const CVCategory: CVCategoryResponse = use(GetCVCategory({}));
+
+  const [CVCategory, setCVCategory] = useState<CVCategory[]>();
+
+  const fetchCVCategory = async () => {
+    const data = await GetCVCategory({});
+    setCVCategory(data.data);
+  }
+
+  useEffect(() => {
+    fetchCVCategory();
+  }, [])
 
   return (
     <>
@@ -186,7 +120,7 @@ export default function Page() {
 
         <Grid component={Box} container spacing={5} sx={{ my: 2 }}>
           {CVCategory &&
-            CVCategory.data.map((item, index) => (
+            CVCategory.map((item, index) => (
               <Grid item xs={3} key={index}>
                 <StyledLink href={`/create-cv/cv-template/${item.id}`}>
                   <SubCard sx={{ borderColor: PRIMARYCOLOR }}>
@@ -198,13 +132,13 @@ export default function Page() {
                       }}
                       spacing={1}
                     >
-                      {/* <Image
+                      <Image
                         width={100}
                         height={100}
                         alt="image"
                         src={'https://static.topcv.vn/v4/image/cv_builder/choose-cv-data/item/case.png'}
-                      ></Image> */}
-                      <WorkIcon sx={{ fontSize: 68, color: "#333333" }} />
+                      ></Image>
+                      {/* <WorkIcon sx={{ fontSize: 68, color: "#333333" }} /> */}
                       <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 'bold' }}>
                         {item.description}
                       </Typography>
@@ -216,7 +150,6 @@ export default function Page() {
                 </StyledLink>
               </Grid>
             ))}
-
           <Grid container item xs={12} justifyContent="center" alignItems="center" my={4}>
             <Pagination count={10} variant="text" shape="rounded" color="primary" />
           </Grid>
@@ -225,3 +158,5 @@ export default function Page() {
     </>
   );
 }
+
+

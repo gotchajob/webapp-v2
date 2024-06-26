@@ -14,6 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import SubCard from "ui-component/cards/SubCard";
+import { StyledLink } from "components/common/link/styled-link";
 
 const data = [
     { name: "Lê Khải Phú", createdAt: "27-08-2023 21:46 PM" },
@@ -35,7 +36,7 @@ const ManageCVPage = () => {
 
     return (
         <Grid container px={30} py={5}>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
                 <MainCard boxShadow hover>
                     <CardContent>
                         <Stack direction="row" justifyContent="space-between">
@@ -47,24 +48,26 @@ const ManageCVPage = () => {
                                 }}>
                                 CV đã tạo trên GotchaJob
                             </Typography>
-                            <Button sx={{
-                                color: '#FFFFFF',
-                                fontWeight: 700,
-                                fontSize: "15px",
-                                fontFamily: "Inter, sans-serif",
-                                borderRadius: 30,
-                                backgroundColor: '#59ABD9',
-                                '&:hover': {
-                                    backgroundColor: '#AAD4EB',
-                                },
-                            }}>
-                                <AddIcon sx={{
-                                    fontSize: "19px",
-                                    color: 'white',
-                                    paddingRight: "1px",
-                                }} />
-                                Tạo mới
-                            </Button>
+                            <StyledLink href={"/create-cv"}>
+                                <Button sx={{
+                                    color: '#FFFFFF',
+                                    fontWeight: 700,
+                                    fontSize: "15px",
+                                    fontFamily: "Inter, sans-serif",
+                                    borderRadius: 30,
+                                    backgroundColor: '#59ABD9',
+                                    '&:hover': {
+                                        backgroundColor: '#AAD4EB',
+                                    },
+                                }}>
+                                    <AddIcon sx={{
+                                        fontSize: "19px",
+                                        color: 'white',
+                                        paddingRight: "1px",
+                                    }} />
+                                    Tạo mới
+                                </Button>
+                            </StyledLink>
                         </Stack>
                         <Grid item spacing={2} my={2}>
                             <Stack direction="row" spacing={2} alignItems="center">
@@ -97,20 +100,6 @@ const ManageCVPage = () => {
                         <UserCVList CVList={data} />
                     </CardContent>
                 </MainCard>
-            </Grid>
-            <Grid item xs={4} px={2}>
-                <Stack direction={"column"} spacing={2}>
-                    <MainCard boxShadow hover>
-                        <CardContent>
-                            <Box sx={{ backgroundColor: "#AAD4EB", height: 200, width: "100%" }}></Box>
-                        </CardContent>
-                    </MainCard>
-                    <MainCard boxShadow hover>
-                        <CardContent>
-                            <Box sx={{ backgroundColor: "#AAD4EB", height: 200, width: "100%" }}></Box>
-                        </CardContent>
-                    </MainCard>
-                </Stack>
             </Grid>
         </Grid>
     );
