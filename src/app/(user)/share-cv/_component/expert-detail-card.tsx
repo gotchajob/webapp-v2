@@ -69,10 +69,10 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
           <Typography variant="h3">{expert.fullName}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Box sx={{ height: 50, overflow: 'auto' }}>
-            <Typography variant="caption" sx={{ color: 'grey.700' }}>
-              Bio
-            </Typography>
+          <Typography variant="caption" sx={{ color: 'grey.700' }}>
+            Bio
+          </Typography>
+          <Box sx={{ height: 65, overflow: 'auto' }}>
             <Typography variant="h6" sx={{ color: 'grey.700' }}>
               {expert?.bio || ''}
             </Typography>

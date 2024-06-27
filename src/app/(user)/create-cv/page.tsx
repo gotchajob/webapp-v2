@@ -20,7 +20,7 @@ import Image from 'next/image';
 import SubCard from 'ui-component/cards/SubCard';
 import { PRIMARYCOLOR } from 'components/common/config';
 import { CVCategory, CVCategoryResponse, GetCVCategory } from 'package/api/cv-category';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CVTemplateData } from 'components/cv-component/interface';
 
 const url = 'https://d3vpszern3jgjo.cloudfront.net/wp-content/uploads/2021/08/resume-reading-768x432.png';
