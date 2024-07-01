@@ -2,13 +2,11 @@
 
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { ServiceCard, ServiceCardParams } from "components/card/service-card/service-card";
 import { FlexCenter } from "components/common/box/flex-box";
+import { ServiceCard } from "./_components/service-card";
 
 
 const url = "https://info.practicelink.com/hubfs/July%20Week%201%20-%20How%20to%20review%20a%20CV.png#keepProtocol";
-
-const url2 = ''
 
 const data = [
     {
@@ -24,18 +22,6 @@ const data = [
         content: "sinh viên vừa tốt nghiệp loay hoay với lộ trình thăng tiến của bản thân."
     }
 ];
-
-const serviceList: ServiceCardParams[] = [{
-    id: "MockInterviewService",
-    image: "/assets/images/illu-1.png",
-    title: "Mock Interview",
-    rating: 5,
-    totalRating: 112,
-    useTime: 173,
-    price: 375000,
-    priceDes: "1 buổi phòng vấn",
-},
-]
 
 const ReviewCVPage = () => {
     return (<>
@@ -206,14 +192,12 @@ const ReviewCVPage = () => {
                     Lựa chọn <span style={{ color: '#00CCFF' }}>giải pháp</span> phù hợp <span style={{ color: '#00CCFF' }}>dành cho bạn</span>
                 </Typography>
             </Box>
-            <Grid container maxWidth={"100%"} sx={{ transform: "scale(1.4)" }}>
-                {serviceList.map((service) => (
-                    <Grid item xs={12} sm={12} key={service.id}>
-                        <FlexCenter>
-                            <ServiceCard params={service} />
-                        </FlexCenter>
-                    </Grid>
-                ))}
+            <Grid container maxWidth={"100%"} sx={{ transform: "scale(1.3)" }}>
+                <Grid item xs={12} sm={12}>
+                    <FlexCenter>
+                        <ServiceCard />
+                    </FlexCenter>
+                </Grid>
             </Grid>
         </Box>
     </>);
