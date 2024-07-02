@@ -11,12 +11,12 @@ export const useGetExpertMatching = (params: ExpertMatchingRequest) => {
       }
       setExpertMatchingList(data.data);
       console.log(data)
-    } catch (error: any) {}
-
-    useEffect(() => {
-      getClientExpertMatching();
-    }, []);
+    } catch (error: any) { }
   };
+  useEffect(() => {
+    getClientExpertMatching();
+  }, [params]);
+
   return {
     expertMatchingList
   };

@@ -16,7 +16,7 @@ const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/default_v2.png', title: 'Tiêu Chuẩn' }
 ];
 
-const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (id: number) => void, cvTemplate?: CVTemplate[] }) => {
+const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (id: number) => void, cvTemplate?: any }) => {
 
   const handleChangeTemplate = (id: number) => {
     if (onChangeTemplate) {
@@ -26,7 +26,7 @@ const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (
 
   return (
     <Grid container spacing={1}>
-      {cvTemplate && cvTemplate.map((template, index) => (
+      {cvTemplate && cvTemplate.map((template: any, index: number) => (
         <Grid item xs={6} key={index} onClick={() => handleChangeTemplate(template.id)}>
           <Stack
             spacing={1}

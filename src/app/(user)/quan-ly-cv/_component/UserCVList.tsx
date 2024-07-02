@@ -12,7 +12,7 @@ const UserCVList = ({ CVList }: { CVList?: any[] }) => {
     return (
         <Grid container spacing={2}>
             {CVList?.map((item, index) => (
-                <Grid item xs={6} key={index}>
+                <Grid item xs={4} key={index}>
                     <Box
                         sx={{
                             position: 'relative',

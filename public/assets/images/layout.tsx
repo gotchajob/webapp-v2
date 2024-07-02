@@ -1,5 +1,6 @@
-import { FlexCenter } from "@/components/common/flex-box";
+
 import Grid from "@mui/material/Grid";
+import { FlexCenter } from "components/common/box/flex-box";
 import { ReactNode } from "react";
 
 export default async function Layout({ children }: { children: ReactNode }) {

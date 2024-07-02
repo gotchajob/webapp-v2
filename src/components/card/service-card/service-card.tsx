@@ -216,7 +216,7 @@ export const ServiceCard = ({ params }: { params: ServiceCardParams }) => {
                 </FlexCenter>
                 <FlexCenter>
                   <ContainedButton onClick={() => { }}>
-                    {params.price === 0 ? "Trải nghiệm ngay" : "Mua ngay"}
+                    {params.title === "Tạo CV" ? "Tạo ngay" : "Đăng ký ngay"}
                   </ContainedButton>
                 </FlexCenter>
               </FlexBox>
