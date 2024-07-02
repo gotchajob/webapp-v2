@@ -54,115 +54,113 @@ const prodImage = '/assets/images/e-commerce';
 
 // product color select
 function getColor(color: string) {
-    return ColorsOptions.filter((item) => item.value === color);
+  return ColorsOptions.filter((item) => item.value === color);
 }
 
 // ==============================|| CHECKOUT PAYMENT - MAIN ||============================== //
 
 const expertBooking = [
-    {
-        userId: 1,
-        fullName: 'Anshan Handgun',
-        avatar: `/assets/images/users/avatar-3.png`,
-        email: 'anshan.handgun@example.com',
-        yearExperience: 10,
-        nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
-        point: 5,
-        bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
-        skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
-    },
+  {
+    userId: 1,
+    fullName: 'Anshan Handgun',
+    avatar: `/assets/images/users/avatar-3.png`,
+    email: 'anshan.handgun@example.com',
+    yearExperience: 10,
+    nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
+    point: 5,
+    bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
+    skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
+  }
 ];
 
 const BookingInformataion = {
-    expert: {
-        userId: 1,
-        fullName: 'Anshan Handgun',
-        avatar: `/assets/images/users/avatar-3.png`,
-        email: 'anshan.handgun@example.com',
-        yearExperience: 10,
-        nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
-        point: 5,
-        bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
-        skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
-    },
-    start: '2024-07-02T09:00:00',
-    end: '2024-07-02T10:00:00',
-    skillsExpert: [
-        { label: 'ReactJS', id: 4 },
-        { label: 'React Native', id: 5 },
-    ],
-    amount: 375000
+  expert: {
+    userId: 1,
+    fullName: 'Anshan Handgun',
+    avatar: `/assets/images/users/avatar-3.png`,
+    email: 'anshan.handgun@example.com',
+    yearExperience: 10,
+    nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
+    point: 5,
+    bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
+    skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
+  },
+  start: '2024-07-02T09:00:00',
+  end: '2024-07-02T10:00:00',
+  skillsExpert: [
+    { label: 'ReactJS', id: 4 },
+    { label: 'React Native', id: 5 }
+  ],
+  amount: 375000
 };
 
 interface PaymentProps {
-    checkout: CartCheckoutStateProps;
-    onBack: () => void;
-    onNext: () => void;
-    handleShippingCharge: (type: string) => void;
+  checkout: CartCheckoutStateProps;
+  onBack: () => void;
+  onNext: () => void;
+  handleShippingCharge: (type: string) => void;
 }
 
 const BookInvoicePage = ({ checkout, onBack, onNext, handleShippingCharge }: PaymentProps) => {
-    const [type, setType] = useState(checkout?.payment.type);
-    const [payment, setPayment] = useState(checkout?.payment.method);
-    const [rows, setRows] = useState(checkout?.products);
-    const [cards, setCards] = useState(checkout?.payment.card);
+  const [type, setType] = useState(checkout?.payment.type);
+  const [payment, setPayment] = useState(checkout?.payment.method);
+  const [rows, setRows] = useState(checkout?.products);
+  const [cards, setCards] = useState(checkout?.payment.card);
 
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const [complete, setComplete] = useState(checkout?.step > 2);
+  const [complete, setComplete] = useState(checkout?.step > 2);
 
-    useEffect(() => {
-        setRows(checkout?.products);
-    }, [checkout?.products]);
+  useEffect(() => {
+    setRows(checkout?.products);
+  }, [checkout?.products]);
 
-    return (
-        <MainCard px={20}>
-            <Grid container spacing={gridSpacing} justifyContent="center" alignItems="center" my={5}>
-                <Grid item xs={12} md={6} lg={8} xl={9}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1">Thông tin đặt lịch</Typography>
-                        </Grid>
-                        <Grid item xs={6} >
-                            <BookingInformationCard bookinginfo={BookingInformataion} />
-                        </Grid>
-                        <Grid item xs={6} >
-                            {expertBooking?.map((expert, index) => (
-                                <Box px={10} key={index}>
-                                    <ExpertBookCard expert={expert} />
-                                </Box>
-                            ))}
-                        </Grid>
-                        <Grid item xs={12} mt={2} px={10}>
-                            <Grid container spacing={3} alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                    <StyledLink href="/expert-profile/1">
-                                        <Button color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />} >
-                                            Hủy đặt lịch
-                                        </Button>
-                                    </StyledLink>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained" >
-                                        Hoàn thành đặt lịch
-                                    </Button>
-                                    <OrderComplete open={complete} />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
+  return (
+    <MainCard px={20}>
+      <Grid container spacing={gridSpacing} justifyContent="center" alignItems="center" my={5}>
+        <Grid item xs={12} md={6} lg={8} xl={9}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">Thông tin đặt lịch</Typography>
             </Grid>
-        </MainCard>
-    );
+            <Grid item xs={6}>
+              <BookingInformationCard bookinginfo={BookingInformataion} />
+            </Grid>
+            <Grid item xs={6}>
+              {expertBooking?.map((expert: any, index) => (
+                <Box px={10} key={index}>
+                  <ExpertBookCard expert={expert} />
+                </Box>
+              ))}
+            </Grid>
+            <Grid item xs={12} mt={2} px={10}>
+              <Grid container spacing={3} alignItems="center" justifyContent="space-between">
+                <Grid item>
+                  <StyledLink href="/expert-profile/1">
+                    <Button color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                      Hủy đặt lịch
+                    </Button>
+                  </StyledLink>
+                </Grid>
+                <Grid item>
+                  <Button variant="contained">Hoàn thành đặt lịch</Button>
+                  <OrderComplete open={complete} />
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </MainCard>
+  );
 };
 
 export default BookInvoicePage;
