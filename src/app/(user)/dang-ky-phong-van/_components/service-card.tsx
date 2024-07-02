@@ -58,7 +58,7 @@ export const ServiceCard = () => {
 
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
-  const [walletBalance, setWalletBalance] = useState(400000);
+  const [walletBalance, setWalletBalance] = useState(375000);
 
   const [openRequire, setOpenRequire] = useState(false);
 

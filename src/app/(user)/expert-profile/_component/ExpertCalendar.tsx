@@ -3,52 +3,81 @@
 import { useEffect, useRef, useState } from 'react';
 
 // material-ui
-import { Theme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
-import FullCalendar from '@fullcalendar/react';
-import listPlugin from '@fullcalendar/list';
+import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
-import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
-import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
-
 import { FormikValues } from 'formik';
 
 // project imports
-import Toolbar from 'components/application/calendar/Toolbar';
-import AddEventForm from 'components/application/calendar/AddEventForm';
+import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
-
-import Loader from 'ui-component/Loader';
-import MainCard from 'ui-component/cards/MainCard';
-import SubCard from 'ui-component/cards/SubCard';
-
 import { dispatch, useSelector } from 'store';
-import { getEvents, addEvent, updateEvent, removeEvent } from 'store/slices/calendar';
-
-// assets
-import AddAlarmTwoToneIcon from '@mui/icons-material/AddAlarmTwoTone';
-
-// types
+import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
 import { DateRange } from 'types';
-import { Box } from '@mui/material';
+import Loader from 'ui-component/Loader';
+import SubCard from 'ui-component/cards/SubCard';
+import AddEventOnExpertCalendar from './AddEventForm';
 import ExpertToolbar from './Toolbar';
+import { StyledLink } from 'components/common/link/styled-link';
 
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
+const fakeEvents = [
+    {
+        title: 'Available Slot',
+        description: 'This slot is available',
+        color: '#198754',
+        textColor: '#ffffff',
+        start: '2024-07-02T09:00:00',
+        end: '2024-07-02T10:00:00'
+    },
+    {
+        title: 'Available Slot',
+        description: 'This slot is available',
+        color: '#198754',
+        textColor: '#ffffff',
+        start: '2024-07-04T09:00:00',
+        end: '2024-07-04T10:00:00'
+    },
+    {
+        title: 'Interview - CV Review',
+        description: 'Reviewing CVs for interviews',
+        color: '#ED4337',
+        textColor: '#ffffff',
+        start: '2024-07-03T14:00:00',
+        end: '2024-07-03T15:00:00'
+    },
+    {
+        title: 'Interview - CV Review',
+        description: 'Reviewing CVs for interviews',
+        color: '#ED4337',
+        textColor: '#ffffff',
+        start: '2024-07-05T14:00:00',
+        end: '2024-07-05T15:00:00'
+    },
+];
+
+
+
 const ExpertCalendarPage = () => {
     const calendarRef = useRef<FullCalendar>(null);
+
     const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
     const [loading, setLoading] = useState<boolean>(true);
 
     // fetch events data
     const [events, setEvents] = useState<FormikValues[]>([]);
+
     const calendarState = useSelector((state) => state.calendar);
 
     useEffect(() => {
@@ -183,14 +212,11 @@ const ExpertCalendarPage = () => {
         }
     };
 
-    const handleAddClick = () => {
-        setIsModalOpen(true);
-    };
-
     if (loading) return <Loader />;
 
     return (
         <Box px={15} py={5}>
+
             <CalendarStyled>
                 <ExpertToolbar
                     date={date}
@@ -206,7 +232,7 @@ const ExpertCalendarPage = () => {
                         editable
                         droppable
                         selectable
-                        events={events}
+                        events={fakeEvents}
                         ref={calendarRef}
                         rerenderDelay={10}
                         initialDate={date}
@@ -226,10 +252,38 @@ const ExpertCalendarPage = () => {
                 </SubCard>
             </CalendarStyled>
 
-            {/* Dialog renders its body even if not open */}
-            <Dialog maxWidth="sm" fullWidth onClose={handleModalClose} open={isModalOpen} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
+            {/* Dialog xác nhận book lịch */}
+            <Dialog
+                open={isModalOpen}
+                onClose={handleModalClose}
+            >
+                <DialogTitle>Xác nhận đặt lịch</DialogTitle>
+                <DialogContent>
+                    <DialogContentText >
+                        Bạn muốn đặt chuyên gia Anshan Handgun interview CV của bạn?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleModalClose} color="error">
+                        Đóng
+                    </Button>
+                    <StyledLink href="/book-invoice/1">
+                    <Button color="success">
+                        Đặt lịch
+                    </Button>
+                    </StyledLink>
+                </DialogActions>
+            </Dialog>
+        </Box>
+    );
+};
+
+export default ExpertCalendarPage;
+
+{/* Dialog thêm sự kiện */ }
+{/* <Dialog maxWidth="sm" fullWidth onClose={handleModalClose} open={isModalOpen} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
                 {isModalOpen && (
-                    <AddEventForm
+                    <AddEventOnExpertCalendar
                         event={selectedEvent}
                         range={selectedRange}
                         onCancel={handleModalClose}
@@ -238,9 +292,4 @@ const ExpertCalendarPage = () => {
                         handleUpdate={handleUpdateEvent}
                     />
                 )}
-            </Dialog>
-        </Box>
-    );
-};
-
-export default ExpertCalendarPage;
+            </Dialog> */}

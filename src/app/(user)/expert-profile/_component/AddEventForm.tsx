@@ -55,7 +55,6 @@ const getInitialValues = (event: FormikValues | null, range: DateRange | null) =
   if (event || range) {
     return _.merge({}, newEvent, event);
   }
-
   return newEvent;
 };
 
@@ -72,6 +71,7 @@ interface AddEventFormProps {
 
 const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, handleUpdate, onCancel }: AddEventFormProps) => {
   const theme = useTheme();
+  
   const isCreating = !event;
 
   const backgroundColor = [
@@ -82,120 +82,18 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
     },
     {
       value: theme.palette.error.main,
-      color: 'error.main'
+      color: 'error.main',
+      label: 'Booked'
     },
     {
       value: theme.palette.success.dark,
-      color: 'success.dark'
-    },
-    {
-      value: theme.palette.secondary.main,
-      color: 'secondary.main'
+      color: 'success.dark',
+      label: 'Rảnh'
     },
     {
       value: theme.palette.warning.dark,
       color: 'warning.dark'
     },
-    {
-      value: theme.palette.orange.dark,
-      color: 'orange.dark'
-    },
-    {
-      value: theme.palette.grey[500],
-      color: 'grey.500'
-    },
-    {
-      value: theme.palette.primary.light,
-      color: 'primary.light'
-    },
-    {
-      value: theme.palette.error.light,
-      color: 'error.light'
-    },
-    {
-      value: theme.palette.success.light,
-      color: 'success.light'
-    },
-    {
-      value: theme.palette.secondary.light,
-      color: 'secondary.light'
-    },
-    {
-      value: theme.palette.warning.light,
-      color: 'warning.light'
-    },
-    {
-      value: theme.palette.orange.light,
-      color: 'orange.light'
-    }
-  ];
-
-  const textColor = [
-    {
-      value: theme.palette.error.light,
-      color: 'error.light',
-      label: ''
-    },
-    {
-      value: theme.palette.success.light,
-      color: 'success.light',
-      label: ''
-    },
-    {
-      value: theme.palette.secondary.light,
-      color: 'secondary.light',
-      label: ''
-    },
-    {
-      value: theme.palette.warning.light,
-      color: 'warning.light',
-      label: ''
-    },
-    {
-      value: theme.palette.orange.light,
-      color: 'orange.light',
-      label: ''
-    },
-    {
-      value: theme.palette.primary.light,
-      color: 'primary.light',
-      label: ''
-    },
-    {
-      value: theme.palette.primary.main,
-      color: 'primary.main',
-      label: ''
-    },
-    {
-      value: theme.palette.error.main,
-      color: 'error.main',
-      label: ''
-    },
-    {
-      value: theme.palette.success.dark,
-      color: 'success.dark',
-      label: ''
-    },
-    {
-      value: theme.palette.secondary.main,
-      color: 'secondary.main',
-      label: ''
-    },
-    {
-      value: theme.palette.warning.dark,
-      color: 'warning.dark',
-      label: ''
-    },
-    {
-      value: theme.palette.orange.dark,
-      color: 'orange.dark',
-      label: ''
-    },
-    {
-      value: theme.palette.grey[500],
-      color: 'grey.500',
-      label: ''
-    }
   ];
 
   const EventSchema = Yup.object().shape({
@@ -243,14 +141,14 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
     <FormikProvider value={formik}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <DialogTitle>{event ? 'Edit Event' : 'Add Event'}</DialogTitle>
+          <DialogTitle>{event ? 'Sửa lịch phỏng vấn' : 'Thêm lịch phỏng vấn'}</DialogTitle>
           <Divider />
           <DialogContent sx={{ p: 3 }}>
             <Grid container spacing={gridSpacing}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Title"
+                  label="Tiêu đề"
                   {...getFieldProps('title')}
                   error={Boolean(touched.title && errors.title)}
                   helperText={touched.title && errors.title}
@@ -267,12 +165,9 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
                   helperText={touched.description && (errors.description as string)}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel control={<Switch checked={values.allDay} {...getFieldProps('allDay')} />} label="All day" />
-              </Grid>
               <Grid item xs={12} md={6}>
                 <MobileDateTimePicker
-                  label="Start date"
+                  label="Từ"
                   value={new Date(values.start)}
                   format="dd/MM/yyyy hh:mm a"
                   onChange={(date) => setFieldValue('start', date)}
@@ -292,7 +187,7 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
               </Grid>
               <Grid item xs={12} md={6}>
                 <MobileDateTimePicker
-                  label="End date"
+                  label="Đến"
                   value={new Date(values.end)}
                   format="dd/MM/yyyy hh:mm a"
                   onChange={(date) => setFieldValue('end', date)}
@@ -313,7 +208,7 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1">Background Color</Typography>
+                    <Typography variant="subtitle1">Trạng thái</Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl>
@@ -326,30 +221,6 @@ const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, ha
                         sx={{ '& .MuiFormControlLabel-root': { mr: 0 } }}
                       >
                         {backgroundColor.map((item, index) => (
-                          <ColorPalette key={index} value={item.value} color={item.color} label={item.label!} />
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1">Text Color</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl component="fieldset">
-                      <RadioGroup
-                        row
-                        aria-label="textColor"
-                        {...getFieldProps('textColor')}
-                        onChange={(e) => setFieldValue('textColor', e.target.value)}
-                        name="text-color-radio-buttons-group"
-                        sx={{ '& .MuiFormControlLabel-root': { mr: 0 } }}
-                      >
-                        <FormControlLabel value="" control={<Radio color="default" />} label="Default" sx={{ pr: 1 }} />
-                        {textColor.map((item, index) => (
                           <ColorPalette key={index} value={item.value} color={item.color} label={item.label!} />
                         ))}
                       </RadioGroup>
