@@ -26,6 +26,8 @@ import { LoadingButton } from '@mui/lab';
 import { useGetSkill } from 'hooks/use-get-skill';
 import { Skill } from 'package/api/skill';
 import { SkillOption } from 'package/api/skill-option';
+import SubCard from 'ui-component/cards/SubCard';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import { Category } from 'package/api/category';
 import { handleClientScriptLoad } from 'next/script';
 
@@ -181,6 +183,21 @@ export default function Page() {
                 </TreeItem>
               ))}
             </TreeView>
+          </Grid>
+          <Grid item xs={12}>
+            <SubCard title="Tùy chọn ưu tiên phù hợp">
+              <Grid container spacing={2}>
+                <Grid item>
+                  <FormControlLabel control={<Checkbox color="primary" />} label="Quốc gia" />
+                </Grid>
+                <Grid item>
+                  <FormControlLabel control={<Checkbox color="primary" />} label="Kỹ năng" />
+                </Grid>
+                <Grid item>
+                  <FormControlLabel control={<Checkbox color="primary" />} label="Năm kinh nghiệm" />
+                </Grid>
+              </Grid>
+            </SubCard>
           </Grid>
 
           <Grid item xs={12} justifyContent={'center'} display={'flex'}>

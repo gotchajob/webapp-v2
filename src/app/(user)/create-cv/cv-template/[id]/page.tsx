@@ -1,15 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Box, Button, CardContent, CardHeader, Container, Divider, Grid, Typography, Stack, Paper } from '@mui/material';
-import MainCard from 'ui-component/cards/MainCard';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Image from 'next/image';
-import SubCard from 'ui-component/cards/SubCard';
-import SideCVTemplate from './_component/SideCVTemplate';
+import { Box, Button, CardContent, Container, Divider, Grid, Stack, Typography } from '@mui/material';
 import { StyledLink } from 'components/common/link/styled-link';
-import CVCurremtTemplate from './_component/CVTemplate';
-import GuidePage from './_component/Guide';
+import { CreateCV } from 'components/cv-component/cv';
+import { CVCategoryByIdResponse, GetCVCategoryById } from 'package/api/cv-category/id';
+import { CVTemplateResponse, GetCVTemplate } from 'package/api/cv-template';
+import { CVTemplateByIdResponse, GetCVTemplateById } from 'package/api/cv-template/id';
+import { useEffect, useRef, useState } from 'react';
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import GuidePage from '../_component/Guide';
+import SideCVTemplate from '../_component/SideCVTemplate';
+import { CustomerToken } from 'hooks/use-login';
+import { UseGetCVTemplate, UseGetCVTemplateById } from 'hooks/use-get-cv-template';
+import { UseGetCategoryById } from 'hooks/use-get-category-by-id';
+import Image from 'next/image';
 
 const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png', title: 'Thành Đạt' },
@@ -24,45 +30,46 @@ const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/default_v2.png', title: 'Tiêu Chuẩn' }
 ];
 
-const CVTemplatePage = () => {
-  const [selectCV, setSelectCV] = useState<{ img: string; title: string } | undefined>();
+const CVTemplatePage = ({ params }: { params: { id: string } }) => {
 
-  const handleChangeTemplate = (template: { img: string; title: string }) => {
-    if (template) {
-      const newTemplate = data.find((item) => item.title === template.title);
-      setSelectCV(newTemplate);
+  const CVRef = useRef(null);
+
+  const { customerToken } = CustomerToken();
+
+  const { categoryById, loading: UseGetCategoryByIdLoading } = UseGetCategoryById({ id: +params.id });
+
+  const { CVTemplateList, loading: UseGetCVTemplateLoading } = UseGetCVTemplate({ cvCategoryId: +params.id })
+
+  const [selectId, setSelectId] = useState<number>(CVTemplateList[0]?.id);
+
+  const handleChangeTemplate = (id: number) => {
+    if (id) {
+      setSelectId(id);
     }
   };
 
+  useEffect(() => {
+    if (CVTemplateList.length > 0) {
+      setSelectId(+CVTemplateList[0]?.id);
+    }
+  }, [CVTemplateList]);
+
+  const { CVTemplateById, loading } = UseGetCVTemplateById({ id: selectId });
+
+  useEffect(() => { console.log("CVTemplateById:", CVTemplateById) }, [CVTemplateById]);
+  
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <MainCard boxShadow hover>
         <CardContent>
-          <Typography variant="h2">Mẫu CV</Typography>
+          <Typography variant="h2">Mẫu CV {categoryById ? categoryById.description : ''}</Typography>
           <Typography variant="subtitle1" color="textSecondary">
             Tuyển chọn các mẫu CV xin việc ấn tượng nhất. Chi tiết cách viết CV hiệu quả cùng GotchaJob.
           </Typography>
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={2}>
             <Grid item xs={9}>
-              {selectCV ? (
-                <Box sx={{ textAlign: 'center' }}>
-                  <Image
-                    src={selectCV.img}
-                    alt={selectCV.title}
-                    layout="intrinsic"
-                    width={800}
-                    height={1890}
-                    style={{
-                      borderRadius: 5,
-                      objectFit: 'cover',
-                      objectPosition: 'center'
-                    }}
-                  />
-                </Box>
-              ) : (
-                <CVCurremtTemplate />
-              )}
+              {CVTemplateById && CVTemplateById.templateJson !== undefined && (<CreateCV onChangeCV={() => { }} cv={JSON.parse(CVTemplateById.templateJson)} cvRef={CVRef} />)}
               <Stack direction="row" spacing={1} sx={{ mt: 8 }} justifyContent="center" alignItems="center">
                 <StyledLink href={'/create-cv'}>
                   <Button variant="outlined" sx={{ minHeight: 40 }}>
@@ -70,7 +77,7 @@ const CVTemplatePage = () => {
                     Danh sách mẫu CV
                   </Button>
                 </StyledLink>
-                <StyledLink href={'/create-cv/1'}>
+                <StyledLink href={customerToken !== '' ? '/create-cv/1' : '/login'}>
                   <Button variant="contained" sx={{ minHeight: 40 }}>
                     Tạo CV với thiết kế này
                   </Button>
@@ -79,13 +86,12 @@ const CVTemplatePage = () => {
             </Grid>
             <Grid item xs={3}>
               <SubCard title="Lựa chọn kiểu thiết kế phù hợp với bạn nhất">
-                <SideCVTemplate onChangeTemplate={handleChangeTemplate} />
+                <SideCVTemplate onChangeTemplate={handleChangeTemplate} cvTemplate={CVTemplateList ? CVTemplateList : undefined} />
               </SubCard>
             </Grid>
           </Grid>
         </CardContent>
       </MainCard>
-
       <GuidePage />
     </Container>
   );

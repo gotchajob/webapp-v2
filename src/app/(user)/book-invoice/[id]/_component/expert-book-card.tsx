@@ -12,6 +12,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 
 // project imports
 import { gridSpacing } from 'store/constant';
@@ -35,14 +36,14 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 // ==============================|| USER DETAILS CARD ||============================== //
 
-const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
+const ExpertBookCard = ({ expert }: { expert: ExpertMatching }) => {
   const theme = useTheme();
   const formatNation = () => {
-    let nation: string[] = [];
+    let nation = '';
     expert.nationSupport.forEach((e) => {
-      nation.push(e.nation);
+      nation = nation + e.nation;
     });
-    return nation.join(', ');
+    return nation;
   };
   return (
     <Card
@@ -91,8 +92,8 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <StyledLink href="/expert-profile/1">
-                <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
-                  Book
+                <Button variant="outlined" fullWidth startIcon={<PermIdentityIcon />}>
+                  Thông tin chuyên gia
                 </Button>
               </StyledLink>
             </Grid>
@@ -103,4 +104,4 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
   );
 };
 
-export default ExpertDetailCard;
+export default ExpertBookCard;

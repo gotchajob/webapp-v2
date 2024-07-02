@@ -5,35 +5,35 @@ import { ContainedButton } from "components/common/button/button";
 import { Input } from "components/common/input/input";
 import { useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
-import { AdviceServiceRequest, AdviceServiceResponse } from "package/api/advice-service";
+// import { AdviceServiceRequest, AdviceServiceResponse } from "package/api/advice-service";
 import { apiClientFetch } from "package/api/api-fetch";
 import * as yup from "yup";
 
 export const ContactForm = () => {
   const handleSubmitForm = async (values: any) => {
-    try {
-      const params: AdviceServiceRequest = {
-        advise: values.description,
-        email: values.email,
-        phone: values.phone,
-        fullName: values.name
-      }
-      const data: AdviceServiceResponse = await apiClientFetch(
-        "/api/advice-service",
-        params
-      );
-      if (data.status === "error") {
-        throw new Error(data.responseText);
-      }
-      enqueueSnackbar("Đã gửi thành công", {
-        variant: "success",
-      });
-    } catch (error: any) {
-      enqueueSnackbar(error.message, {
-        variant: "error",
-      });
-    } finally {
-    }
+    // try {
+    //   const params: AdviceServiceRequest = {
+    //     advise: values.description,
+    //     email: values.email,
+    //     phone: values.phone,
+    //     fullName: values.name
+    //   }
+    //   const data: AdviceServiceResponse = await apiClientFetch(
+    //     "/api/advice-service",
+    //     params
+    //   );
+    //   if (data.status === "error") {
+    //     throw new Error(data.responseText);
+    //   }
+    //   enqueueSnackbar("Đã gửi thành công", {
+    //     variant: "success",
+    //   });
+    // } catch (error: any) {
+    //   enqueueSnackbar(error.message, {
+    //     variant: "error",
+    //   });
+    // } finally {
+    // }
   };
   const initialValues = {
     name: "",

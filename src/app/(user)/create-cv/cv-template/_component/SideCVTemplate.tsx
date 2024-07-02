@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, Stack } from '@mui/material';
 import Image from 'next/image';
+import { CVTemplate } from 'package/api/cv-template';
 
 const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png', title: 'Thành Đạt' },
@@ -15,18 +16,18 @@ const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/default_v2.png', title: 'Tiêu Chuẩn' }
 ];
 
-const SideCVTemplate = ({ onChangeTemplate }: { onChangeTemplate?: (template: { img: string; title: string }) => void }) => {
-  const handleChangeTemplate = (index: number) => {
-    const newTemplate = data[index];
+const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (id: number) => void, cvTemplate?: any }) => {
+
+  const handleChangeTemplate = (id: number) => {
     if (onChangeTemplate) {
-      onChangeTemplate(newTemplate);
+      onChangeTemplate(id);
     }
   };
 
   return (
     <Grid container spacing={1}>
-      {data.map((template, index) => (
-        <Grid item xs={6} key={index} onClick={() => handleChangeTemplate(index)}>
+      {cvTemplate && cvTemplate.map((template: any, index: number) => (
+        <Grid item xs={6} key={index} onClick={() => handleChangeTemplate(template.id)}>
           <Stack
             spacing={1}
             justifyContent="center"
@@ -44,8 +45,8 @@ const SideCVTemplate = ({ onChangeTemplate }: { onChangeTemplate?: (template: { 
           >
             <Box>
               <Image
-                src={template.img}
-                alt={template.title}
+                src={"https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png"}
+                alt={template.name}
                 width={95}
                 height={95}
                 style={{
@@ -56,7 +57,7 @@ const SideCVTemplate = ({ onChangeTemplate }: { onChangeTemplate?: (template: { 
               />
             </Box>
             <Typography fontSize={16} align="center">
-              {template.title}
+              {template.name}
             </Typography>
           </Stack>
         </Grid>

@@ -85,7 +85,7 @@ const BlogDetailsCard = ({
   title,
   thumbnail,
   shortDescription,
-  createAt,
+  createdAt,
   profile
 
 }: BlogList) => {
@@ -138,7 +138,7 @@ const BlogDetailsCard = ({
 
   React.useEffect(() => {
     console.log("Thằng card blog nè")
-  },[])
+  }, [])
 
   return (
     <Card
@@ -178,7 +178,7 @@ const BlogDetailsCard = ({
                 </Typography>
               ))}
             </Grid> */}
-            {/* <Grid item xs={12}>
+        {/* <Grid item xs={12}>
               <Typography variant="caption">Tags</Typography>
               {tags.map((tag: BlogTag) => (
                 <Typography key={tag.id} variant="h6">
@@ -192,7 +192,7 @@ const BlogDetailsCard = ({
           <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
               <Typography variant="caption">Published</Typography>
-              <Typography variant="h6">{createAt}</Typography>
+              <Typography variant="h6">{createdAt}</Typography>
             </Grid>
             {/* <Grid item xs={6}>
               <Typography variant="caption">Last Updated</Typography>

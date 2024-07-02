@@ -125,7 +125,7 @@ export const CreateCV = ({ cv, onChangeCV, cvRef }: { cv: CVTemplate; onChangeCV
   };
   return (
     <Grid ref={cvRef} container maxWidth={800} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
-      {cv.layout.map((column, columnIndex) => {
+      {cv && cv.layout.map((column, columnIndex) => {
         return (
           <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.backgroudColor} borderRadius={'inherit'}>
             {column.componentList.map((component, componentIndex) => {
