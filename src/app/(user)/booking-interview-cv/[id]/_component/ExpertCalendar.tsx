@@ -18,16 +18,18 @@ import timelinePlugin from '@fullcalendar/timeline';
 import { FormikValues } from 'formik';
 
 // project imports
-import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import { dispatch, useSelector } from 'store';
 import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
 import { DateRange } from 'types';
 import Loader from 'ui-component/Loader';
 import SubCard from 'ui-component/cards/SubCard';
-import AddEventOnExpertCalendar from './AddEventForm';
-import ExpertToolbar from './Toolbar';
+import AddEventOnExpertCalendar from '../../_component/AddEventForm';
+import ExpertToolbar from '../../_component/Toolbar';
 import { StyledLink } from 'components/common/link/styled-link';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
@@ -66,9 +68,7 @@ const fakeEvents = [
     },
 ];
 
-
-
-const ExpertCalendarPage = () => {
+const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
     const calendarRef = useRef<FullCalendar>(null);
 
     const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -215,8 +215,7 @@ const ExpertCalendarPage = () => {
     if (loading) return <Loader />;
 
     return (
-        <Box px={15} py={5}>
-
+        <Box px={2} py={1}>
             <CalendarStyled>
                 <ExpertToolbar
                     date={date}
@@ -252,6 +251,21 @@ const ExpertCalendarPage = () => {
                 </SubCard>
             </CalendarStyled>
 
+            <Grid item xs={12} mt={3} >
+                <Grid container spacing={3} alignItems="center" justifyContent="space-between">
+                    <Grid item>
+                        <StyledLink href="/share-cv">
+                            <Button color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                                Hủy đặt lịch
+                            </Button>
+                        </StyledLink>
+                    </Grid>
+                    {/* <Grid item>
+                        <Button variant="contained" endIcon={<KeyboardTabIcon />}>Tiếp tục</Button>
+                    </Grid> */}
+                </Grid>
+            </Grid>
+
             {/* Dialog xác nhận book lịch */}
             <Dialog
                 open={isModalOpen}
@@ -267,11 +281,9 @@ const ExpertCalendarPage = () => {
                     <Button onClick={handleModalClose} color="error">
                         Đóng
                     </Button>
-                    <StyledLink href="/book-invoice/1">
-                    <Button color="success">
+                    <Button color="success" onClick={() => { if (onNext) { onNext(); } }}>
                         Đặt lịch
                     </Button>
-                    </StyledLink>
                 </DialogActions>
             </Dialog>
         </Box>
