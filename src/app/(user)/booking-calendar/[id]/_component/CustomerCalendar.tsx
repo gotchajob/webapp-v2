@@ -6,7 +6,7 @@ import { Box, Dialog } from "@mui/material";
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import Loader from "ui-component/Loader";
 import SubCard from "ui-component/cards/SubCard";
-import CustomerToolbar from "./_component/Toolbar";
+import CustomerToolbar from "../../_component/Toolbar";
 import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -24,7 +24,7 @@ import { dispatch, useSelector } from 'store';
 import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
 import { DateRange } from 'types';
 import { useEffect, useRef, useState } from "react";
-import CustomerCalendarAddEvent from "./_component/AddEventForm";
+import CustomerCalendarAddEvent from "../../_component/AddEventForm";
 
 const fakeEvents = [
     {
@@ -61,7 +61,7 @@ const fakeEvents = [
     },
 ];
 
-const BookingCalendar = () => {
+const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSelectEvent: (event: any) => void }) => {
     const calendarRef = useRef<FullCalendar>(null);
 
     const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -163,20 +163,15 @@ const BookingCalendar = () => {
     };
 
     const handleEventSelect = (arg: EventClickArg) => {
-        console.log("handleEventSelect:", arg.event._def.title);
-        // if (arg.event.id) {
-        //     const selectEvent = events.find((_event: FormikValues) => _event.id === arg.event.id);
-        //     setSelectedEvent(selectEvent as FormikValues[]);
-        // } else {
-        //     setSelectedEvent(null);
-        // }
         if (arg) {
             const selectEvent = fakeEvents.find((_event) => _event.title === arg.event._def.title);
-            setSelectedEvent(selectEvent || null);
-        } else {
-            setSelectedEvent(null);
+            if (onSelectEvent) {
+                onSelectEvent(selectEvent);
+            }
         }
-        setIsModalOpen(true);
+        if (onNext) {
+            onNext();
+        }
     };
 
     const handleEventUpdate = async ({ event }: EventResizeDoneArg | EventDropArg) => {
@@ -221,9 +216,8 @@ const BookingCalendar = () => {
         <Box
             sx={{
                 height: '100%',
-                backgroundImage: 'linear-gradient(to bottom right, #DAECF6, #90C7E5, #59ABD9)',
-                paddingX: 20,
-                paddingY: 5
+                paddingX: 5,
+                paddingY: 1
             }}
         >
             <CalendarStyled>
@@ -260,8 +254,13 @@ const BookingCalendar = () => {
                     />
                 </SubCard>
             </CalendarStyled>
+        </Box>
+    )
+}
 
-            {/* Dialog sửa sự kiện */}
+export default BookingCalendar;
+
+{/* Dialog sửa sự kiện
             <Dialog maxWidth="sm" fullWidth onClose={handleModalClose} open={isModalOpen} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
                 {isModalOpen && (
                     <CustomerCalendarAddEvent
@@ -273,9 +272,4 @@ const BookingCalendar = () => {
                         handleUpdate={handleUpdateEvent}
                     />
                 )}
-            </Dialog>
-        </Box>
-    )
-}
-
-export default BookingCalendar;
+            </Dialog> */}
