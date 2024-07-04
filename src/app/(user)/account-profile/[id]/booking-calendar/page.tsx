@@ -45,7 +45,7 @@ const fakeEvents = [
     },
     {
         title: 'Đã hủy đặt lịch',
-        description: 'Đã hủy đặt lịch phỏng vấn với Anshan Handgun',
+        description: 'Hủy lịch do cần chọn chuyên gia khác',
         color: '#ED4337',
         textColor: '#ffffff',
         start: '2024-07-03T14:00:00',
@@ -53,7 +53,7 @@ const fakeEvents = [
     },
     {
         title: 'Hoàn tất phỏng vấn',
-        description: 'Hoàn tất phỏng vấn CV với Anshan Handgun ',
+        description: 'Kỹ năng chuyên môn tốt',
         color: '#2196F3',
         textColor: '#ffffff',
         start: '2024-07-05T14:00:00',
@@ -163,13 +163,19 @@ const BookingCalendar = () => {
     };
 
     const handleEventSelect = (arg: EventClickArg) => {
+        console.log("handleEventSelect:", arg.event._def.title);
         // if (arg.event.id) {
         //     const selectEvent = events.find((_event: FormikValues) => _event.id === arg.event.id);
         //     setSelectedEvent(selectEvent as FormikValues[]);
         // } else {
         //     setSelectedEvent(null);
         // }
-        setSelectedEvent(fakeEvents);
+        if (arg) {
+            const selectEvent = fakeEvents.find((_event) => _event.title === arg.event._def.title);
+            setSelectedEvent(selectEvent || null);
+        } else {
+            setSelectedEvent(null);
+        }
         setIsModalOpen(true);
     };
 

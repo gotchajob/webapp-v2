@@ -148,52 +148,213 @@ const CustomerCalendarAddEvent = ({ event, range, handleDelete, handleCreate, ha
     });
   };
 
+  const filteredEvents = {
+    successful: event?.title === 'Đặt lịch thành công' ? [event] : [],
+    scheduled: event?.title === 'Đã đặt lịch' ? [event] : [],
+    canceled: event?.title === 'Đã hủy đặt lịch' ? [event] : [],
+    completed: event?.title === 'Hoàn tất phỏng vấn' ? [event] : []
+  };
+
   useEffect(() => {
-    console.log("Nhận event:", event);
+    console.log("Input Event title : ", event?.title);
   }, [event])
 
   return (
     <FormikProvider value={formik}>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-          <DialogTitle>
-            Thông tin lịch phỏng vấn từ {formatDate(event?.start)} đến {formatDate(event?.end)}
-          </DialogTitle>
-          <DialogContent sx={{ paddingX: 3, mt: 1 }}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <DialogContentText variant='subtitle1'>Tên chuyên gia : Anshan Handgun</DialogContentText>
-                <DialogContentText variant='subtitle1'>Kỹ năng phỏng vấn : ReactJS, NodeJS</DialogContentText>
-                <DialogContentText variant='subtitle1'>Đánh giá của chuyên gia : kiến thức chuyên môn tốt</DialogContentText>
-                <DialogContentText variant='subtitle1'>Đã thanh toán : 375.000vnđ</DialogContentText>
+
+        {/* ĐÃ ĐẶT LỊCH */}
+        {filteredEvents.scheduled.length > 0 &&
+          (<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <DialogTitle variant="subtitle1" sx={{ backgroundColor: `${filteredEvents.scheduled[0].color}`, color: `${filteredEvents.scheduled[0].textColor}` }}>
+              Thông tin lịch phỏng vấn từ {formatDate(event?.start)} đến {formatDate(event?.end)}
+            </DialogTitle>
+            <DialogContent sx={{ paddingX: 3, mt: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <DialogContentText variant='h4'>Tên chuyên gia : Anshan Handgun</DialogContentText>
+                  <DialogContentText variant='h4'>Kỹ năng đăng ký phỏng vấn : ReactJS, NodeJS</DialogContentText>
+                  <DialogContentText variant='h4'>Tổng tiền : 375.000vnđ</DialogContentText>
+                  <DialogContentText variant='h4' sx={{ color: `${event?.color}` }}>Chờ phản hồi từ chuyên gia</DialogContentText>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth
+                    multiline
+                    rows={3}
+                    label="Lý do"
+                    error={Boolean(touched.description && errors.description)}
+                    helperText={touched.description && (errors.description as string)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Lưu ý :
+                  </DialogContentText>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Bạn còn 2 lần hủy lịch phỏng vấn trong tháng này
+                  </DialogContentText>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Bạn chỉ có thể hủy lịch phỏng vấn trước 3 ngày
+                  </DialogContentText>
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions sx={{ paddingX: 3, paddingBottom: 3 }}>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                  <Button type="submit" variant="contained" color="error" disabled={isSubmitting}>
+                    Hủy lịch phỏng vấn
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button type="button" variant="outlined" onClick={onCancel}>
+                    Đóng
+                  </Button>
+                </Grid>
+              </Grid>
+            </DialogActions>
+          </Form>)}
+
+
+        {/* ĐÃ ĐẶT LỊCH THÀNH CÔNG */}
+        {filteredEvents.successful.length > 0 &&
+          (<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <DialogTitle variant="subtitle1" sx={{ backgroundColor: `${filteredEvents.successful[0].color}`, color: `${filteredEvents.successful[0].textColor}` }}>
+              Thông tin lịch phỏng vấn từ {formatDate(event?.start)} đến {formatDate(event?.end)}
+            </DialogTitle>
+            <DialogContent sx={{ paddingX: 3, mt: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <DialogContentText variant='h4'>Tên chuyên gia : Anshan Handgun</DialogContentText>
+                  <DialogContentText variant='h4'>Kỹ năng đăng ký phỏng vấn : ReactJS, NodeJS</DialogContentText>
+                  <DialogContentText variant='h4'>Tổng tiền : 375.000vnđ</DialogContentText>
+                  <DialogContentText variant='h4' sx={{ color: `${event?.color}` }}>Chuyên gia đồng ý phỏng vấn CV</DialogContentText>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth
+                    multiline
+                    rows={3}
+                    label="Lý do"
+                    error={Boolean(touched.description && errors.description)}
+                    helperText={touched.description && (errors.description as string)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Lưu ý :
+                  </DialogContentText>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Bạn còn 2 lần hủy lịch phỏng vấn trong tháng này
+                  </DialogContentText>
+                  <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                    Bạn chỉ có thể hủy lịch phỏng vấn trước 3 ngày
+                  </DialogContentText>
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions sx={{ paddingX: 3, paddingBottom: 3 }}>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                  <Button type="submit" variant="contained" color="error" disabled={isSubmitting}>
+                    Hủy lịch phỏng vấn
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button type="button" variant="outlined" onClick={onCancel}>
+                    Đóng
+                  </Button>
+                </Grid>
+              </Grid>
+            </DialogActions>
+          </Form>)}
+
+        {/* ĐÃ HOÀN TẤT PHỎNG VẤN */}
+        {filteredEvents.completed.length > 0 &&
+          (<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <DialogTitle variant="subtitle1" sx={{ backgroundColor: `${event?.color}`, color: `${event?.textColor}` }}>
+              Thông tin lịch phỏng vấn từ {formatDate(event?.start)} đến {formatDate(event?.end)}
+            </DialogTitle>
+            <DialogContent sx={{ paddingX: 3, mt: 1 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <DialogContentText variant='h4'>Tên chuyên gia : Anshan Handgun</DialogContentText>
+                  <DialogContentText variant='h4'>Kỹ năng đăng ký phỏng vấn : ReactJS, NodeJS</DialogContentText>
+                  <DialogContentText variant='h4' sx={{ color: `${event?.color}` }}>Đã thanh toán : 375.000vnđ</DialogContentText>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth
+                    multiline
+                    rows={3}
+                    label="Đánh giá của chuyên gia"
+                    {...getFieldProps('description')}
+                    error={Boolean(touched.description && errors.description)}
+                    helperText={touched.description && (errors.description as string)}
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions sx={{ paddingX: 3, paddingBottom: 3 }}>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                </Grid>
+                <Grid item>
+                  <Button type="button" variant="outlined" onClick={onCancel}>
+                    Đóng
+                  </Button>
+                </Grid>
+              </Grid>
+            </DialogActions>
+          </Form>)}
+
+        {/* ĐÃ HỦY ĐẶT LỊCH */}
+        {filteredEvents.canceled.length > 0 &&
+          (<Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+            <DialogTitle variant="subtitle1" sx={{ backgroundColor: `${event?.color}`, color: `${event?.textColor}` }}>
+              Thông tin lịch phỏng vấn từ {formatDate(event?.start)} đến {formatDate(event?.end)}
+            </DialogTitle>
+            <DialogContent sx={{ paddingX: 3, mt: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <DialogContentText variant='h4'>Tên chuyên gia : Anshan Handgun</DialogContentText>
+                  <DialogContentText variant='h4'>Kỹ năng đăng ký phỏng vấn : ReactJS, NodeJS</DialogContentText>
+                  <DialogContentText variant='h4' sx={{ color: `${event?.color}` }}>Đã hủy đặt lịch</DialogContentText>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField fullWidth
+                    multiline
+                    rows={3}
+                    label="Lý do"
+                    {...getFieldProps('description')}
+                    error={Boolean(touched.description && errors.description)}
+                    helperText={touched.description && (errors.description as string)}
+                  />
+                </Grid>
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label="Lý do"
-                  error={Boolean(touched.description && errors.description)}
-                  helperText={touched.description && (errors.description as string)}
-                />
+                <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                  Lưu ý :
+                </DialogContentText>
+                <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                  Bạn còn 2 lần hủy lịch phỏng vấn trong tháng này
+                </DialogContentText>
+                <DialogContentText variant='subtitle1' sx={{ fontStyle: 'italic', textDecoration: 'underline' }}>
+                  Đã hoàn trả tiền đặt lịch của bạn về ví
+                </DialogContentText>
               </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions sx={{ paddingX: 3, paddingBottom: 3 }}>
-            <Grid container justifyContent="space-between" alignItems="center">
-              <Grid item>
-                <Button type="submit" variant="contained" disabled={isSubmitting}>
-                  Hủy lịch phỏng vấn
-                </Button>
+            </DialogContent>
+            <DialogActions sx={{ paddingX: 3, paddingBottom: 3 }}>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                </Grid>
+                <Grid item>
+                  <Button type="button" variant="outlined" onClick={onCancel}>
+                    Đóng
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Button type="button" variant="outlined" onClick={onCancel}>
-                  Đóng
-                </Button>
-              </Grid>
-            </Grid>
-          </DialogActions>
-        </Form>
+            </DialogActions>
+          </Form>)}
+
       </LocalizationProvider>
     </FormikProvider>
   );

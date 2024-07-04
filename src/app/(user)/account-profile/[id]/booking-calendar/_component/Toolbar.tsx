@@ -100,23 +100,6 @@ const CustomerToolbar = ({ date, view, onClickNext, onClickPrev, onClickToday, o
         </Stack>
       </Grid>
       <Grid item xs={3}>
-        <Autocomplete
-          multiple
-          id="tags-outlined"
-          options={skillsExpert}
-          filterSelectedOptions
-          renderOption={(props, option) => {
-            return (
-              <li {...props} key={option.id}>
-                {option.label}
-              </li>
-            );
-          }}
-          renderTags={(tagValue, getTagProps) => {
-            return tagValue.map((option, index) => <Chip {...getTagProps({ index })} key={option.id} label={option.label} />);
-          }}
-          renderInput={(params) => <TextField label="Interview CV về kỹ năng" {...params} sx={{ maxWidth: "100%" }} />}
-        />
       </Grid>
     </Grid>
   );
