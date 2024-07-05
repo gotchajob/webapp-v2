@@ -39,6 +39,7 @@ import { StyledLink } from 'components/common/link/styled-link';
 import { apiClientFetch } from 'package/api/api-fetch';
 import { enqueueSnackbar } from 'notistack';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
@@ -261,6 +262,26 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                       }}
                     >
                       <StyledLink href={`/quan-ly-cv`} >
+                        <StyledLink href={`/account-profile/${customer?.id}/booking-calendar`}>
+                          <ListItemButton
+                            sx={{
+                              borderRadius: `${borderRadius}px`,
+                            }}
+                            selected={selectedIndex === 0}
+                            onClick={() => { }}
+                          >
+                            <ListItemIcon>
+                              <EventNoteIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">
+                                  <FormattedMessage id="Lịch sử phỏng vấn" />
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        </StyledLink>
                         <ListItemButton>
                           <ListItemIcon>
                             <ContactsIcon />

@@ -31,6 +31,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import CreditCardTwoToneIcon from '@mui/icons-material/CreditCardTwoTone';
 import { Autocomplete, FormControl } from '@mui/material';
 import PaymentSelect from 'components/application/e-commerce/Checkout/PaymentSelect';
+import { createPaymentUrl } from 'package/vnpay/VNPAY';
+import { useRouter } from 'next/navigation';
 
 function CardExpiry(props: any) {
   const { format, ...rest } = usePatternFormat({ ...props, format: '##/##' });
@@ -61,9 +63,11 @@ const Payment = () => {
 
   const [amount, setAmount] = useState('');
 
-  const Amounts = ["50.000", "100.000", "200.000", "500.000"];
+  const Amounts = [50000, 100000, 200000, 500000];
 
   const [value1, setValue1] = React.useState<string | undefined>('vnpay');
+
+  const router = useRouter();
 
   const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue1(event.target.value);
@@ -73,6 +77,11 @@ const Payment = () => {
     setAmount(newValue);
     console.log("newValue:", newValue);
   };
+
+  const handlePay = () => {
+    const url = createPaymentUrl(+amount, "http://localhost:3001/account-profile/2");
+    router.push(url);
+  }
 
   return (
     <Grid container spacing={gridSpacing}>
@@ -153,7 +162,7 @@ const Payment = () => {
               <Grid item xs={12}>
                 <Stack direction="row" justifyContent="flex-end">
                   <AnimateButton>
-                    <Button variant="contained" size="large" startIcon={<CreditCardTwoToneIcon />} sx={{ color: 'white' }}>
+                    <Button variant="contained" size="large" startIcon={<CreditCardTwoToneIcon />} sx={{ color: 'white' }} onClick={handlePay}>
                       Nạp vào ví gotchajob
                     </Button>
                   </AnimateButton>

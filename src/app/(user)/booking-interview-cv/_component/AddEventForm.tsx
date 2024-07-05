@@ -71,7 +71,7 @@ interface AddEventFormProps {
 
 const AddEventOnExpertCalendar = ({ event, range, handleDelete, handleCreate, handleUpdate, onCancel }: AddEventFormProps) => {
   const theme = useTheme();
-  
+
   const isCreating = !event;
 
   const backgroundColor = [

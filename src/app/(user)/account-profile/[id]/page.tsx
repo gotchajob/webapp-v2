@@ -98,7 +98,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
   return (
     <Box
       sx={{
-        height: '100vh',
+        height: '100%',
         backgroundImage: 'linear-gradient(to bottom right, #DAECF6, #90C7E5, #59ABD9)',
         display: 'flex',
         padding: 10

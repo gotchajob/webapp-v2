@@ -24,7 +24,6 @@ import Typography from '@mui/material/Typography';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'ui-component/extended/Avatar';
 import SubCard from 'ui-component/cards/SubCard';
-
 import { gridSpacing } from 'store/constant';
 
 // assets
@@ -32,6 +31,10 @@ import { IconEdit } from '@tabler/icons-react';
 import PhonelinkRingTwoToneIcon from '@mui/icons-material/PhonelinkRingTwoTone';
 import PinDropTwoToneIcon from '@mui/icons-material/PinDropTwoTone';
 import MailTwoToneIcon from '@mui/icons-material/MailTwoTone';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { StyledLink } from 'components/common/link/styled-link';
+import { useState } from 'react';
+
 
 const Avatar3 = '/assets/images/users/avatar-3.png';
 
@@ -73,10 +76,10 @@ function createData(name: string, calories?: string, fat?: string, carbs?: strin
 
 const ExpertProfilePage = () => {
 
-  const { user } = useAuth();
+  const [openDialog, setOpenDialog] = useState(false);
 
   const rows = [
-    createData('Full Name', ':', user?.name),
+    createData('Full Name', ':', "Anshan Handgun"),
     createData('Fathers Name', ':', 'Mr. Deepen Handgun'),
     createData('Address', ':', 'Street 110-B Kalians Bag, Dewan, M.P. INDIA'),
     createData('Zip Code', ':', '12345'),
@@ -86,7 +89,7 @@ const ExpertProfilePage = () => {
   ];
 
   return (
-    <Grid container spacing={gridSpacing} px={15} py={5}>
+    <Grid container spacing={gridSpacing} sx={{ boxShadow: 10, px: 15, py: 5 }}>
       <Grid item lg={4} xs={12}>
         <SubCard
           title={
@@ -95,11 +98,8 @@ const ExpertProfilePage = () => {
                 <Avatar alt="User 1" src={Avatar3} />
               </Grid>
               <Grid item xs zeroMinWidth>
-                <Typography variant="subtitle1">{user?.name}</Typography>
+                <Typography variant="subtitle1">Anshan Handgun</Typography>
                 <Typography variant="subtitle2">UI/UX Designer</Typography>
-              </Grid>
-              <Grid item>
-                <Chip size="small" label="Pro" color="primary" />
               </Grid>
             </Grid>
           }
@@ -177,8 +177,8 @@ const ExpertProfilePage = () => {
             <SubCard
               title="About me"
               secondary={
-                <Button>
-                  <IconEdit stroke={1.5} size="20px" aria-label="Edit Details" />
+                <Button variant="contained" onClick={() => setOpenDialog(true)}>
+                  Đặt lịch
                 </Button>
               }
             >
@@ -334,6 +334,30 @@ const ExpertProfilePage = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Dialog xác nhận chọn chuyên gia */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogTitle>Xác nhận chọn chuyên gia</DialogTitle>
+        <DialogContent>
+          <DialogContentText >
+            Bạn muốn đặt lịch phỏng vấn CV với chuyên gia Anshan Handgun?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Đóng
+          </Button>
+          <StyledLink href="/booking-interview-cv/1">
+            <Button color="primary" autoFocus>
+              Đồng ý
+            </Button>
+          </StyledLink>
+        </DialogActions>
+      </Dialog>
+
     </Grid>
   );
 };
