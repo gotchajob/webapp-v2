@@ -92,21 +92,21 @@ const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: (
                 >
                   <Grid item>
                     <Button variant="text" startIcon={<KeyboardBackspaceIcon />} onClick={continueClick}>
-                    Tiếp tục nạp
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button component={Link} href="/apps/e-commerce/products" variant="contained" fullWidth onClick={close}>
-                    Đi tới lịch sử giao dịch
-                  </Button>
+                      Tiếp tục nạp
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained" fullWidth onClick={close}>
+                      Đi tới lịch sử giao dịch
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </PerfectScrollbar>
+          </PerfectScrollbar>
         </MainCard>
-  )
-}
+      )
+      }
     </Dialog >
   );
 };
