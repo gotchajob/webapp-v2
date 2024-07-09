@@ -68,7 +68,7 @@ const fakeEvents = [
     },
 ];
 
-const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
+const ExpertCalendarPage = ({ onNext, onBack }: { onNext: () => void, onBack: () => void }) => {
     const calendarRef = useRef<FullCalendar>(null);
 
     const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -254,11 +254,9 @@ const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
             <Grid item xs={12} mt={3} >
                 <Grid container spacing={3} alignItems="center" justifyContent="space-between">
                     <Grid item>
-                        <StyledLink href="/share-cv">
-                            <Button color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
-                                Hủy đặt lịch
-                            </Button>
-                        </StyledLink>
+                        <Button onClick={() => { if (onBack) onBack(); }} color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                            Quay lại
+                        </Button>
                     </Grid>
                     {/* <Grid item>
                         <Button variant="contained" endIcon={<KeyboardTabIcon />}>Tiếp tục</Button>

@@ -16,6 +16,7 @@ import { gridSpacing } from 'store/constant';
 import MainCard from 'ui-component/cards/MainCard';
 
 // assets
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -25,6 +26,7 @@ import { TabsProps } from 'types';
 import { ThemeMode } from 'types/config';
 import ExpertCalendarPage from './_component/ExpertCalendar';
 import BookInvoicePage from './_component/BookingInvoice';
+import ExpertProfilePage from './_component/ExpertProfile';
 
 // tabs panel
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -51,6 +53,11 @@ function a11yProps(index: number) {
 // tabs option
 const tabsOption = [
     {
+        label: 'Thông tin chuyên gia',
+        icon: <AccountCircleIcon sx={{ fontSize: '1.3rem' }} />,
+        caption: 'Thông tin hồ sơ chuyên gia'
+    },
+    {
         label: 'Lịch phỏng vấn',
         icon: <CalendarMonthIcon sx={{ fontSize: '1.3rem' }} />,
         caption: 'Lịch phỏng vấn của chuyên gia'
@@ -60,6 +67,7 @@ const tabsOption = [
         icon: <ReceiptIcon sx={{ fontSize: '1.3rem' }} />,
         caption: 'Thông tin đặt lịch phỏng vấn'
     },
+
 ];
 
 // ==============================|| EXPERT BOOKING PAGE ||============================== //
@@ -74,11 +82,11 @@ const ExpertBookingPage = () => {
     // };
 
     const handleNextStep = () => {
-        setValue(1);
+        setValue(prevValue => prevValue + 1);
     }
 
-    const handlePrevStep=  ()=>{
-        setValue(0);
+    const handlePrevStep = () => {
+        setValue(prevValue => prevValue - 1);
     }
 
     return (
@@ -130,7 +138,6 @@ const ExpertBookingPage = () => {
                                         </Grid>
                                     }
                                     sx={{
-                                        color: value >= index ? 'success.dark' : 'grey.900',
                                         minHeight: 'auto',
                                         minWidth: { xs: '100%', md: 250 },
                                         padding: 2,
@@ -161,9 +168,12 @@ const ExpertBookingPage = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TabPanel value={value} index={0}>
-                            <ExpertCalendarPage onNext={handleNextStep} />
+                            <ExpertProfilePage onNext={handleNextStep} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
+                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} />
+                        </TabPanel>
+                        <TabPanel value={value} index={2}>
                             <BookInvoicePage onBack={handlePrevStep} />
                         </TabPanel>
                     </Grid>
