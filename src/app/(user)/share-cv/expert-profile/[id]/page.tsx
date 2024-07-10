@@ -29,7 +29,7 @@ const expert = {
   userId: 66,
   expertId: 31,
   userStatus: 1,
-  email: "kiet111@gmail.com",
+  email: " ",
   avatar: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
   firstName: "Lý",
   lastName: "Kiệt",
@@ -55,7 +55,7 @@ export interface EducationData {
 
 // ==============================|| PROFILE 1 - PROFILE ||============================== //
 
-const ExpertProfilePage = () => {
+const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -333,7 +333,7 @@ const ExpertProfilePage = () => {
             <Button onClick={() => setOpenDialog(false)} color="primary">
               Đóng
             </Button>
-            <StyledLink href="/booking-interview-cv/1">
+            <StyledLink href={`/booking-interview-cv/${params.id}`}>
               <Button color="primary" autoFocus>
                 Đồng ý
               </Button>

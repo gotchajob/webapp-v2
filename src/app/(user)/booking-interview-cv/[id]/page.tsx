@@ -72,7 +72,7 @@ const tabsOption = [
 
 // ==============================|| EXPERT BOOKING PAGE ||============================== //
 
-const ExpertBookingPage = () => {
+const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
     const theme = useTheme();
 
     const [value, setValue] = useState<number>(0);
@@ -171,7 +171,7 @@ const ExpertBookingPage = () => {
                             <ExpertProfilePage onNext={handleNextStep} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} />
+                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             <BookInvoicePage onBack={handlePrevStep} />
