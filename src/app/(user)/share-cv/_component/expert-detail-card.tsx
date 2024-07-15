@@ -51,6 +51,7 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
         bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'grey.50',
         boxShadow: defaultShadow,
         border: '1px solid',
+        height: 460,
         borderColor: 'divider',
         '&:hover': { borderColor: 'primary.main' }
       }}

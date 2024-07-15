@@ -44,7 +44,7 @@ export default function Page() {
 
   const [categoryId, setCategoryId] = useState(0);
 
-  const [minYearExperience, setMinYearExperience] = useState(0);
+  const [minYearExperience, setMinYearExperience] = useState(1);
 
   const [skillOptionIdList, setSkillOptionIdList] = useState<number[]>([]);
 
@@ -60,10 +60,37 @@ export default function Page() {
 
   const { skillOptions } = useGetSkillOptions({ categoryId });
 
+  const [checkedState, setCheckedState] = useState({
+    country: false,
+    skills: false,
+    experience: false
+  });
+  const handleCheckboxChange = (event: { target: { name: string; checked: boolean } }) => {
+    const { name, checked } = event.target;
+    setCheckedState({
+      country: false,
+      skills: false,
+      experience: false,
+      [name]: checked
+    });
+  };
+
+  const getCheckedStateIndex = () => {
+    if (checkedState.country) {
+      return 1;
+    }
+    if (checkedState.skills) {
+      return 2;
+    }
+    if (checkedState.experience) {
+      return 3;
+    }
+    return 0;
+  };
   const getClientExpertMatching = async () => {
     try {
       setIsLoading(true);
-      const data = await GetExpertMatching({ categoryId, minYearExperience, nation, skillOptionId: skillOptionIdList });
+      const data = await GetExpertMatching({ by: getCheckedStateIndex(), minYearExperience, nation, skillOptionId: skillOptionIdList });
       if (data.status === 'error') {
         throw new Error('');
       }
@@ -168,7 +195,7 @@ export default function Page() {
                       return (
                         <Grid item key={option.id} xs={2}>
                           <Button
-                          sx={{minWidth: 120}}
+                            sx={{ minWidth: 120 }}
                             variant={isSelected ? 'contained' : 'outlined'}
                             onClick={() => {
                               handleUpdateSkillOptionIdList(option.id);
@@ -188,13 +215,24 @@ export default function Page() {
             <SubCard title="Tùy chọn ưu tiên phù hợp">
               <Grid container spacing={2}>
                 <Grid item>
-                  <FormControlLabel control={<Checkbox color="primary" />} label="Quốc gia" />
+                  <FormControlLabel
+                    control={<Checkbox color="primary" name="country" checked={checkedState.country} onChange={handleCheckboxChange} />}
+                    label="Quốc gia"
+                  />
                 </Grid>
                 <Grid item>
-                  <FormControlLabel control={<Checkbox color="primary" />} label="Kỹ năng" />
+                  <FormControlLabel
+                    control={<Checkbox color="primary" name="skills" checked={checkedState.skills} onChange={handleCheckboxChange} />}
+                    label="Kỹ năng"
+                  />
                 </Grid>
                 <Grid item>
-                  <FormControlLabel control={<Checkbox color="primary" />} label="Năm kinh nghiệm" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox color="primary" name="experience" checked={checkedState.experience} onChange={handleCheckboxChange} />
+                    }
+                    label="Năm kinh nghiệm"
+                  />
                 </Grid>
               </Grid>
             </SubCard>

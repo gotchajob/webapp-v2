@@ -1,7 +1,7 @@
 import { apiServerFetch, errorSystem } from 'package/api/api-fetch';
 
 export interface ExpertMatchingRequest {
-  categoryId: number;
+  by: number;
   skillOptionId: number[];
   nation: string[];
   minYearExperience: number;
@@ -40,7 +40,7 @@ export interface ExpertMatching {
 export const GetExpertMatching = async (params: ExpertMatchingRequest): Promise<ExpertMatchingResponse> => {
   try {
     const url = new URLSearchParams();
-    url.append('categoryId', params.categoryId + '');
+    url.append('by', params.by + '');
     url.append('minYearExperience', params.minYearExperience + '');
     params.nation.forEach((value) => {
       url.append('nation', value);
