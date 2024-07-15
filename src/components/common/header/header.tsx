@@ -262,7 +262,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                       }}
                     >
                       <StyledLink href={`/quan-ly-cv`} >
-                        <StyledLink href={`/account-profile/${customer?.id}/booking-calendar`}>
+                        <StyledLink href={`/booking-calendar/${customer?.id}`}>
                           <ListItemButton
                             sx={{
                               borderRadius: `${borderRadius}px`,

@@ -24,9 +24,9 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 // types
 import { TabsProps } from 'types';
 import { ThemeMode } from 'types/config';
-import ExpertCalendarPage from './_component/ExpertCalendar';
-import BookInvoicePage from './_component/BookingInvoice';
-import ExpertProfilePage from './_component/ExpertProfile';
+import CustomerProfilePage from './_component/ExpertProfile';
+import QuestionListPage from './_component/QuestionList';
+
 
 // tabs panel
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -53,50 +53,36 @@ function a11yProps(index: number) {
 // tabs option
 const tabsOption = [
     {
-        label: 'Thông tin chuyên gia',
+        label: 'Thông tin khách hàng',
         icon: <AccountCircleIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: 'Thông tin hồ sơ chuyên gia'
+        caption: 'Thông tin hồ sơ khách hàng'
     },
     {
-        label: 'Lịch phỏng vấn',
-        icon: <CalendarMonthIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: 'Lịch phỏng vấn của chuyên gia'
-    },
-    {
-        label: 'Đặt lịch',
+        label: 'Danh sách câu hỏi',
         icon: <ReceiptIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: 'Thông tin đặt lịch phỏng vấn'
+        caption: 'Danh sách câu hỏi'
     },
-
 ];
 
 // ==============================|| EXPERT BOOKING PAGE ||============================== //
 
-const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
+const InterViewPage = ({ params }: { params: { id: string } }) => {
     const theme = useTheme();
 
     const [value, setValue] = useState<number>(0);
 
-    // const handleChange = (event: SyntheticEvent, newValue: number) => {
-    //     setValue(newValue);
-    // };
-
-    const handleNextStep = () => {
-        setValue(prevValue => prevValue + 1);
-    }
-
-    const handlePrevStep = () => {
-        setValue(prevValue => prevValue - 1);
-    }
+    const handleChange = (event: SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
 
     return (
-        <Box sx={{ boxShadow: 10, my: 5, mx: 20 }}>
+        <Box sx={{ boxShadow: 3, my: 5, mx: 10 }}>
             <MainCard>
                 <Grid container spacing={gridSpacing} >
                     <Grid item xs={12}>
                         <Tabs
                             value={value}
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             aria-label="icon label tabs example"
                             variant="scrollable"
                             sx={{
@@ -168,13 +154,10 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TabPanel value={value} index={0}>
-                            <ExpertProfilePage onNext={handleNextStep} />
+                            <CustomerProfilePage />
                         </TabPanel>
-                        <TabPanel value={value} index={1}>
-                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} />
-                        </TabPanel>
-                        <TabPanel value={value} index={2}>
-                            <BookInvoicePage onBack={handlePrevStep} />
+                        <TabPanel  value={value} index={1}>
+                            <QuestionListPage />
                         </TabPanel>
                     </Grid>
                 </Grid>
@@ -183,4 +166,4 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
     );
 };
 
-export default ExpertBookingPage;
+export default InterViewPage;

@@ -86,7 +86,7 @@ const BookInvoicePage = ({ onBack }: { onBack: () => void }) => {
                                 </Grid>
                                 <Grid item>
                                     <Button variant="contained" onClick={() => setComplete(true)}>Hoàn thành đặt lịch</Button>
-                                    <OrderComplete open={complete} close={handleClose} />
+                                    <OrderComplete open={complete} close={handleClose} continueClick={() => { }} />
                                 </Grid>
                             </Grid>
                         </Grid>

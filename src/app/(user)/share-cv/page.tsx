@@ -40,6 +40,7 @@ const yearOption = [
 ];
 
 export default function Page() {
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryId, setCategoryId] = useState(0);
@@ -168,7 +169,7 @@ export default function Page() {
                       return (
                         <Grid item key={option.id} xs={2}>
                           <Button
-                          sx={{minWidth: 120}}
+                            sx={{ minWidth: 120 }}
                             variant={isSelected ? 'contained' : 'outlined'}
                             onClick={() => {
                               handleUpdateSkillOptionIdList(option.id);

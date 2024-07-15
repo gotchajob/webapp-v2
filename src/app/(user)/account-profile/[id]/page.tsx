@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -34,6 +34,8 @@ import UserProfile from '../_component/UserProfile';
 import Billing from '../_component/Billing';
 import Payment from '../_component/Payment';
 import ChangePassword from '../_component/ChangePassword';
+import { useGetSearchParams } from 'hooks/use-get-params';
+import OrderComplete from '../_component/OrderComplete';
 
 // tabs
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -81,19 +83,40 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { mode, borderRadius } = useConfig();
 
-  const [value, setValue] = React.useState<number>(0);
+  //get params
+  const { vnp_TransactionStatus } = useGetSearchParams(["vnp_TransactionStatus"]);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const [open, setOpen] = useState(false);
+
+  const [value, setValue] = React.useState<number>(0);
 
   const { refreshTime, refresh } = useRefresh();
 
   const { user, loading } = useGetUser({ pageNumber: 1, pageSize: 10, search: [`id:${params.id}`] }, refreshTime)
 
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  const handleClose = () => {
+    setValue(1);
+    setOpen(false);
+  }
+
+  const handleContinueClick = () => {
+    setValue(2);
+    setOpen(false);
+  }
+
   useEffect(() => {
-    console.log("user:", user[0]);
-  }, [params.id])
+    console.log("vnp_TransactionStatus :", vnp_TransactionStatus);
+    if (vnp_TransactionStatus) {
+      setValue(2);
+      setOpen(true);
+    }
+  }, [vnp_TransactionStatus])
+
+  useEffect(() => { }, []);
 
   return (
     <Box
@@ -197,6 +220,8 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         </Grid>
         <Divider />
       </MainCard>
+
+      <OrderComplete open={open} close={handleClose} continueClick={handleContinueClick} />
     </Box>
   );
 };

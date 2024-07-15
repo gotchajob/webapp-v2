@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -37,6 +37,7 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
   const theme = useTheme();
+
   const formatNation = () => {
     let nation: string[] = [];
     expert.nationSupport.forEach((e) => {
@@ -44,6 +45,9 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
     });
     return nation.join(', ');
   };
+
+  useEffect(() => { console.log("expert:", expert) }, [expert]);
+
   return (
     <Card
       sx={{
@@ -90,7 +94,7 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <StyledLink href="/share-cv/expert-profile/1">
+              <StyledLink href={`/share-cv/expert-profile/${expert.userId}`}>
                 <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
                   Book
                 </Button>
@@ -99,7 +103,7 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
           </Grid>
         </Grid>
       </Grid>
-    </Card>
+    </Card >
   );
 };
 
