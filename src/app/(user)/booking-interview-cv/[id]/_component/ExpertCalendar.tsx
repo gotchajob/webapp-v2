@@ -30,6 +30,7 @@ import ExpertToolbar from '../../_component/Toolbar';
 import { StyledLink } from 'components/common/link/styled-link';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import { useGetAvailability } from 'hooks/use-get-availability';
 
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
@@ -68,7 +69,7 @@ const fakeEvents = [
     },
 ];
 
-const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
+const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, onBack: () => void, params: string }) => {
     const calendarRef = useRef<FullCalendar>(null);
 
     const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
@@ -78,17 +79,16 @@ const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
     // fetch events data
     const [events, setEvents] = useState<FormikValues[]>([]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
+
+    const [selectedEvent, setSelectedEvent] = useState<FormikValues | null>(null);
+
     const calendarState = useSelector((state) => state.calendar);
 
-    useEffect(() => {
-        dispatch(getEvents()).then(() => setLoading(false));
-    }, []);
-
-    useEffect(() => {
-        setEvents(calendarState.events);
-    }, [calendarState]);
-
     const [date, setDate] = useState(new Date());
+
     const [view, setView] = useState(matchSm ? 'listWeek' : 'dayGridMonth');
 
     // calendar toolbar events
@@ -140,10 +140,6 @@ const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
             setDate(calendarApi.getDate());
         }
     };
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
-    const [selectedEvent, setSelectedEvent] = useState<FormikValues | null>(null);
 
     // calendar event select/add/edit/delete
     const handleModalClose = () => {
@@ -212,6 +208,33 @@ const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
         }
     };
 
+    const { availabilities } = useGetAvailability({ expertId: params?.id });
+
+    const convertEvents = (data: any) => {
+        return data.map(event => ({
+            id: event.id.toString(),
+            title: `Event ${event.id}`,
+            start: `${event.date}T${event.startTime}`,
+            end: `${event.date}T${event.endTime}`
+        }));
+    };
+
+    useEffect(() => {
+        const convertedEvents = convertEvents(availabilities);
+        console.log("convertedEvents :", convertedEvents);
+        setEvents(convertedEvents);
+    }, [params.id, availabilities]);
+
+    useEffect(() => { console.log("params:", params.id) }, [params]);
+
+    useEffect(() => {
+        dispatch(getEvents()).then(() => setLoading(false));
+    }, []);
+
+    useEffect(() => {
+        setEvents(calendarState.events);
+    }, [calendarState]);
+
     if (loading) return <Loader />;
 
     return (
@@ -254,11 +277,9 @@ const ExpertCalendarPage = ({ onNext }: { onNext: () => void }) => {
             <Grid item xs={12} mt={3} >
                 <Grid container spacing={3} alignItems="center" justifyContent="space-between">
                     <Grid item>
-                        <StyledLink href="/share-cv">
-                            <Button color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
-                                Hủy đặt lịch
-                            </Button>
-                        </StyledLink>
+                        <Button onClick={() => { if (onBack) onBack(); }} color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                            Quay lại
+                        </Button>
                     </Grid>
                     {/* <Grid item>
                         <Button variant="contained" endIcon={<KeyboardTabIcon />}>Tiếp tục</Button>
