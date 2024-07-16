@@ -3,8 +3,6 @@
 import React, { useEffect, useState } from 'react';
 
 // material-ui
-import Button from '@mui/material/Button';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -16,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import useConfig from 'hooks/useConfig';
 import { gridSpacing } from 'store/constant';
 import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // assets
 import CreditCardTwoToneIcon from '@mui/icons-material/CreditCardTwoTone';
@@ -25,17 +22,17 @@ import PersonOutlineTwoToneIcon from '@mui/icons-material/PersonOutlineTwoTone';
 import VpnKeyTwoToneIcon from '@mui/icons-material/VpnKeyTwoTone';
 
 // types
+import { Box } from '@mui/material';
+import { useGetSearchParams } from 'hooks/use-get-params';
 import { useGetUser } from 'hooks/use-get-user';
 import { useRefresh } from 'hooks/use-refresh';
 import { TabsProps } from 'types';
 import { ThemeMode } from 'types/config';
-import { Box } from '@mui/material';
-import UserProfile from '../_component/UserProfile';
 import Billing from '../_component/Billing';
-import Payment from '../_component/Payment';
 import ChangePassword from '../_component/ChangePassword';
-import { useGetSearchParams } from 'hooks/use-get-params';
 import OrderComplete from '../_component/OrderComplete';
+import Payment from '../_component/Payment';
+import UserProfile from '../_component/UserProfile';
 
 // tabs
 function TabPanel({ children, value, index, ...other }: TabsProps) {
