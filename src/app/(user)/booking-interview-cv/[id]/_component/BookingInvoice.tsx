@@ -80,7 +80,7 @@ const BookInvoicePage = ({ onBack }: { onBack: () => void }) => {
                         <Grid item xs={12} mt={2} px={10}>
                             <Grid container spacing={3} alignItems="center" justifyContent="space-between">
                                 <Grid item>
-                                    <Button onClick={() => { if (onBack) onBack(); }} color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                                    <Button onClick={() => { if (onBack) onBack(); }} color="primary" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
                                         Quay lại
                                     </Button>
                                 </Grid>

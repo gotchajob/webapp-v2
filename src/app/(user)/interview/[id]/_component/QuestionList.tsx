@@ -57,7 +57,7 @@ const QuestionListPage = () => {
                         <Grid item xs={12}>
                             <Divider />
                         </Grid>
-                        
+
                         <Grid item xs={12}>
                             <Grid container spacing={gridSpacing}>
                                 <Grid item xs={12} sm={6} md={4}>
@@ -103,7 +103,7 @@ const QuestionListPage = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Typography variant="h4" sx={{ mt: 1 }}>Câu hỏi phỏng vấn</Typography>
+                            <Typography variant="h4">Câu hỏi phỏng vấn</Typography>
                             <Grid container spacing={2} sx={{ mt: 1 }}>
 
                                 <Grid item xs={12} md={6}>

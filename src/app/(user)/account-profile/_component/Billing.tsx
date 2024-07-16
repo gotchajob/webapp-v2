@@ -1,118 +1,97 @@
 'use client';
 
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 // material-ui
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import CircularProgress from '@mui/material/CircularProgress';
 
-// project imports
-import { gridSpacing } from 'store/constant';
+// project import
+import MainCard from 'ui-component/cards/MainCard';
+import CardSecondaryAction from 'ui-component/cards/CardSecondaryAction';
+import CSVExport from 'views/forms/tables/tbl-exports';
+import { CustomerToken } from 'hooks/use-login';
+import { useGetTransaction } from 'hooks/use-get-transaction';
 
-// select options
-const cities = [
+// sample data
+const sampleTransactions = [
   {
-    value: '1',
-    label: 'Los Angeles'
+    id: 2,
+    amount: 10,
+    type: 'credit',
+    description: 'Sample transaction 2',
+    createdAt: '2024-06-15T00:36:56.000+00:00'
   },
   {
-    value: '2',
-    label: 'Chicago'
-  },
-  {
-    value: '3',
-    label: 'Phoenix'
-  },
-  {
-    value: '4',
-    label: 'San Antonio'
+    id: 1,
+    amount: 10,
+    type: 'credit',
+    description: 'Sample transaction 1',
+    createdAt: '2024-06-15T00:36:42.000+00:00'
   }
 ];
 
-const countries = [
+// table columns
+const columns: GridColDef[] = [
+  { field: 'id', headerName: 'ID', flex: 1, minWidth: 80 },
+  { field: 'amount', headerName: 'Số tiền nạp', flex: 1, minWidth: 100, type: 'number' },
+  { field: 'type', headerName: 'Dạng nạp', flex: 1, minWidth: 100 },
+  { field: 'description', headerName: 'Thông tin', flex: 2, minWidth: 200 },
   {
-    value: '1',
-    label: 'India'
-  },
-  {
-    value: '2',
-    label: 'France'
-  },
-  {
-    value: '3',
-    label: 'USA'
-  },
-  {
-    value: '4',
-    label: 'UAE'
+    field: 'createdAt',
+    headerName: 'Nạp vào',
+    flex: 1.5,
+    minWidth: 200,
+    type: 'dateTime',
+    valueGetter: (params) => new Date(params.value)
   }
 ];
 
-// ==============================|| PROFILE 2 - BILLING ||============================== //
+let headers: any = [];
+columns.map((item) => {
+  return headers.push({ label: item.headerName, key: item.field });
+});
 
-const Billing = () => {
-  const [city, setCity] = React.useState('1');
-  const handleChangeCity = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCity(event.target.value);
-  };
+export default function EditableColumn() {
+  const [loading, setLoading] = useState(true);
 
-  const [Country, setCountry] = React.useState('1');
-  const handleSelectChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCountry(event.target.value);
-  };
+  const [rows, setRows] = useState<GridRowsProp>([]);
 
-  const [state1, setState1] = React.useState({
-    checkedA: true
-  });
-  const handleChangeState1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState1({ ...state1, [event.target.name]: event.target.checked });
-  };
+  const { customerToken } = CustomerToken();
+
+  const { transaction } = useGetTransaction({ pageNumber: 1, pageSize: 6 }, customerToken);
+
+  useEffect(() => {
+    // Simulate API call
+    setTimeout(() => {
+      setRows(sampleTransactions);
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    console.log("transaction:", transaction);
+  }, [transaction, customerToken]);
+
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
-    <Grid container spacing={gridSpacing}>
-      <Grid item xs={12} sm={6}>
-        <TextField fullWidth label="Block No#" defaultValue="16657" />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField fullWidth label="Apartment Name" defaultValue=" Dardan Ranch" />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField fullWidth label="Street Line 1" defaultValue="Nathaniel Ports" />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <TextField fullWidth label="Street Line 2" defaultValue="nr. Oran Walks" />
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <TextField fullWidth label="Postcode" defaultValue="395005" />
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <TextField id="standard-select-category" select label="Select City" value={city} fullWidth onChange={handleChangeCity}>
-          {cities.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <TextField id="standard-select-country" select label="Select Country" value={Country} fullWidth onChange={handleSelectChange1}>
-          {countries.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item xs={12}>
-        <FormControlLabel
-          control={<Checkbox checked={state1.checkedA} onChange={handleChangeState1} name="checkedA" color="primary" />}
-          label="Same as billing address"
-        />
-      </Grid>
-    </Grid>
+    <MainCard
+      content={false}
+      title="Danh sách giao dịch"
+      secondary={
+        <Stack direction="row" spacing={2} alignItems="center">
+          <CSVExport data={rows} filename={'danhsachgiaodich.csv'} header={headers} />
+        </Stack>
+      }
+    >
+      <Box sx={{ width: '100%' }}>
+        <DataGrid hideFooter autoHeight rows={rows} columns={columns} />
+      </Box>
+    </MainCard>
   );
-};
-
-export default Billing;
+}

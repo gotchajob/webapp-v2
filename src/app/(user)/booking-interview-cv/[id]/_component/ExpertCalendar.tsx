@@ -18,19 +18,20 @@ import timelinePlugin from '@fullcalendar/timeline';
 import { FormikValues } from 'formik';
 
 // project imports
-import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from '@mui/material';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Rating, TextField } from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
+import { FlexBetween } from 'components/common/box/flex-box';
+import { Text } from 'components/common/text/text';
+import { useGetAvailability } from 'hooks/use-get-availability';
+import Image from 'next/image';
 import { dispatch, useSelector } from 'store';
 import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
 import { DateRange } from 'types';
 import Loader from 'ui-component/Loader';
 import SubCard from 'ui-component/cards/SubCard';
-import AddEventOnExpertCalendar from '../../_component/AddEventForm';
 import ExpertToolbar from '../../_component/Toolbar';
-import { StyledLink } from 'components/common/link/styled-link';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
-import { useGetAvailability } from 'hooks/use-get-availability';
+import { enqueueSnackbar } from 'notistack';
 
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
@@ -208,25 +209,6 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
         }
     };
 
-    const { availabilities } = useGetAvailability({ expertId: params?.id });
-
-    const convertEvents = (data: any) => {
-        return data.map(event => ({
-            id: event.id.toString(),
-            title: `Event ${event.id}`,
-            start: `${event.date}T${event.startTime}`,
-            end: `${event.date}T${event.endTime}`
-        }));
-    };
-
-    useEffect(() => {
-        const convertedEvents = convertEvents(availabilities);
-        console.log("convertedEvents :", convertedEvents);
-        setEvents(convertedEvents);
-    }, [params.id, availabilities]);
-
-    useEffect(() => { console.log("params:", params.id) }, [params]);
-
     useEffect(() => {
         dispatch(getEvents()).then(() => setLoading(false));
     }, []);
@@ -235,10 +217,198 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
         setEvents(calendarState.events);
     }, [calendarState]);
 
+
+    // ==============================|| My Code Start here ||============================== //
+
+    const cvs = [
+        { id: '1', title: 'CV 1', link: 'https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg' },
+        { id: '2', title: 'CV 2', link: 'https://cdn-blog.novoresume.com/articles/how-to-write-a-resume-guide/Minimalistic-Resume-Template.png' },
+        { id: '3', title: 'CV 3', link: 'https://cdn-blog.novoresume.com/articles/resume-examples/resume-example.webp' },
+        { id: '4', title: 'CV 4', link: 'https://cdn-blog.novoresume.com/articles/resume-examples/resume-example.webp' },
+    ];
+
+    const skills = [
+        { id: 1, title: "Kĩ năng 1", rating: 5, reviews: 175 },
+        { id: 2, title: "Kĩ năng 2", rating: 4, reviews: 200 },
+        { id: 3, title: "Kĩ năng 3", rating: 3, reviews: 150 },
+        { id: 4, title: "Kĩ năng 4", rating: 4.5, reviews: 135 },
+    ];
+
+    const [note, setNote] = useState('');
+
+    const [selectedCV, setSelectedCV] = useState<string | null>(null);
+
+    const [activeButton, setActiveButton] = useState<string | null>(null);
+
+    const [selectedSkills, setSelectedSkills] = useState([]);
+
+    const { availabilities } = useGetAvailability({ expertId: params?.id });
+
+    const convertEvents = (data: any) => data.map((event: any) => ({
+        id: event.id.toString(),
+        title: `Event ${event.id}`,
+        start: `${event.date}T${event.startTime}`,
+        end: `${event.date}T${event.endTime}`
+    }));
+
+    const handleSkillClick = (skill: any) => {
+        setSelectedSkills((prev: any) => {
+            const index = prev.findIndex((s) => s.id === skill.id);
+            if (index !== -1) {
+                return prev.filter((s) => s.id !== skill.id);
+            } else {
+                return [...prev, skill];
+            }
+        });
+    };
+
+    const handleCVSelect = (cvId: string) => {
+        setSelectedCV(cvId === selectedCV ? null : cvId);
+    };
+
+    const handleButtonClick = (button: string) => {
+        setActiveButton(prev => (prev === button ? null : button));
+    };
+
+    const handleBooking = () => {
+        let message = '';
+        let valid = true;
+
+        if (Object.keys(selectedSkills).length === 0 && selectedCV === null) {
+            message = 'Bạn cần phải chọn kỹ năng phỏng vấn và CV phỏng vấn.';
+            valid = false;
+            setActiveButton("skills");
+        } else if (Object.keys(selectedSkills).length === 0) {
+            message = 'Bạn cần phải chọn kỹ năng phỏng vấn.';
+            valid = false;
+            setActiveButton("skills");
+        } else if (selectedCV === null) {
+            message = 'Bạn cần phải chọn CV để phỏng vấn.';
+            valid = false;
+            setActiveButton("cvs");
+        }
+
+        if (valid) {
+            if (onNext) {
+                onNext();
+            }
+        } else {
+            enqueueSnackbar(message, { variant: 'warning' });
+        }
+    };
+
+    useEffect(() => {
+        const convertedEvents = convertEvents(availabilities);
+        setEvents(convertedEvents);
+    }, [params?.id, availabilities]);
+
+    useEffect(() => {
+        console.log("selectedSkills:", selectedSkills);
+        console.log("selectedCV:", selectedCV);
+        console.log("note:", note);
+    }, [selectedSkills, selectedCV, note]);
+
     if (loading) return <Loader />;
 
     return (
         <Box px={2} py={1}>
+            <Grid container pb={2} spacing={2}>
+                <Grid item xs={12}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleButtonClick('skills')}
+                        sx={{ flex: 1, marginRight: 1 }}
+                    >
+                        {activeButton === 'skills' ? "Ẩn chọn kĩ năng phỏng vấn" : "Chọn kĩ năng phỏng vấn"}
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleButtonClick('cvs')}
+                        sx={{ flex: 1, marginRight: 1 }}
+                    >
+                        {activeButton === 'cvs' ? "Ẩn chọn CV phỏng vấn" : "Chọn CV phỏng vấn"}
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleButtonClick('comment')}
+                        sx={{ flex: 1 }}
+                    >
+                        {activeButton === 'comment' ? "Ẩn chú thích phỏng vấn" : "Thêm chú thích phỏng vấn"}
+                    </Button>
+                </Grid>
+            </Grid>
+
+            {activeButton === 'skills' && (
+                <Grid container spacing={2}>
+                    {skills.map(skill => (
+                        <Grid item xs={12} sm={4} md={4} key={skill.id} mb={2}>
+                            <div onClick={() => handleSkillClick(skill)} style={{ cursor: 'pointer' }}>
+                                <SubCard
+                                    title={skill.title}
+                                    sx={{
+                                        backgroundColor: selectedSkills.some(s => s.id === skill.id) ? "#69F0AE" : "#fff",
+                                        borderRadius: '12px',
+                                        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                                        transition: '0.3s',
+                                        '&:hover': {
+                                            transform: 'scale(1.02)',
+                                            boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                                        },
+                                    }}
+                                >
+                                    <FlexBetween>
+                                        <Rating value={skill.rating} size="small" readOnly />
+                                        <Text fontSize={13}>
+                                            <span style={{ fontWeight: "bold" }}>{skill.reviews}</span> lượt đánh giá
+                                        </Text>
+                                    </FlexBetween>
+                                </SubCard>
+                            </div>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
+
+            {activeButton === 'cvs' && (
+                <Grid container spacing={2} mb={2}>
+                    {cvs.map(cv => (
+                        <Grid item xs={12} sm={6} md={4} key={cv.id}>
+                            <div onClick={() => handleCVSelect(cv.id)} style={{ cursor: 'pointer', border: selectedCV === cv.id ? '3px solid green' : 'none', borderRadius: '8px' }}>
+                                <SubCard title={cv.title} sx={{
+                                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                                    transition: '0.3s',
+                                    '&:hover': {
+                                        transform: 'scale(1.02)',
+                                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                                    },
+                                }}>
+                                    <Image
+                                        src={cv.link}
+                                        alt={cv.title}
+                                        width={400}
+                                        height={600}
+                                    />
+                                </SubCard>
+                            </div>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
+
+            {activeButton === 'comment' && (
+                <Grid item xs={12} mb={2}>
+                    <TextField
+                        label="Chú thích phỏng vấn"
+                        variant="outlined"
+                        multiline
+                        rows={2}
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        sx={{ width: "50%" }}
+                    />
+                </Grid>
+            )}
+
             <CalendarStyled>
                 <ExpertToolbar
                     date={date}
@@ -277,7 +447,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
             <Grid item xs={12} mt={3} >
                 <Grid container spacing={3} alignItems="center" justifyContent="space-between">
                     <Grid item>
-                        <Button onClick={() => { if (onBack) onBack(); }} color="error" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
+                        <Button onClick={() => { if (onBack) onBack(); }} color="primary" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
                             Quay lại
                         </Button>
                     </Grid>
@@ -302,7 +472,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
                     <Button onClick={handleModalClose} color="error">
                         Đóng
                     </Button>
-                    <Button color="success" onClick={() => { if (onNext) { onNext(); } }}>
+                    <Button color="success" onClick={handleBooking}>
                         Đặt lịch
                     </Button>
                 </DialogActions>

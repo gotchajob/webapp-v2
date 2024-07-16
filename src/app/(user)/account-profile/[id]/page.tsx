@@ -124,7 +124,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         height: '100%',
         backgroundImage: 'linear-gradient(to bottom right, #DAECF6, #90C7E5, #59ABD9)',
         display: 'flex',
-        padding: 10
+        padding: 5
       }}
     >
       <MainCard
@@ -134,7 +134,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         hover
         sx={{
           minWidth: "100%",
-          maxHeight: "70%",
+          maxHeight: "100%",
         }}
       >
         <Grid container spacing={gridSpacing} >

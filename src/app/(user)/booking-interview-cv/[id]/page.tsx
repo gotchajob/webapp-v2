@@ -58,9 +58,9 @@ const tabsOption = [
         caption: 'Thông tin hồ sơ chuyên gia'
     },
     {
-        label: 'Lịch phỏng vấn',
+        label: 'Chọn lịch phỏng vấn',
         icon: <CalendarMonthIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: 'Lịch phỏng vấn của chuyên gia'
+        caption: 'Chọn lịch phỏng vấn của chuyên gia'
     },
     {
         label: 'Đặt lịch',
@@ -90,7 +90,7 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
     }
 
     return (
-        <Box sx={{ boxShadow: 10, my: 5, mx: 20 }}>
+        <Box sx={{ boxShadow: 3, my: 5, mx: 5 }}>
             <MainCard>
                 <Grid container spacing={gridSpacing} >
                     <Grid item xs={12}>

@@ -1,30 +1,37 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
 // types
-import { ThemeMode } from 'types/config';
 import { FormattedMessage } from 'react-intl';
+import { ThemeMode } from 'types/config';
 
 // Asset
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import { useGetBalance } from 'hooks/use-get-balance';
+import { CustomerToken } from 'hooks/use-login';
+import { useEffect } from 'react';
 
 
 // ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
 
 const WalletCard = () => {
   const theme = useTheme();
+
+  const { customerToken } = CustomerToken();
+
+  const { balance } = useGetBalance(customerToken);
 
   const cardSX = {
     content: '""',
@@ -67,7 +74,7 @@ const WalletCard = () => {
                   border: '2px solid #0782C6',
                   borderRadius: '10%',
                   padding: '0.5px',
-                  zIndex: 10  
+                  zIndex: 10
                 }}>
                   <ArrowOutwardIcon color="primary" sx={{ fontSize: '1.1rem' }} />
                 </IconButton>
@@ -76,7 +83,7 @@ const WalletCard = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              <FormattedMessage id="$499" />
+              {balance?.balance} vnđ
             </Typography>
           </Grid>
           <Grid item>
