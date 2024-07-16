@@ -19,7 +19,7 @@ import { FormikValues } from 'formik';
 
 // project imports
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Rating, TextField } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Rating, TextField, Typography } from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import { FlexBetween } from 'components/common/box/flex-box';
 import { Text } from 'components/common/text/text';
@@ -253,9 +253,9 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
 
     const handleSkillClick = (skill: any) => {
         setSelectedSkills((prev: any) => {
-            const index = prev.findIndex((s) => s.id === skill.id);
+            const index = prev.findIndex((s: any) => s.id === skill.id);
             if (index !== -1) {
-                return prev.filter((s) => s.id !== skill.id);
+                return prev.filter((s: any) => s.id !== skill.id);
             } else {
                 return [...prev, skill];
             }
@@ -300,7 +300,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
     useEffect(() => {
         const convertedEvents = convertEvents(availabilities);
         setEvents(convertedEvents);
-    }, [params?.id, availabilities]);
+    }, [params.id, availabilities]);
 
     useEffect(() => {
         console.log("selectedSkills:", selectedSkills);
@@ -344,9 +344,9 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
                         <Grid item xs={12} sm={4} md={4} key={skill.id} mb={2}>
                             <div onClick={() => handleSkillClick(skill)} style={{ cursor: 'pointer' }}>
                                 <SubCard
-                                    title={skill.title}
                                     sx={{
-                                        backgroundColor: selectedSkills.some(s => s.id === skill.id) ? "#69F0AE" : "#fff",
+                                        backgroundColor: selectedSkills.some((s: any) => s.id === skill.id) ? "#2196F3" : "#fff",
+                                        color: selectedSkills.some((s: any) => s.id === skill.id) ? "#ffff" : "#000",
                                         borderRadius: '12px',
                                         boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
                                         transition: '0.3s',
@@ -356,6 +356,16 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
                                         },
                                     }}
                                 >
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            color: selectedSkills.some((s: any) => s.id === skill.id) ? "#fff" : "#000",
+                                            pl: 1,
+                                            pb: 2
+                                        }}
+                                    >
+                                        {skill.title}
+                                    </Typography>
                                     <FlexBetween>
                                         <Rating value={skill.rating} size="small" readOnly />
                                         <Text fontSize={13}>
@@ -373,7 +383,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
                 <Grid container spacing={2} mb={2}>
                     {cvs.map(cv => (
                         <Grid item xs={12} sm={6} md={4} key={cv.id}>
-                            <div onClick={() => handleCVSelect(cv.id)} style={{ cursor: 'pointer', border: selectedCV === cv.id ? '3px solid green' : 'none', borderRadius: '8px' }}>
+                            <div onClick={() => handleCVSelect(cv.id)} style={{ cursor: 'pointer', border: selectedCV === cv.id ? '3px solid #2196F3' : 'none', borderRadius: '12px' }}>
                                 <SubCard title={cv.title} sx={{
                                     boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
                                     transition: '0.3s',

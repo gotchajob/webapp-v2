@@ -38,6 +38,12 @@ const BookingInformationCard = ({ bookinginfo }: { bookinginfo: any }) => {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body2" color="text.secondary">
+                Thời điểm diễn ra buổi phỏng vấn:
+              </Typography>
+              <Typography variant="body1">{`Bắt đầu: ${bookinginfo.start}, Kết thúc: ${bookinginfo.end}`}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary">
                 Kỹ năng đã chọn để phỏng vấn:
               </Typography>
               <Grid container spacing={1}>
