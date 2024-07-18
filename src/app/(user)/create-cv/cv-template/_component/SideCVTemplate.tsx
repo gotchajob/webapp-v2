@@ -16,7 +16,7 @@ const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/default_v2.png', title: 'Tiêu Chuẩn' }
 ];
 
-const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (id: number) => void, cvTemplate?: any }) => {
+const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (id: number) => void, cvTemplate: CVTemplate[] }) => {
 
   const handleChangeTemplate = (id: number) => {
     if (onChangeTemplate) {

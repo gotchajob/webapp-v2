@@ -22,12 +22,14 @@ const CreateCVHeader = ({
   cv,
   onChangeCV,
   printOnClick,
-  review
+  review,
+  saveCV
 }: {
   cv: CVTemplate;
   onChangeCV: (cv: CVTemplate) => void;
   printOnClick: () => void;
   review: () => void;
+  saveCV: () => void;
 }) => {
   const handleSaveAndDowload = () => {
     if (printOnClick) {
@@ -38,9 +40,18 @@ const CreateCVHeader = ({
   const handleReview = () => {
     review();
   };
+
+  const handleSave = () => {
+    saveCV();
+  };
+  const handleChangeName = (event: any) => {
+    const newCV = { ...cv };
+    newCV.name = event.target.value;
+    onChangeCV(newCV);
+  };
   return (
     <FlexBetween>
-      <TextField placeholder="CV chưa đặt tên" value={cv.name} />
+      <TextField placeholder="CV chưa đặt tên" value={cv.name} onChange={handleChangeName} />
       <Stack flexDirection={'row'}>
         <IconButton>
           <UndoIcon sx={{ color: PRIMARYCOLOR }} />
@@ -88,6 +99,7 @@ const CreateCVHeader = ({
             backgroundColor: '#1976D2',
             color: 'white'
           }}
+          onClick={handleSave}
         >
           <SaveIcon sx={{ fontSize: 35, pr: '5px' }} />
           Lưu lại

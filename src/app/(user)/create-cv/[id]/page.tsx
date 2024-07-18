@@ -12,8 +12,19 @@ import MainCard from 'ui-component/cards/MainCard';
 import { useReactToPrint } from 'react-to-print';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { UpdateCV } from 'package/api/cv/id';
+import { useGetCVById } from 'hooks/use-get-cv-by-id';
+import { CustomerToken } from 'hooks/use-login';
+import { enqueueSnackbar } from 'notistack';
+import { useRefresh } from 'hooks/use-refresh';
 
-export default function Page() {
+export default function Page({ params }: { params: { id: string } }) {
+  const { customerToken } = CustomerToken();
+
+  const { refresh, refreshTime } = useRefresh();
+
+  const { cv } = useGetCVById(+params.id, customerToken, refreshTime);
+
   const [historyTemplate, setHistoryTemplate] = useState<CVTemplate[]>([]);
 
   const [currentTemplate, setCurrentTemplate] = useState<CVTemplate>(CVTemplateData);
@@ -25,7 +36,7 @@ export default function Page() {
 
   const CVRef = useRef(null);
 
-  const handlePrint = async () => {
+  const handleDownload = async () => {
     if (CVRef.current) {
       const canvas = await html2canvas(CVRef.current);
       const imgData = canvas.toDataURL('image/png');
@@ -43,26 +54,58 @@ export default function Page() {
     documentTitle: 'CV'
   });
 
-  useEffect(() => {
-    console.log(currentTemplate);
-  }, [currentTemplate]);
+  const saveCV = async () => {
+    try {
+      const data = await UpdateCV(
+        {
+          id: cv?.id || 1,
+          cv: JSON.stringify(currentTemplate),
+          name: currentTemplate.name,
+          image: ''
+        },
+        customerToken
+      );
+      if (data.status === 'error') {
+        throw new Error('Lỗi không thể lưu cv');
+      }
+      enqueueSnackbar({ variant: 'success', message: 'lưu cv thành công' });
+    } catch (error) {
+    } finally {
+      refresh();
+    }
+  };
 
+  useEffect(() => {
+    if (cv) {
+      setCurrentTemplate(JSON.parse(cv.cv));
+    }
+  }, [cv]);
   return (
     <MainCard boxShadow hover sx={{ m: 3 }}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <CreateCVHeader cv={currentTemplate} onChangeCV={onChangeCV} printOnClick={handlePrint} review={handleReview} />
+      {cv ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <CreateCVHeader
+              cv={currentTemplate}
+              onChangeCV={onChangeCV}
+              printOnClick={handleDownload}
+              review={handleReview}
+              saveCV={saveCV}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={8}>
+            <CreateCV onChangeCV={onChangeCV} cv={currentTemplate} cvRef={CVRef} />
+          </Grid>
+          <Grid item xs={4}>
+            <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={8}>
-          <CreateCV onChangeCV={onChangeCV} cv={currentTemplate} cvRef={CVRef} />
-        </Grid>
-        <Grid item xs={4}>
-          <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
-        </Grid>
-      </Grid>
+      ) : (
+        <></>
+      )}
     </MainCard>
   );
 }
