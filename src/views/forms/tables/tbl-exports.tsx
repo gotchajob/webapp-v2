@@ -14,8 +14,8 @@ import { IconDeviceFloppy } from '@tabler/icons-react';
 
 const CSVExport = ({ data, filename, headers }: any) => {
   return (
-    <Tooltip title="CSV Export" placement="left">
-      <ButtonBase sx={{ mt: 0.5, '& svg': { color: 'secondary.main' } }}>
+    <Tooltip title="Tải xuống" placement="left">
+      <ButtonBase sx={{ mt: 0.5, '& svg': { color: 'primary.main' } }}>
         <CSVLink data={data} filename={filename} headers={headers}>
           <IconDeviceFloppy aria-label="Export CSV File" />
         </CSVLink>

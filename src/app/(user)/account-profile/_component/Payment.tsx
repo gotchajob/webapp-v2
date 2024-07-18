@@ -189,6 +189,7 @@ const Payment = () => {
 export default Payment;
 
 const vnpay = 'https://vnpay.vn/s1/statics.vnpay.vn/2023/6/0oxhzjmxbksr1686814746087.png';
+
 const momo = 'https://downloadr2.apkmirror.com/wp-content/uploads/2022/06/14/62a2fd170d655.png';
 
 const PaymentOptions: PaymentOptionsProps[] = [

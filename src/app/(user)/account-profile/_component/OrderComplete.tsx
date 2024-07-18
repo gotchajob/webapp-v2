@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 // material-ui
@@ -23,6 +23,9 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // assets
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useGetSearchParams } from 'hooks/use-get-params';
+import { CircularProgress } from '@mui/material';
 
 const completed = '/assets/images/e-commerce/completed.png';
 
@@ -30,7 +33,22 @@ const chance = new Chance();
 
 // ==============================|| CHECKOUT CART - DISCOUNT COUPON CODE ||============================== //
 
-const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: () => void, continueClick: () => void }) => {
+const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolean, transactionClick: () => void, continueClick: () => void }) => {
+
+  const [isProcessing, setIsProcessing] = useState(true);
+
+  const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
+
+  useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => {
+        setIsProcessing(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   return (
@@ -47,21 +65,26 @@ const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: (
     >
       {open && (
         <MainCard>
-          <PerfectScrollbar style={{ overflowX: 'hidden', height: 'calc(100vh - 100px)' }}>
-            <Grid container direction="column" spacing={gridSpacing} alignItems="center" justifyContent="center" sx={{ my: 3 }}>
+          <PerfectScrollbar style={{ overflowX: 'hidden', height: 565 }}>
+            <Grid container direction="column" spacing={2} alignItems="center" justifyContent="center" sx={{ my: 1 }}>
               <Grid item xs={12}>
-                <Typography variant={downMD ? 'h2' : 'h1'}>Thank you for order!</Typography>
+                {isProcessing ? (
+                  <CircularProgress size={50} />
+                ) : (
+                  <CheckCircleIcon color="success" sx={{ fontSize: 58 }} />
+                )}
               </Grid>
               <Grid item xs={12}>
-                <Stack alignItems="center" spacing={2}>
-                  <Typography align="center" variant="h4" sx={{ fontWeight: 400, color: 'grey.500' }}>
-                    We will send a process notification, before it delivered.
-                  </Typography>
+                <Typography variant={downMD ? 'h2' : 'h1'}>Giao dịch thành công</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack alignItems="center" spacing={1}>
+                  {vnp_Amount && (<Typography color="success" variant={downMD ? 'h2' : 'h1'} sx={{ textAlign: "center" }}>{vnp_Amount}đ</Typography>)}
                 </Stack>
               </Grid>
-              <Grid item xs={12} sx={{ m: 3 }}>
+              <Grid item xs={12}>
                 <Image
-                  src={completed}
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"
                   alt="Order Complete"
                   layout="responsive"
                   width={500}
@@ -72,34 +95,25 @@ const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: (
               <Grid item xs={12} sm={9}>
                 <Stack alignItems="center" spacing={1}>
                   <Typography variant="caption" align="center">
-                    If you have any query or questions regarding purchase items, then fell to get in contact us
+                    Nếu bạn có bất kỳ thắc mắc hoặc câu hỏi nào liên quan đến việc mua hàng, vui lòng liên hệ với chúng tôi
                   </Typography>
                   <Typography variant="subtitle1" color="primary" sx={{ cursor: 'pointer' }}>
                     gotchajob@gmail.com
                   </Typography>
                 </Stack>
               </Grid>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid
-                  direction={{ xs: 'column-reverse', md: 'row' }}
-                  container
-                  spacing={3}
-                  alignItems={{ xs: 'flex-start', md: 'center' }}
-                  justifyContent="space-between"
-                >
-                  <Grid item>
-                    <Button variant="text" startIcon={<KeyboardBackspaceIcon />} onClick={continueClick}>
-                      Tiếp tục nạp
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained" fullWidth onClick={close}>
-                      Đi tới lịch sử giao dịch
-                    </Button>
-                  </Grid>
+            </Grid>
+            <Grid item xs={12} sx={{ pt: 3 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button variant="outlined" fullWidth onClick={continueClick}>
+                    Đóng
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button variant="contained" fullWidth onClick={continueClick}>
+                    Tiếp tục nạp
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
