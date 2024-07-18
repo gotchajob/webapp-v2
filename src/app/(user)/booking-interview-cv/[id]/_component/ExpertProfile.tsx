@@ -28,7 +28,10 @@ import Link from "@mui/material/Link";
 import { FlexBetween } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
 import { Text } from 'components/common/text/text';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useGetExpertSkillOptions } from 'hooks/use-get-expert-skill-option';
+import { useGetExpertProfile } from 'hooks/use-get-expert-profile';
+import { useRefresh } from 'hooks/use-refresh';
 
 export interface EducationData {
     time: string;
@@ -60,9 +63,21 @@ const expert = {
 
 // ==============================|| PROFILE 1 - PROFILE ||============================== //
 
-const ExpertProfilePage = ({ onNext }: { onNext: () => void }) => {
+const ExpertProfilePage = ({ onNext, params }: { onNext: () => void, params: { id: string } }) => {
 
     const [openDialog, setOpenDialog] = useState(false);
+
+    const { refresh, refreshTime } = useRefresh();
+
+    const { expert, loading } = useGetExpertProfile({ id: +params?.id }, refreshTime);
+
+    const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id })
+
+    useEffect(() => {
+        console.log("expertSkillOptions :", expertSkillOptions);
+        console.log("expert:", expert);
+        console.log("params:", params.id);
+    }, [params.id]);
 
     return (
         <Grid container spacing={gridSpacing}>
@@ -256,36 +271,16 @@ const ExpertProfilePage = ({ onNext }: { onNext: () => void }) => {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={4}>
-                        <SubCard title={"Kĩ năng 1"}>
+                    {expertSkillOptions?.map((skillOptions, index) => (<> <Grid item xs={4}>
+                        <SubCard title={skillOptions.skillOptionName} key={index}>
                             <FlexBetween>
-                                <Rating value={5} size="small" readOnly />
+                                <Rating value={skillOptions.sumPoint} size="small" readOnly />
                                 <Text fontSize={13}>
-                                    <span style={{ fontWeight: "bold" }}>175</span> lượt đánh giá
+                                    <span style={{ fontWeight: "bold" }}>{skillOptions.totalRating}</span> lượt đánh giá
                                 </Text>
                             </FlexBetween>
                         </SubCard>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <SubCard title={"Kĩ năng 1"}>
-                            <FlexBetween>
-                                <Rating value={5} size="small" readOnly />
-                                <Text fontSize={13}>
-                                    <span style={{ fontWeight: "bold" }}>175</span> lượt đánh giá
-                                </Text>
-                            </FlexBetween>
-                        </SubCard>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <SubCard title={"Kĩ năng 1"}>
-                            <FlexBetween>
-                                <Rating value={5} size="small" readOnly />
-                                <Text fontSize={13}>
-                                    <span style={{ fontWeight: "bold" }}>175</span> lượt đánh giá
-                                </Text>
-                            </FlexBetween>
-                        </SubCard>
-                    </Grid>
+                    </Grid></>))}
                 </>
             ) : (
                 <Typography variant="h6">Loading...</Typography>

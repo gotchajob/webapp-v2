@@ -168,7 +168,7 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TabPanel value={value} index={0}>
-                            <ExpertProfilePage onNext={handleNextStep} />
+                            <ExpertProfilePage onNext={handleNextStep} params={params} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} />
