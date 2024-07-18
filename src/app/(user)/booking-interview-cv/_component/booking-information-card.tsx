@@ -1,17 +1,36 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Autocomplete, Chip, TextField, Typography, Grid, Card } from '@mui/material';
+import { Card, Chip, Grid, Typography } from '@mui/material';
+import { useGetAvailability, useGetAvailabilityById } from 'hooks/use-get-availability';
+import { useGetCVById } from 'hooks/use-get-cv';
+import { useGetExpertProfile } from 'hooks/use-get-expert-profile';
+import { useGetExpertSkillOptions } from 'hooks/use-get-expert-skill-option';
+import { CustomerToken } from 'hooks/use-login';
+import { useRefresh } from 'hooks/use-refresh';
+import { formatDate } from 'package/util';
+import { useEffect, useMemo } from 'react';
 import { gridSpacing } from 'store/constant';
 
-const BookingInformationCard = ({ bookinginfo }: { bookinginfo: any }) => {
-  useEffect(() => {
-    console.log('bookinginfo:', bookinginfo);
-  }, [bookinginfo]);
+const BookingInformationCard = ({ bookingInfo, params }: { bookingInfo: any, params: { id: string } }) => {
+  const { refresh, refreshTime } = useRefresh();
+
+  const { customerToken } = CustomerToken();
+
+  const { availability } = useGetAvailabilityById({ id: bookingInfo?.availabilityId });
+
+  const { expert, loading: expertLoading } = useGetExpertProfile({ id: +params?.id }, refreshTime);
+
+  const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id })
+
+  const selectedSkills = useMemo(() => {
+    return expertSkillOptions?.filter(skill =>
+      bookingInfo?.bookingSkill?.includes(skill.id)
+    );
+  }, [expertSkillOptions, bookingInfo, params.id]);
 
   return (
     <>
-      {bookinginfo && (
+      {bookingInfo && (
         <Card
           sx={{
             p: 2,
@@ -28,28 +47,32 @@ const BookingInformationCard = ({ bookinginfo }: { bookinginfo: any }) => {
               <Typography variant="body2" color="text.secondary">
                 Tên chuyên gia:
               </Typography>
-              <Typography variant="body1">{bookinginfo.expert.fullName}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" color="text.secondary">
-                Thời điểm đặt lịch:
-              </Typography>
-              <Typography variant="body1">{`Bắt đầu: ${bookinginfo.start}, Kết thúc: ${bookinginfo.end}`}</Typography>
+              <Typography variant="body1">{expert?.firstName} {expert?.lastName}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body2" color="text.secondary">
                 Thời điểm diễn ra buổi phỏng vấn:
               </Typography>
-              <Typography variant="body1">{`Bắt đầu: ${bookinginfo.start}, Kết thúc: ${bookinginfo.end}`}</Typography>
+              {availability && (
+                <>
+                  <Typography variant="body1">Bắt đầu: {formatDate(availability.startTime, "dd/MM/yyyy - hh:mm")} </Typography>
+                  <Typography variant="body1">Kết thúc: {formatDate(availability.endTime, "dd/MM/yyyy - hh:mm")}</Typography>
+                </>)}
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2" color="text.secondary">
+                Chú thích thêm:
+              </Typography>
+              <Typography variant="body1">{bookingInfo.note ? bookingInfo.note : "Không có chú thích"}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body2" color="text.secondary">
                 Kỹ năng đã chọn để phỏng vấn:
               </Typography>
               <Grid container spacing={1}>
-                {bookinginfo.skillsExpert.map((skill: { label: string; id: number }) => (
+                {selectedSkills?.map((skill) => (
                   <Grid item key={skill.id}>
-                    <Chip label={skill.label} color="primary" sx={{ color: 'white' }} />
+                    <Chip label={skill.skillOptionName} color="primary" sx={{ color: 'white' }} />
                   </Grid>
                 ))}
               </Grid>
@@ -59,7 +82,7 @@ const BookingInformationCard = ({ bookinginfo }: { bookinginfo: any }) => {
                 Tổng tiền phải trả:
               </Typography>
               <Typography variant="body1" color="success.dark">
-                {bookinginfo.amount}vnđ
+                375.000vnđ
               </Typography>
             </Grid>
           </Grid>

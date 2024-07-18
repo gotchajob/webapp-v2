@@ -26,6 +26,7 @@ export interface ExpertMatchingSkill {
 }
 
 export interface ExpertMatching {
+  expertId: number;
   userId: number;
   fullName: string;
   avatar: string;

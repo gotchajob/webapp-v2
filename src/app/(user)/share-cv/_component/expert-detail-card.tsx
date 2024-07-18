@@ -95,7 +95,7 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
         <Grid item xs={12}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <StyledLink href={`/share-cv/expert-profile/${expert.userId}`}>
+              <StyledLink href={`/share-cv/expert-profile/${expert.expertId}`}>
                 <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
                   Book
                 </Button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -13,6 +13,8 @@ import { StyledLink } from 'components/common/link/styled-link';
 import OrderComplete from '../../_component/OrderComplete';
 import BookingInformationCard from '../../_component/booking-information-card';
 import ExpertBookCard from '../../_component/expert-book-card';
+import { PostBooking } from 'package/api/booking';
+import { CustomerToken } from 'hooks/use-login';
 
 // ==============================|| CHECKOUT PAYMENT - MAIN ||============================== //
 
@@ -30,34 +32,30 @@ const expertBooking = [
     }
 ];
 
-const BookingInformataion = {
-    expert: {
-        userId: 1,
-        fullName: 'Anshan Handgun',
-        avatar: `/assets/images/users/avatar-3.png`,
-        email: 'anshan.handgun@example.com',
-        yearExperience: 10,
-        nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
-        point: 5,
-        bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
-        skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
-    },
-    start: '2024-07-02T09:00:00',
-    end: '2024-07-02T10:00:00',
-    skillsExpert: [
-        { label: 'ReactJS', id: 4 },
-        { label: 'React Native', id: 5 }
-    ],
-    amount: 375000
-};
-
-const BookInvoicePage = ({ onBack }: { onBack: () => void }) => {
+const BookInvoicePage = ({ onBack, bookingInfo, params }: { onBack: () => void, bookingInfo: any, params: { id: string } }) => {
 
     const handleClose = () => {
         setComplete(false);
     };
 
     const [complete, setComplete] = useState(false);
+
+    const { customerToken } = CustomerToken();
+
+    const handleBooking = async () => {
+        try {
+            if (bookingInfo == null) {
+                return;
+            }
+            const res = await PostBooking({ availabilityId: bookingInfo.availabilityId, bookingSkill: bookingInfo.bookingSkill, customerCvId: bookingInfo.customerCvId, expertId: bookingInfo.expertId, note: bookingInfo.note }, customerToken);
+            console.log(res);
+            if (res.status === "success") {
+                setComplete(true);
+            }
+        } catch (error) {
+            throw new Error();
+        }
+    }
 
     return (
         <Box px={5}>
@@ -68,12 +66,12 @@ const BookInvoicePage = ({ onBack }: { onBack: () => void }) => {
                             <Typography variant="subtitle1">Thông tin đặt lịch</Typography>
                         </Grid>
                         <Grid item xs={6}>
-                            <BookingInformationCard bookinginfo={BookingInformataion} />
+                            <BookingInformationCard bookingInfo={bookingInfo} params={params} />
                         </Grid>
                         <Grid item xs={6}>
                             {expertBooking?.map((expert: any, index) => (
                                 <Box px={10} key={index}>
-                                    <ExpertBookCard expert={expert} />
+                                    <ExpertBookCard expert={expert} bookingInfo={bookingInfo} />
                                 </Box>
                             ))}
                         </Grid>
@@ -85,7 +83,7 @@ const BookInvoicePage = ({ onBack }: { onBack: () => void }) => {
                                     </Button>
                                 </Grid>
                                 <Grid item>
-                                    <Button variant="contained" onClick={() => setComplete(true)}>Hoàn thành đặt lịch</Button>
+                                    <Button variant="contained" onClick={handleBooking}>Hoàn thành đặt lịch</Button>
                                     <OrderComplete open={complete} close={handleClose} continueClick={() => { }} />
                                 </Grid>
                             </Grid>

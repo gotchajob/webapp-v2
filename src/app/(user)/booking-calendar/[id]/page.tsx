@@ -42,41 +42,6 @@ function TabPanel({ children, value, index, ...other }: TabsProps) {
     )
 }
 
-const fakeEvents = [
-    {
-        title: 'Đặt lịch thành công',
-        description: 'Đặt lịch thành công với Anshan Handgun',
-        color: '#198754',
-        textColor: '#ffffff',
-        start: '2024-07-02T09:00:00',
-        end: '2024-07-02T10:00:00'
-    },
-    {
-        title: 'Đã đặt lịch',
-        description: 'Chờ phản hồi từ chuyên gia Anshan Handgun',
-        color: '#FFC107',
-        textColor: '#ffffff',
-        start: '2024-07-04T09:00:00',
-        end: '2024-07-04T10:00:00'
-    },
-    {
-        title: 'Đã hủy đặt lịch',
-        description: 'Hủy lịch do cần chọn chuyên gia khác',
-        color: '#ED4337',
-        textColor: '#ffffff',
-        start: '2024-07-03T14:00:00',
-        end: '2024-07-03T15:00:00'
-    },
-    {
-        title: 'Hoàn tất phỏng vấn',
-        description: 'Kỹ năng chuyên môn tốt',
-        color: '#2196F3',
-        textColor: '#ffffff',
-        start: '2024-07-05T14:00:00',
-        end: '2024-07-05T15:00:00'
-    },
-];
-
 //tabs options
 const tabsOption = [
     {
@@ -96,7 +61,7 @@ const BookingCalendarPage = () => {
 
     const [value, setValue] = useState<number>(0);
 
-    const [selectEvent, setSelectEvent] = useState();
+    const [selectEvent, setSelectEvent] = useState<any>();
 
     const handleNextStep = () => {
         setValue(1);
@@ -108,6 +73,7 @@ const BookingCalendarPage = () => {
 
     const handleSelectEvent = (event: any) => {
         setSelectEvent(event);
+        // console.log("handleSelectEvent:", event);
     }
 
     return (

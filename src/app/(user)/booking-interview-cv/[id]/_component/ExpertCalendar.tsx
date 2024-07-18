@@ -23,7 +23,7 @@ import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTit
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import { FlexBetween } from 'components/common/box/flex-box';
 import { Text } from 'components/common/text/text';
-import { useGetAvailability } from 'hooks/use-get-availability';
+import { useGetAvailability, useGetValidDateToBooking } from 'hooks/use-get-availability';
 import { useGetExpertProfile } from 'hooks/use-get-expert-profile';
 import { useGetExpertSkillOptions } from 'hooks/use-get-expert-skill-option';
 import { useRefresh } from 'hooks/use-refresh';
@@ -62,7 +62,7 @@ const reverseConvertEvents = (event: any) => {
     };
 };
 
-const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, onBack: () => void, params: { id: string } }) => {
+const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () => void, onBack: () => void, params: { id: string }, booking: (info: any) => void }) => {
 
     const calendarRef = useRef<FullCalendar>(null);
 
@@ -198,17 +198,9 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
     //     setEvents(calendarState.events);
     // }, [calendarState]);
 
-
     // ==============================|| My Code Start here ||============================== //
 
     const { refresh, refreshTime } = useRefresh();
-
-    // const cvs = [
-    //     { id: '1', title: 'CV 1', link: 'https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg' },
-    //     { id: '2', title: 'CV 2', link: 'https://cdn-blog.novoresume.com/articles/how-to-write-a-resume-guide/Minimalistic-Resume-Template.png' },
-    //     { id: '3', title: 'CV 3', link: 'https://cdn-blog.novoresume.com/articles/resume-examples/resume-example.webp' },
-    //     { id: '4', title: 'CV 4', link: 'https://cdn-blog.novoresume.com/articles/resume-examples/resume-example.webp' },
-    // ];
 
     const { customerToken } = CustomerToken();
 
@@ -226,7 +218,9 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
 
     const [selectedSkills, setSelectedSkills] = useState<any>([]);
 
-    const { availabilities } = useGetAvailability({ expertId: +params?.id });
+    // const { availabilities } = useGetAvailability({ expertId: +params?.id });
+
+    const { availabilities: validDateToBooking } = useGetValidDateToBooking({ expertId: +params?.id });
 
     // const [selectAvailabilitie, setSelectAvailabilitie] = useState<any>();
 
@@ -279,32 +273,35 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
         }
 
         if (valid) {
-            // if (onNext) {
-            //     onNext();
-            // }
-            const res = await PostBooking({ availabilityId: selectedEvent?.id, bookingSkill: selectedSkills, customerCvId: selectedCV, expertId: +params.id, note: note }, customerToken);
-            console.log(res);
+
+            if (onNext) {
+                onNext();
+            }
+            if (booking) {
+                const bookingInfo = {
+                    availabilityId: selectedEvent?.id,
+                    bookingSkill: selectedSkills,
+                    customerCvId: selectedCV,
+                    expertId: +params.id,
+                    note: note
+                }
+                booking(bookingInfo);
+            }
         } else {
             enqueueSnackbar(message, { variant: 'warning' });
         }
     };
 
-    useEffect(() => {
-        const convertedEvents = convertEvents(availabilities);
-        setEvents(convertedEvents);
-        // console.log("events:", convertedEvents);
-    }, [params.id, availabilities, params]);
-
     // useEffect(() => {
-    //     console.log("customerToken:", customerToken);
-    //     console.log("CV Current:", cvs);
-    // }, [customerToken, cvs]);
+    //     const convertedEvents = convertEvents(availabilities);
+    //     setEvents(convertedEvents);
+    // }, [params.id, availabilities, params]);
 
     useEffect(() => {
-        console.log(selectedCV);
-        console.log(selectedSkills);
-        console.log("selectedEvent:", selectedEvent?.id);
-    }, [selectedCV, selectedSkills, selectedEvent]);
+        const convertedEvents = convertEvents(validDateToBooking);
+        setEvents(convertedEvents);
+        console.log("validDateToBooking:", validDateToBooking);
+    }, [validDateToBooking, params]);
 
     if (loading) return <Loader />;
 
@@ -410,10 +407,10 @@ const ExpertCalendarPage = ({ onNext, onBack, params }: { onNext: () => void, on
                         label="Chú thích phỏng vấn"
                         variant="outlined"
                         multiline
-                        rows={2}
+                        rows={3}
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        sx={{ width: "50%" }}
+                        sx={{ width: "35%" }}
                     />
                 </Grid>
             )}
