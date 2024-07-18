@@ -40,7 +40,6 @@ const yearOption = [
 ];
 
 export default function Page() {
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [categoryId, setCategoryId] = useState(0);
@@ -96,11 +95,41 @@ export default function Page() {
         throw new Error('');
       }
       setExpertMatchingList(data.data);
+      saveLastFilter(data.data);
     } catch (error: any) {
     } finally {
       setIsLoading(false);
     }
   };
+
+  const saveLastFilter = (expertMatching: ExpertMatching[]) => {
+    if (localStorage) {
+      const saveData = {
+        nation,
+        categoryId,
+        minYearExperience,
+        skillOptionIdList,
+        checkedState,
+        expertMatchingList: expertMatching
+      };
+      localStorage.setItem('lastFilter', JSON.stringify(saveData));
+    }
+  };
+
+  useEffect(() => {
+    if (localStorage) {
+      const stringData = localStorage.getItem('lastFilter');
+      if (stringData) {
+        const saveData = JSON.parse(stringData);
+        setNation(saveData.nation);
+        setCategoryId(saveData.categoryId);
+        setMinYearExperience(saveData.minYearExperience);
+        setSkillOptionIdList(saveData.skillOptionIdList);
+        setCheckedState(saveData.checkedState);
+        setExpertMatchingList(saveData.expertMatchingList);
+      }
+    }
+  }, []);
   const filterSkillByCategory = (skills: Skill[], categoryId: number) => {
     return skills.filter((value) => value.categoryId === categoryId);
   };
@@ -160,7 +189,7 @@ export default function Page() {
               getOptionLabel={(option) => option.name}
               filterSelectedOptions
               renderInput={(params) => <TextField {...params} label="Năm kinh nghiệm" />}
-              defaultValue={yearOption[0]}
+              defaultValue={yearOption.find((value) => value.id === minYearExperience)}
               onChange={(e, v) => {
                 setMinYearExperience(v?.id || 0);
               }}
@@ -172,6 +201,7 @@ export default function Page() {
               getOptionLabel={(option) => option.name}
               filterSelectedOptions
               renderInput={(params) => <TextField {...params} label="Ngành nghề" />}
+              defaultValue={categories.find((value) => value.id === categoryId)}
               onChange={(e, v) => {
                 handleChangeCategory(v);
               }}
@@ -249,7 +279,7 @@ export default function Page() {
 
       {/* Expert List */}
       <Grid container spacing={3} minHeight={300} mt={15} px={30}>
-        {expertMatchingList?.map((expert, index) => (
+        {expertMatchingList.map((expert, index) => (
           <Grid key={index} item xs={3}>
             <ExpertDetailCard expert={expert} />
           </Grid>

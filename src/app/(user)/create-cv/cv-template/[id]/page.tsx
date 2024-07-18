@@ -16,6 +16,10 @@ import { CustomerToken } from 'hooks/use-login';
 import { UseGetCVTemplate, UseGetCVTemplateById } from 'hooks/use-get-cv-template';
 import { UseGetCategoryById } from 'hooks/use-get-category-by-id';
 import Image from 'next/image';
+import { enqueueSnackbar } from 'notistack';
+import { PostCreateCV } from 'package/api/cv';
+import { useRouter } from 'next/navigation';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png', title: 'Thành Đạt' },
@@ -31,17 +35,18 @@ const data = [
 ];
 
 const CVTemplatePage = ({ params }: { params: { id: string } }) => {
-
   const CVRef = useRef(null);
 
   const { customerToken } = CustomerToken();
 
   const { categoryById, loading: UseGetCategoryByIdLoading } = UseGetCategoryById({ id: +params.id });
 
-  const { CVTemplateList, loading: UseGetCVTemplateLoading } = UseGetCVTemplate({ cvCategoryId: +params.id })
+  const { CVTemplateList, loading: UseGetCVTemplateLoading } = UseGetCVTemplate({ cvCategoryId: +params.id });
 
   const [selectId, setSelectId] = useState<number>(CVTemplateList[0]?.id);
 
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
   const handleChangeTemplate = (id: number) => {
     if (id) {
       setSelectId(id);
@@ -56,8 +61,31 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
 
   const { CVTemplateById, loading } = UseGetCVTemplateById({ id: selectId });
 
-  useEffect(() => { console.log("CVTemplateById:", CVTemplateById) }, [CVTemplateById]);
-  
+  const handleCreateCV = async () => {
+    if (customerToken === "") {
+      router.push("/login")
+    }
+    try {
+      setIsLoading(true)
+      const data = await PostCreateCV({ cvTemplateId: selectId }, customerToken);
+      if (data.status === 'error') {
+        throw new Error('');
+      }
+      router.push(`/create-cv/${data.data.id}`);
+      enqueueSnackbar({
+        variant: 'success',
+        message: 'Tạo CV thành công'
+      });
+    } catch (error) {
+      enqueueSnackbar({
+        variant: 'error',
+        message: 'Lỗi khi tạo CV'
+      });
+    } finally {
+      setIsLoading(false)
+    }
+  };
+
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <MainCard boxShadow hover>
@@ -69,7 +97,9 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
           <Divider sx={{ my: 2 }} />
           <Grid container spacing={2}>
             <Grid item xs={9}>
-              {CVTemplateById && CVTemplateById.templateJson !== undefined && (<CreateCV onChangeCV={() => { }} cv={JSON.parse(CVTemplateById.templateJson)} cvRef={CVRef} />)}
+              {CVTemplateById && CVTemplateById.templateJson !== undefined && (
+                <CreateCV onChangeCV={() => {}} cv={JSON.parse(CVTemplateById.templateJson)} cvRef={CVRef} />
+              )}
               <Stack direction="row" spacing={1} sx={{ mt: 8 }} justifyContent="center" alignItems="center">
                 <StyledLink href={'/create-cv'}>
                   <Button variant="outlined" sx={{ minHeight: 40 }}>
@@ -77,16 +107,14 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
                     Danh sách mẫu CV
                   </Button>
                 </StyledLink>
-                <StyledLink href={customerToken !== '' ? '/create-cv/1' : '/login'}>
-                  <Button variant="contained" sx={{ minHeight: 40 }}>
+                  <LoadingButton loading={isLoading} variant="contained" sx={{ minHeight: 40 }} onClick={handleCreateCV}>
                     Tạo CV với thiết kế này
-                  </Button>
-                </StyledLink>
+                  </LoadingButton>
               </Stack>
             </Grid>
             <Grid item xs={3}>
               <SubCard title="Lựa chọn kiểu thiết kế phù hợp với bạn nhất">
-                <SideCVTemplate onChangeTemplate={handleChangeTemplate} cvTemplate={CVTemplateList ? CVTemplateList : undefined} />
+                <SideCVTemplate onChangeTemplate={handleChangeTemplate} cvTemplate={CVTemplateList} />
               </SubCard>
             </Grid>
           </Grid>
