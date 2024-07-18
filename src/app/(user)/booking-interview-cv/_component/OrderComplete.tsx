@@ -23,6 +23,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // assets
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import { StyledLink } from 'components/common/link/styled-link';
 
 const completed = '/assets/images/e-commerce/completed.png';
 
@@ -50,29 +51,29 @@ const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: (
           <PerfectScrollbar style={{ overflowX: 'hidden', height: 'calc(100vh - 100px)' }}>
             <Grid container direction="column" spacing={gridSpacing} alignItems="center" justifyContent="center" sx={{ my: 3 }}>
               <Grid item xs={12}>
-                <Typography variant={downMD ? 'h2' : 'h1'}>Thank you for order!</Typography>
+                <Typography variant={downMD ? 'h2' : 'h1'}>Cảm ơn bạn đã sử dụng dịch vụ!</Typography>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Stack alignItems="center" spacing={2}>
                   <Typography align="center" variant="h4" sx={{ fontWeight: 400, color: 'grey.500' }}>
                     We will send a process notification, before it delivered.
                   </Typography>
                 </Stack>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sx={{ m: 3 }}>
                 <Image
                   src={completed}
                   alt="Order Complete"
                   layout="responsive"
-                  width={500}
-                  height={500}
+                  width={300}
+                  height={300}
                   style={{ borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
                 />
               </Grid>
               <Grid item xs={12} sm={9}>
                 <Stack alignItems="center" spacing={1}>
                   <Typography variant="caption" align="center">
-                    If you have any query or questions regarding purchase items, then fell to get in contact us
+                    Nếu bạn có bất kỳ thắc mắc hoặc câu hỏi nào liên quan đến việc mua các mặt hàng, hãy liên hệ với chúng tôi
                   </Typography>
                   <Typography variant="subtitle1" color="primary" sx={{ cursor: 'pointer' }}>
                     gotchajob@gmail.com
@@ -91,22 +92,22 @@ const OrderComplete = ({ open, close, continueClick }: { open: boolean, close: (
                   justifyContent="space-between"
                 >
                   <Grid item>
-                    <Button variant="text" startIcon={<KeyboardBackspaceIcon />} onClick={continueClick}>
-                    Tiếp tục nạp
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button component={Link} href="/apps/e-commerce/products" variant="contained" fullWidth onClick={close}>
-                    Đi tới lịch sử giao dịch
-                  </Button>
+                    <Button component={Link} href="/" variant="text" startIcon={<KeyboardBackspaceIcon />} >
+                      Quay lại trang chú
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button component={Link} href="/booking-calendar/2" variant="contained" fullWidth >
+                      Đi tới danh sách đặt lịch
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </PerfectScrollbar>
+          </PerfectScrollbar>
         </MainCard>
-  )
-}
+      )
+      }
     </Dialog >
   );
 };

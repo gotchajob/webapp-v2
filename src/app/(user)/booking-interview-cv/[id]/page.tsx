@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -77,6 +77,8 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
 
     const [value, setValue] = useState<number>(0);
 
+    const [bookingInfo, setBookingInfo] = useState<any>(null);
+
     // const handleChange = (event: SyntheticEvent, newValue: number) => {
     //     setValue(newValue);
     // };
@@ -87,6 +89,10 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
 
     const handlePrevStep = () => {
         setValue(prevValue => prevValue - 1);
+    }
+
+    const handleBooking = (bookingInfo: any) => {
+        setBookingInfo(bookingInfo);
     }
 
     return (
@@ -171,10 +177,10 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
                             <ExpertProfilePage onNext={handleNextStep} params={params} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} />
+                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} booking={handleBooking} />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <BookInvoicePage onBack={handlePrevStep} />
+                            <BookInvoicePage onBack={handlePrevStep} bookingInfo={bookingInfo} params={params} />
                         </TabPanel>
                     </Grid>
                 </Grid>

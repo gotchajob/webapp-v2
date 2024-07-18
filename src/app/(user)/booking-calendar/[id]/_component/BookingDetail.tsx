@@ -27,45 +27,158 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 // types
 import { ThemeMode } from 'types/config';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, TextField } from '@mui/material';
+import { formatDate } from 'package/util';
+import { useGetExpertSkillOptions } from 'hooks/use-get-expert-skill-option';
+import { useRefresh } from 'hooks/use-refresh';
+import { useGetExpertProfile } from 'hooks/use-get-expert-profile';
 
-const detailsIconSX = {
-    width: 15,
-    height: 15,
-    verticalAlign: 'text-top',
-    mr: 0.5,
-    mt: 0.25
+const renderEventDetails = (event: any) => {
+    switch (event?.extendedProps.status) {
+        case 1:
+            return (
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Tổng tiền :</Typography>
+                        <Typography variant="body2">375.000vnđ</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Trạng thái :</Typography>
+                        <Chip
+                            label="wait to expert accept"
+                            variant="outlined"
+                            size="small"
+                            chipcolor='primary'
+                        />
+                    </Stack>
+                </>
+            );
+        case 2:
+            return (
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Tổng tiền :</Typography>
+                        <Typography variant="body2">375.000vnđ</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Trạng thái :</Typography>
+                        <Chip
+                            label={event?.title}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                                backgroundColor: `${event.color}`,
+                                color: '#ffffff',
+                                borderColor: `${event.color}`,
+                                '&:hover': {
+                                    backgroundColor: `${event.color}`,
+                                    borderColor: `${event.color}`,
+                                    cursor: 'default',
+                                },
+                            }}
+                        />
+                    </Stack>
+                </>
+            );
+        case 5:
+            return (
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Đã thanh toán :</Typography>
+                        <Typography variant="body2">375.000vnđ</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Trạng thái :</Typography>
+                        <Chip
+                            label={event?.title}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                                backgroundColor: `${event.color}`,
+                                color: '#ffffff',
+                                borderColor: `${event.color}`,
+                                '&:hover': {
+                                    backgroundColor: `${event.color}`,
+                                    borderColor: `${event.color}`,
+                                    cursor: 'default',
+                                },
+                            }}
+                        />
+                    </Stack>
+                </>
+            );
+        case 6:
+            return (
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Đã hoàn trả :</Typography>
+                        <Typography variant="body2">375.000vnđ</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Trạng thái :</Typography>
+                        <Chip
+                            label={event?.title}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                                backgroundColor: `${event.color}`,
+                                color: '#ffffff',
+                                borderColor: `${event.color}`,
+                                '&:hover': {
+                                    backgroundColor: `${event.color}`,
+                                    borderColor: `${event.color}`,
+                                    cursor: 'default',
+                                },
+                            }}
+                        />
+                    </Stack>
+                </>
+            );
+        case 7:
+            return (
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Đã hoàn trả :</Typography>
+                        <Typography variant="body2">375.000vnđ</Typography>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Trạng thái :</Typography>
+                        <Chip
+                            label={event?.title}
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                                backgroundColor: `${event.color}`,
+                                color: '#ffffff',
+                                borderColor: `${event.color}`,
+                                '&:hover': {
+                                    backgroundColor: `${event.color}`,
+                                    borderColor: `${event.color}`,
+                                    cursor: 'default',
+                                },
+                            }}
+                        />
+                    </Stack>
+                </>
+            );
+        default:
+            return null;
+    }
 };
-
-// table data
-function createData(product: string, description: string, quantity: string, amount: string, total: string) {
-    return { product, description, quantity, amount, total };
-}
-
-const rows = [
-    createData('Logo Design', 'lorem ipsum dolor sit amat, connecter adieu siccing eliot', '6', '$200.00', '$1200.00'),
-    createData('Landing Page', 'lorem ipsum dolor sit amat, connecter adieu siccing eliot', '7', '$100.00', '$700.00'),
-    createData('Admin Template', 'lorem ipsum dolor sit amat, connecter adieu siccing eliot', '5', '$150.00', '$750.00')
-];
 
 const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }) => {
     const theme = useTheme();
 
-    const formatDate = (isoString: any) => {
-        return format(new Date(isoString), 'HH:mm dd/MM/yyyy');
-    };
-
-    const [isCancel, setIsCancel] = useState(() => {
-        return event?.title === "Đặt lịch thành công" || event?.title === "Đã đặt lịch";
-    });
-
-    useEffect(() => {
-        console.log("BookingDetailPage :", event)
-    }, [event])
+    const { refresh, refreshTime } = useRefresh();
 
     const [cancelReason, setCancelReason] = useState('');
+
     const [showCancelForm, setShowCancelForm] = useState(false);
+
+    const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: event?.extendedProps.expertId });
+
+    const { expert, loading: expertLoading } = useGetExpertProfile({ id: event?.extendedProps.expertId }, refreshTime);
 
     const handleCancelClick = () => {
         setShowCancelForm(true);
@@ -82,6 +195,16 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
         setShowCancelForm(false);
     };
 
+    useEffect(() => {
+        console.log("event :", event);
+    }, [event, expert]);
+
+    const selectedSkills = useMemo(() => {
+        return expertSkillOptions?.filter(skill =>
+            event?.extendedProps.expertSkillOptionId.includes(skill.id)
+        );
+    }, [expertSkillOptions, event]);
+
     return (
         <Grid container spacing={gridSpacing} px={5}>
             <Grid item xs={12}>
@@ -95,7 +218,7 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
                             </Grid>
                             <Grid item>
                                 <Typography variant="body2">
-                                    {formatDate(event?.start)}
+                                    {formatDate(event?.start, "dd/MM/yyyy hh:mm")}
                                 </Typography>
                             </Grid>
                             <Grid item>
@@ -105,7 +228,7 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
                             </Grid>
                             <Grid item>
                                 <Typography variant="body2">
-                                    {formatDate(event?.end)}
+                                    {formatDate(event?.end, "dd/MM/yyyy hh:mm")}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -121,11 +244,11 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
                                     <Stack spacing={0}>
                                         <Stack direction="row" spacing={1}>
                                             <Typography variant="subtitle1">Tên chuyên gia :</Typography>
-                                            <Typography variant="body2">Anshan Handgun</Typography>
+                                            <Typography variant="body2">{expert?.firstName} {expert?.lastName}</Typography>
                                         </Stack>
                                         <Stack direction="row" spacing={1}>
-                                            <Typography variant="subtitle1">Email :</Typography>
-                                            <Typography variant="body2">anshan.handgun@example.com</Typography>
+                                            <Typography variant="subtitle1">Năm kinh nghiệm :</Typography>
+                                            <Typography variant="body2">{expert?.yearExperience}</Typography>
                                         </Stack>
                                     </Stack>
                                 </Stack>
@@ -136,54 +259,24 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
                                     <Stack spacing={0}>
                                         <Stack direction="row" spacing={1}>
                                             <Typography variant="subtitle1">Kỹ năng phỏng vấn :</Typography>
-                                            <Typography variant="body2">ReactJS, NodeJS</Typography>
+                                            {selectedSkills?.map((skill) => (
+                                                <Grid item key={skill.id}>
+                                                    <Chip label={skill.skillOptionName} chipcolor='primary' />
+                                                </Grid>
+                                            ))}
                                         </Stack>
                                     </Stack>
                                 </Stack>
                             </Grid>
                             <Grid item xs={12} sm={6} md={4}>
                                 <Stack spacing={0} sx={{ mt: { xs: 0, md: 3 } }}>
-                                    {event?.title === "Đã đặt lịch" &&
-                                        (<Stack direction="row" spacing={1}>
-                                            <Typography variant="subtitle1">Tổng tiền :</Typography>
-                                            <Typography variant="body2">375.000vnđ</Typography>
-                                        </Stack>
-                                        )}
-                                    {event?.title === "Đặt lịch thành công" &&
-                                        (<Stack direction="row" spacing={1}>
-                                            <Typography variant="subtitle1">Tổng tiền :</Typography>
-                                            <Typography variant="body2">375.000vnđ</Typography>
-                                        </Stack>)}
-                                    {event?.title === "Hoàn tất phỏng vấn" &&
-                                        (<Stack direction="row" spacing={1}>
-                                            <Typography variant="subtitle1">Đã thanh toán :</Typography>
-                                            <Typography variant="body2">375.000vnđ</Typography>
-                                        </Stack>)}
-                                    {event?.title === "Đã hủy đặt lịch" &&
-                                        (<Stack direction="row" spacing={1}>
-                                            <Typography variant="subtitle1">Đã hoàn trả :</Typography>
-                                            <Typography variant="body2">375.000vnđ</Typography>
-                                        </Stack>)}
-                                    <Stack direction="row" spacing={1}>
-                                        <Typography variant="subtitle1">Trạng thái :</Typography>
-                                        <Chip label={event?.title} variant="outlined" size="small"
-                                            sx={{
-                                                backgroundColor: `${event.color}`,
-                                                color: '#ffffff',
-                                                borderColor: `${event.color}`,
-                                                '&:hover': {
-                                                    backgroundColor: `${event.color}`,
-                                                    borderColor: `${event.color}`,
-                                                    cursor: 'default'
-                                                }
-                                            }} />
-                                    </Stack>
+                                    {renderEventDetails(event)}
                                 </Stack>
                             </Grid>
                         </Grid>
                     </Grid>
 
-                    {event?.title === "Hoàn tất phỏng vấn" &&
+                    {event?.extendedProps.status === 5 &&
                         (<> <Grid item xs={12}>
                             <Divider />
                         </Grid>
@@ -255,7 +348,7 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
                                 </Button>
                             </Grid>
                             <Grid item>
-                                {isCancel && (<Button variant="contained" onClick={handleCancelClick}>Hủy đặt lịch</Button>)}
+                                {event?.extendedProps.canCancel && (<Button variant="contained" onClick={handleCancelClick}>Hủy đặt lịch</Button>)}
                             </Grid>
                         </Grid>
                     </Grid>

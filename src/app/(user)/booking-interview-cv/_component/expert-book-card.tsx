@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -29,6 +29,9 @@ import Avatar from 'ui-component/extended/Avatar';
 import { ExpertMatching } from 'package/api/expert/match';
 import { Box } from '@mui/material';
 import { StyledLink } from 'components/common/link/styled-link';
+import { CustomerToken } from 'hooks/use-login';
+import { useGetCVById } from 'hooks/use-get-cv';
+import Image from 'next/image';
 
 const avatarImage = '/assets/images/users';
 
@@ -36,8 +39,9 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 // ==============================|| USER DETAILS CARD ||============================== //
 
-const ExpertBookCard = ({ expert }: { expert: ExpertMatching }) => {
+const ExpertBookCard = ({ expert, bookingInfo }: { expert: ExpertMatching, bookingInfo: any }) => {
   const theme = useTheme();
+
   const formatNation = () => {
     let nation = '';
     expert.nationSupport.forEach((e) => {
@@ -45,60 +49,47 @@ const ExpertBookCard = ({ expert }: { expert: ExpertMatching }) => {
     });
     return nation;
   };
+
+  const { customerToken } = CustomerToken();
+
+  const { cv } = useGetCVById({ id: bookingInfo?.customerCvId }, customerToken);
+
+  useEffect(() => {
+    console.log('cv:', cv);
+  }, [bookingInfo, customerToken]);
+
   return (
     <Card
       sx={{
-        p: 2,
+        p: 3,
         bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'grey.50',
         boxShadow: defaultShadow,
         border: '1px solid',
         borderColor: 'divider',
-        '&:hover': { borderColor: 'primary.main' }
+        borderRadius: '12px',
+        '&:hover': { borderColor: 'primary.main' },
+        transition: 'border-color 0.3s'
       }}
+
     >
       <Grid container spacing={gridSpacing}>
-        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Avatar
-            alt={'avatar'}
-            src={expert.avatar}
-            sx={{
-              width: theme.spacing(15),
-              height: theme.spacing(15)
-            }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h3">{expert.fullName}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="caption" sx={{ color: 'grey.700' }}>
-            Bio
-          </Typography>
-          <Box sx={{ height: 65, overflow: 'auto' }}>
-            <Typography variant="h6" sx={{ color: 'grey.700' }}>
-              {expert?.bio || ''}
+        {cv && (
+          <Grid item xs={12}>
+            <Typography variant="body2" gutterBottom>
+              Tên cv bạn đã chọn: {cv.name}
             </Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-              <Typography variant="caption">Quốc gia hỗ trợ</Typography>
-              <Typography variant="h6">{formatNation()}</Typography>
-            </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Image
+                src="https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"
+                alt="CV Image"
+                width={500}
+                height={700}
+                objectFit="contain"
+                style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
+              />
+            </Box>
           </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <StyledLink href="/expert-profile/1">
-                <Button variant="outlined" fullWidth startIcon={<PermIdentityIcon />}>
-                  Thông tin chuyên gia
-                </Button>
-              </StyledLink>
-            </Grid>
-          </Grid>
-        </Grid>
+        )}
       </Grid>
     </Card>
   );

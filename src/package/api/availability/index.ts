@@ -1,7 +1,7 @@
 import { apiServerFetch, errorSystem } from '../api-fetch';
 
 export interface GetAvailabilityRequest {
-    expertId?: number;
+    expertId: number;
 }
 
 export interface GetAvailabilityResponse {

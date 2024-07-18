@@ -25,41 +25,10 @@ import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/cale
 import { DateRange } from 'types';
 import { useEffect, useRef, useState } from "react";
 import CustomerCalendarAddEvent from "../../_component/AddEventForm";
+import { CustomerToken } from "hooks/use-login";
+import { useRefresh } from "hooks/use-refresh";
+import { useGetBookingCurrent } from "hooks/use-get-booking";
 
-const fakeEvents = [
-    {
-        title: 'Đặt lịch thành công',
-        description: 'Đặt lịch thành công với Anshan Handgun',
-        color: '#198754',
-        textColor: '#ffffff',
-        start: '2024-07-02T09:00:00',
-        end: '2024-07-02T10:00:00'
-    },
-    {
-        title: 'Đã đặt lịch',
-        description: 'Chờ phản hồi từ chuyên gia Anshan Handgun',
-        color: '#FFC107',
-        textColor: '#ffffff',
-        start: '2024-07-04T09:00:00',
-        end: '2024-07-04T10:00:00'
-    },
-    {
-        title: 'Đã hủy đặt lịch',
-        description: 'Hủy lịch do cần chọn chuyên gia khác',
-        color: '#ED4337',
-        textColor: '#ffffff',
-        start: '2024-07-03T14:00:00',
-        end: '2024-07-03T15:00:00'
-    },
-    {
-        title: 'Hoàn tất phỏng vấn',
-        description: 'Kỹ năng chuyên môn tốt',
-        color: '#2196F3',
-        textColor: '#ffffff',
-        start: '2024-07-05T14:00:00',
-        end: '2024-07-05T15:00:00'
-    },
-];
 
 const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSelectEvent: (event: any) => void }) => {
     const calendarRef = useRef<FullCalendar>(null);
@@ -77,9 +46,9 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSele
         dispatch(getEvents()).then(() => setLoading(false));
     }, []);
 
-    useEffect(() => {
-        setEvents(calendarState.events);
-    }, [calendarState]);
+    // useEffect(() => {
+    //     setEvents(calendarState.events);
+    // }, [calendarState]);
 
     const [date, setDate] = useState(new Date());
 
@@ -162,18 +131,6 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSele
         setIsModalOpen(true);
     };
 
-    const handleEventSelect = (arg: EventClickArg) => {
-        if (arg) {
-            const selectEvent = fakeEvents.find((_event) => _event.title === arg.event._def.title);
-            if (onSelectEvent) {
-                onSelectEvent(selectEvent);
-            }
-        }
-        if (onNext) {
-            onNext();
-        }
-    };
-
     const handleEventUpdate = async ({ event }: EventResizeDoneArg | EventDropArg) => {
         try {
             dispatch(
@@ -210,6 +167,46 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSele
         }
     };
 
+    const { refresh, refreshTime } = useRefresh();
+
+    const { customerToken } = CustomerToken();
+
+    const { bookings, loading: loadingBookingsCurrent } = useGetBookingCurrent(customerToken, refreshTime);
+
+    const handleEventSelect = (arg: EventClickArg) => {
+        if (arg) {
+            const selectEvent = events.find((event) => event.id === parseInt(arg.event._def.publicId));
+            if (onSelectEvent) {
+                onSelectEvent(selectEvent);
+            }
+        }
+        if (onNext) {
+            onNext();
+        }
+    };
+
+    useEffect(() => {
+        const formattedEvents = bookings?.map((booking) => ({
+            id: booking.id,
+            title: booking.note || 'Interview',
+            start: booking.startInterviewDate,
+            end: booking.endInterviewDate,
+            extendedProps: {
+                canCancel: booking.canCancel,
+                expertId: booking.expertId,
+                customerId: booking.customerId,
+                availabilityId: booking.availabilityId,
+                customerCvId: booking.customerCvId,
+                status: booking.status,
+                createdAt: booking.createdAt,
+                expertSkillOptionId: booking.expertSkillOptionId,
+            },
+        }));
+        if (formattedEvents) {
+            setEvents(formattedEvents);
+        }
+    }, [bookings, customerToken]);
+
     if (loading) return <Loader />;
 
     return (
@@ -235,7 +232,7 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSele
                         editable
                         droppable
                         selectable
-                        events={fakeEvents}
+                        events={events}
                         ref={calendarRef}
                         rerenderDelay={10}
                         initialDate={date}
