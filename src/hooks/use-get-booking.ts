@@ -1,7 +1,6 @@
 import { BookingCurrent, GetBookingCurrent } from "package/api/booking/customer/current";
 import { useEffect, useState } from "react";
 
-
 export const useGetBookingCurrent = (accessToken: string, refreshTime: any) => {
     const [bookings, setBookings] = useState<BookingCurrent[]>();
 

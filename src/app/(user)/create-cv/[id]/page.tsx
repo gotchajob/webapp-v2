@@ -45,6 +45,7 @@ export default function Page({ params }: { params: { id: string } }) {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      console.log("pdf:", pdf);
       pdf.save('cv.pdf');
     }
   };

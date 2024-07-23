@@ -31,6 +31,10 @@ const completed = '/assets/images/e-commerce/completed.png';
 
 const chance = new Chance();
 
+const formatNumber = (number: number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
 // ==============================|| CHECKOUT CART - DISCOUNT COUPON CODE ||============================== //
 
 const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolean, transactionClick: () => void, continueClick: () => void }) => {
@@ -43,7 +47,7 @@ const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolea
     if (open) {
       const timer = setTimeout(() => {
         setIsProcessing(false);
-      }, 2000);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }
@@ -67,30 +71,30 @@ const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolea
         <MainCard>
           <PerfectScrollbar style={{ overflowX: 'hidden', height: 565 }}>
             <Grid container direction="column" spacing={2} alignItems="center" justifyContent="center" sx={{ my: 1 }}>
-              <Grid item xs={12}>
-                {isProcessing ? (
-                  <CircularProgress size={50} />
-                ) : (
-                  <CheckCircleIcon color="success" sx={{ fontSize: 58 }} />
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant={downMD ? 'h2' : 'h1'}>Giao dịch thành công</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack alignItems="center" spacing={1}>
-                  {vnp_Amount && (<Typography color="success" variant={downMD ? 'h2' : 'h1'} sx={{ textAlign: "center" }}>{vnp_Amount}đ</Typography>)}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Image
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"
                   alt="Order Complete"
                   layout="responsive"
-                  width={500}
-                  height={500}
+                  width={50}
+                  height={50}
                   style={{ borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
                 />
+              </Grid> */}
+              <Grid item xs={12}>
+                <Typography variant={'h2'}>Nạp tiền vào ví thành công</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack alignItems="center" spacing={1}>
+                  {vnp_Amount && (<Typography color="success" variant={"h3"} sx={{ textAlign: "center" }}>{formatNumber(vnp_Amount)}vnđ</Typography>)}
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                {isProcessing ? (
+                  <CircularProgress size={100} />
+                ) : (
+                  <CheckCircleIcon color="success" sx={{ fontSize: 250 }} />
+                )}
               </Grid>
               <Grid item xs={12} sm={9}>
                 <Stack alignItems="center" spacing={1}>

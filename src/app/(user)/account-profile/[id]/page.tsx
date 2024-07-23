@@ -33,6 +33,8 @@ import ChangePassword from '../_component/ChangePassword';
 import OrderComplete from '../_component/OrderComplete';
 import Payment from '../_component/Payment';
 import UserProfile from '../_component/UserProfile';
+import { PatchDeposit } from 'package/api/account/current/deposit';
+import { CustomerToken } from 'hooks/use-login';
 
 // tabs
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -80,8 +82,12 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { mode, borderRadius } = useConfig();
 
+  const { customerToken } = CustomerToken();
+
   //get params
   const { vnp_TransactionStatus } = useGetSearchParams(["vnp_TransactionStatus"]);
+
+  const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
 
   const [open, setOpen] = useState(false);
 
@@ -106,12 +112,22 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
   }
 
   useEffect(() => {
-    console.log("vnp_TransactionStatus :", vnp_TransactionStatus);
-    if (vnp_TransactionStatus) {
-      setValue(2);
-      setOpen(true);
-    }
-  }, [vnp_TransactionStatus])
+    setValue(2);
+    const patchDeposit = async () => {
+      if (vnp_TransactionStatus == "00") {
+        try {
+          const res = await PatchDeposit({ amount: +vnp_Amount, description: "nap tien" }, customerToken);
+          if (res.status !== "success") {
+            throw new Error();
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        setOpen(true);
+      }
+    };
+    patchDeposit();
+  }, [vnp_TransactionStatus, vnp_Amount, customerToken]);
 
   useEffect(() => { }, []);
 

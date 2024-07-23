@@ -33,6 +33,11 @@ import {
 import Iconify from 'components/iconify/iconify';
 import { PRIMARYCOLOR } from 'components/common/config';
 import { StyledLink } from 'components/common/link/styled-link';
+import { GetCheckBuyService } from 'package/api/customer/check-buy-service';
+import { CustomerToken } from 'hooks/use-login';
+import { useGetCheckBuyService } from 'hooks/use-check-buy-service';
+import { useRouter } from 'next/navigation';
+import { enqueueSnackbar } from 'notistack';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,6 +110,22 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
     newCV.layout[newCV.layout.length - 1].componentList.push(component);
     onChangeCV(newCV);
   };
+
+  const { customerToken } = CustomerToken();
+
+  const { status } = useGetCheckBuyService(customerToken);
+
+  const route = useRouter();
+
+  const checkBuyHandle = () => {
+    if (!status) {
+      enqueueSnackbar("Bạn chưa từng sử dụng dịch vụ", { variant: "warning" });
+      route.push("http://localhost:3001/dang-ky-phong-van");
+      return;
+    }
+    route.push("http://localhost:3001/share-cv");
+  }
+
   return (
     <>
       <Grid container spacing={2}>
@@ -123,13 +144,14 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </ListItemButton>
                 <Collapse in={openComponent} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {PersonalInformationTemplate.map((information) => {
+                    {PersonalInformationTemplate.map((information, index) => {
                       const isAdded = cv.personal.find((value) => value.field === information.field);
                       return (
                         <ListItemButton
                           onClick={() => {
                             handleUpdateInformation(information, Boolean(isAdded));
                           }}
+                          key={index}
                         >
                           <ListItemIcon>
                             <Iconify color={isAdded ? 'red' : PRIMARYCOLOR} icon={information.icon} />
@@ -148,7 +170,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </ListItemButton>
                 <Collapse in={openInformation} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {ComponentTemplateList.map((component) => {
+                    {ComponentTemplateList.map((component, index) => {
                       const isAdded = allComponent.find((value) => value.componentName === component.componentName);
                       return (
                         <ListItemButton
@@ -156,6 +178,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                           onClick={() => {
                             handleUpdateComponent(component);
                           }}
+                          key={index}
                         >
                           <ListItemIcon>
                             <Iconify color={PRIMARYCOLOR} icon={component.icon} />
@@ -187,16 +210,14 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </FlexCenter>
               </Button>
             ))}
-            <StyledLink href="/share-cv">
-              <Button fullWidth sx={{ textTransform: 'none' }} variant={'outlined'}>
-                <FlexCenter>
-                  <Iconify width={24} icon="tabler:user-search" color={PRIMARYCOLOR} />
-                  <Text fontSize={10} mt={1}>
-                    Tìm kiếm
-                  </Text>
-                </FlexCenter>
-              </Button>
-            </StyledLink>
+            <Button fullWidth sx={{ textTransform: 'none' }} variant={'outlined'} onClick={checkBuyHandle}>
+              <FlexCenter>
+                <Iconify width={24} icon="tabler:user-search" color={PRIMARYCOLOR} />
+                <Text fontSize={10} mt={1}>
+                  Tìm kiếm
+                </Text>
+              </FlexCenter>
+            </Button>
           </Stack>
         </Grid>
       </Grid>
