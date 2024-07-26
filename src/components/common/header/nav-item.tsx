@@ -16,7 +16,7 @@ export const NavigationItem = () => {
   const router = useRouter();
 
   const navItemList = [
-    { name: 'Dịch vụ', targetId: 'serviceDiv', icon: ArrowDropDownIcon },
+    { name: 'Dịch vụ', targetId: 'dang-ky-phong-vn', icon: ArrowDropDownIcon },
     { name: 'Tạo CV', targetId: 'create-cv', icon: ArrowDropDownIcon },
     { name: 'Chia sẻ CV', targetId: 'cv', icon: ArrowDropDownIcon },
     { name: 'Blog', targetId: 'blog' }

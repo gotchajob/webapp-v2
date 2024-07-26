@@ -205,6 +205,7 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void, onSele
         if (formattedEvents) {
             setEvents(formattedEvents);
         }
+        console.log("bookings:", bookings);
     }, [bookings, customerToken]);
 
     if (loading) return <Loader />;

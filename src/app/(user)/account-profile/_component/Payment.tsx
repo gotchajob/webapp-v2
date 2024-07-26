@@ -34,28 +34,9 @@ import PaymentSelect from 'components/application/e-commerce/Checkout/PaymentSel
 import { createPaymentUrl } from 'package/vnpay/VNPAY';
 import { useRouter } from 'next/navigation';
 
-function CardExpiry(props: any) {
-  const { format, ...rest } = usePatternFormat({ ...props, format: '##/##' });
-
-  const _format = (val: any) => {
-    let month = val.substring(0, 2);
-    const year = val.substring(2, 4);
-
-    if (month.length === 1 && month[0] > 1) {
-      month = `0${month[0]}`;
-    } else if (month.length === 2) {
-      if (Number(month) === 0) {
-        month = `01`;
-      } else if (Number(month) > 12) {
-        month = '12';
-      }
-    }
-    // @ts-ignore
-    return format(`${month}${year}`);
-  };
-
-  return <NumberFormatBase format={_format} {...rest} />;
-}
+const formatNumber = (number: any) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
 
 // ==============================|| PROFILE 2 - PAYMENT ||============================== //
 
@@ -137,7 +118,7 @@ const Payment = () => {
                         <TableRow>
                           <TableCell>Sub Total</TableCell>
                           <TableCell align="right">
-                            <Typography variant="subtitle1">{amount && amount}vnd</Typography>
+                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>
                           </TableCell>
                         </TableRow>
                         <TableRow>
@@ -151,7 +132,7 @@ const Payment = () => {
                             <Typography variant="subtitle1">Total</Typography>
                           </TableCell>
                           <TableCell align="right" sx={{ borderBottom: 'none' }}>
-                            <Typography variant="subtitle1">{amount && amount}vnd</Typography>
+                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>
                           </TableCell>
                         </TableRow>
                       </TableBody>

@@ -38,7 +38,6 @@ export const useGetCVById = (params: getCVByIdRq, accessToken: string) => {
             setCV(data.data);
             setLoading(false);
         } catch (error) {
-            throw new Error();
         }
     }
 

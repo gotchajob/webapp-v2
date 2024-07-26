@@ -77,14 +77,6 @@ const BookingInformationCard = ({ bookingInfo, params }: { bookingInfo: any, par
                 ))}
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" color="text.secondary">
-                Tổng tiền phải trả:
-              </Typography>
-              <Typography variant="body1" color="success.dark">
-                375.000vnđ
-              </Typography>
-            </Grid>
           </Grid>
         </Card>
       )}

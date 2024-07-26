@@ -8,6 +8,8 @@ export const UploadImageButton = ({ setImage }: { setImage: (image: string) => v
   function handleOnUpload(result: CloudinaryUploadWidgetResults, widget: any) {
     updateInfo(result?.info);
     //@ts-ignore
+    console.log("result?.info?.secure_url:", result?.info?.secure_url);
+    //@ts-ignore
     setImage(result?.info?.secure_url || '');
     widget.close({
       quiet: true

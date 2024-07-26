@@ -16,6 +16,8 @@ import { formatNumber } from "package/util";
 import { ReactNode } from "react";
 import { StyledLink } from 'components/common/link/styled-link';
 import { useGetCustomer } from 'hooks/use-get-current-user';
+import { GetCheckBuyService } from 'package/api/customer/check-buy-service';
+import { useRouter } from 'next/navigation';
 
 const params = {
   id: "MockInterviewService",
@@ -62,6 +64,8 @@ export const ServiceCard = () => {
 
   const [openRequire, setOpenRequire] = useState(false);
 
+  const route = useRouter();
+
   const handleRegisterClick = () => {
     if (!customerToken) {
       setOpenLoginDialog(true);
@@ -69,6 +73,21 @@ export const ServiceCard = () => {
       setOpenPaymentDialog(true);
     }
   };
+
+  const CheckBuyService = async () => {
+    try {
+      if (!customerToken) {
+        return;
+      }
+      const res = await GetCheckBuyService(customerToken);
+      if (res.status !== "success") {
+        throw new Error();
+      }
+      route.push("http://localhost:3001/share-cv");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -271,9 +290,7 @@ export const ServiceCard = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setOpenPaymentDialog(false)} color='primary'>Đóng</Button>
-              <StyledLink href="/share-cv">
-                <Button color='primary' disabled={!isAgree}>Đăng ký</Button>
-              </StyledLink>
+              <Button color='primary' disabled={!isAgree} onClick={CheckBuyService}>Đăng ký</Button>
             </DialogActions>
           </>
         )}
