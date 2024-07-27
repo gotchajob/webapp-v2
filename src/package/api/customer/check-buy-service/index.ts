@@ -8,7 +8,7 @@ export interface CheckBuyServiceRes {
 
 export const GetCheckBuyService = async (accessToken: string): Promise<CheckBuyServiceRes> => {
     try {
-        const res = await apiServerFetch('customer/check-buy-service', 'GET', undefined, accessToken);
+        const res = await apiServerFetch('/customer/check-buy-service', 'GET', undefined, accessToken);
         return res;
     } catch (error) {
         return errorSystem('Thất bại', '');
