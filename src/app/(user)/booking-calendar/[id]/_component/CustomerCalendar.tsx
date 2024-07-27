@@ -24,7 +24,6 @@ import { dispatch, useSelector } from 'store';
 import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
 import { DateRange } from 'types';
 import { useEffect, useRef, useState } from "react";
-import CustomerCalendarAddEvent from "../../_component/AddEventForm";
 import { CustomerToken } from "hooks/use-login";
 import { useRefresh } from "hooks/use-refresh";
 import { useGetBookingCurrent } from "hooks/use-get-booking";
