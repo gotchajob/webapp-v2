@@ -29,7 +29,6 @@ import { SkillOption } from 'package/api/skill-option';
 import SubCard from 'ui-component/cards/SubCard';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Category } from 'package/api/category';
-import { handleClientScriptLoad } from 'next/script';
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
