@@ -7,11 +7,11 @@ import { ReactNode } from "react";
 export default async function layout({ children }: { children: ReactNode }) {
     const customerToken = getUserToken(cookies());
 
-    const data = await GetCheckBuyService(customerToken);
+    // const data = await GetCheckBuyService(customerToken);
 
-    if (data.status !== "success") {
-        redirect("http://localhost:3001/dang-ky-phong-van");
-    }
+    // if (data.status !== "success") {
+    //     redirect("http://localhost:3001/dang-ky-phong-van");
+    // }
 
     return <>{children}</>
 }
