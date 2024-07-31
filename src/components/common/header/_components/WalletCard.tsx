@@ -87,14 +87,6 @@ const WalletCard = () => {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography
-              variant="subtitle2"
-              color={theme.palette.mode === ThemeMode.DARK ? 'textSecondary' : 'grey.900'}
-              sx={{ opacity: theme.palette.mode === ThemeMode.DARK ? 1 : 0.6 }}
-            >
-              70% discount for 1 years <br />
-              subscriptions.
-            </Typography>
           </Grid>
           <Grid item>
             <Stack direction="row">

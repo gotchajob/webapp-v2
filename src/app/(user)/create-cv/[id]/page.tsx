@@ -1,9 +1,9 @@
 'use client';
 
+import { toPng } from 'html-to-image';
 import { CreateCV } from 'components/cv-component/cv';
 import { CVTemplate, CVTemplateData, Column, PersonalComponent } from 'components/cv-component/interface';
 import { useEffect, useRef, useState } from 'react';
-import data from 'views/widget/data';
 import CreateCVHeader from './_component/CreateCVHeader';
 import TabsTable from './_component/TabsTable';
 import Grid from '@mui/material/Grid';
@@ -35,7 +35,7 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   const CVRef = useRef(null);
-
+  //Tải dưới dạng pdf
   const handleDownload = async () => {
     if (CVRef.current) {
       const canvas = await html2canvas(CVRef.current);
@@ -45,24 +45,28 @@ export default function Page({ params }: { params: { id: string } }) {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      console.log("pdf:", pdf);
       pdf.save('cv.pdf');
     }
+    await saveCV();
   };
 
+  //Xuất ra dưới dạng ảnh
   const handleReview = useReactToPrint({
     content: () => CVRef.current,
     documentTitle: 'CV'
   });
 
+  //Lưu vào database
   const saveCV = async () => {
     try {
+      const imageUrl = await handleGetImage();
+      console.log(imageUrl)
       const data = await UpdateCV(
         {
           id: cv?.id || 1,
           cv: JSON.stringify(currentTemplate),
           name: currentTemplate.name,
-          image: ''
+          image: imageUrl
         },
         customerToken
       );
@@ -71,6 +75,7 @@ export default function Page({ params }: { params: { id: string } }) {
       }
       enqueueSnackbar({ variant: 'success', message: 'lưu cv thành công' });
     } catch (error) {
+      enqueueSnackbar({ variant: 'error', message: 'lưu cv thất bại' });
     } finally {
       refresh();
     }
@@ -81,18 +86,37 @@ export default function Page({ params }: { params: { id: string } }) {
       setCurrentTemplate(JSON.parse(cv.cv));
     }
   }, [cv]);
+
+  const handleGetImage = async () => {
+    if (CVRef.current === null) {
+      return;
+    }
+
+    try {
+      const dataUrl = await toPng(CVRef.current);
+      const blob = await (await fetch(dataUrl)).blob();
+      const formData = new FormData();
+      formData.append('file', blob);
+      formData.append('upload_preset', 'my3ib4l5'); // Thay bằng upload preset của bạn
+
+      const response = await fetch('https://api.cloudinary.com/v1_1/dfwqbf3xr/image/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      throw new Error('Không thể lưu ảnh cv');
+    }
+  };
+
   return (
     <MainCard boxShadow hover sx={{ m: 3 }}>
       {cv ? (
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <CreateCVHeader
-              cv={currentTemplate}
-              onChangeCV={onChangeCV}
-              printOnClick={handleDownload}
-              review={handleReview}
-              saveCV={saveCV}
-            />
+            <CreateCVHeader cv={currentTemplate} onChangeCV={onChangeCV} download={handleDownload} review={handleReview} saveCV={saveCV} />
           </Grid>
           <Grid item xs={12}>
             <Divider />

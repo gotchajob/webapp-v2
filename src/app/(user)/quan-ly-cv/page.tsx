@@ -47,6 +47,7 @@ const ManageCVPage = () => {
   const [sortOrder, setSortOrder] = useState('');
   const { customerToken } = CustomerToken();
   const { cvs } = useGetCVCurrent(customerToken, 1);
+  
   return (
     <MainCard boxShadow hover>
       <CardContent>

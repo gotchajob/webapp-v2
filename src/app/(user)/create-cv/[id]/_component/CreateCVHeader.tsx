@@ -21,19 +21,19 @@ import { PRIMARYCOLOR } from 'components/common/config';
 const CreateCVHeader = ({
   cv,
   onChangeCV,
-  printOnClick,
+  download,
   review,
   saveCV
 }: {
   cv: CVTemplate;
   onChangeCV: (cv: CVTemplate) => void;
-  printOnClick: () => void;
+  download: () => void;
   review: () => void;
   saveCV: () => void;
 }) => {
   const handleSaveAndDowload = () => {
-    if (printOnClick) {
-      printOnClick();
+    if (download) {
+      download();
     }
   };
 
