@@ -9,7 +9,6 @@ import { CVCurrent } from 'package/api/cv/current';
 import { formatDate } from 'package/util';
 import { StyledLink } from 'components/common/link/styled-link';
 
-const img = 'https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg';
 
 const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
   return (
@@ -37,7 +36,7 @@ const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(89, 171, 217, 1)), url(${img})`,
+                backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(89, 171, 217, 1)), url(${item.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center top',
                 transition: 'transform 0.3s ease-in-out',

@@ -14,7 +14,7 @@ const formatNumber = (number: number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-const OrderComplete = ({ open, onClose }: { open: boolean, onClose: () => void }) => {
+const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { open: boolean; onClose: () => void; transactionClick: () => void; continueClick: () => void }) => {
 
   const [step, setStep] = useState(0);
 

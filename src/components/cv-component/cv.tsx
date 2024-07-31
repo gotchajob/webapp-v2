@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import CreateCVHeader from 'app/(user)/create-cv/[id]/_component/CreateCVHeader';
 import TabsTable from 'app/(user)/create-cv/[id]/_component/TabsTable';
 import { CVComponent, CVTemplate, Column, PersonalComponent } from 'components/cv-component/interface';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { CVUploadImage } from './avatar';
 import { HeaderComponent } from './header-component';
 import { InformationComponent } from './information-component';
@@ -123,54 +123,69 @@ export const CreateCV = ({ cv, onChangeCV, cvRef }: { cv: CVTemplate; onChangeCV
       </Box>
     );
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (cvRef.current && !cvRef.current.contains(event.target)) {
+        setOnClickComponent('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <Grid ref={cvRef} container maxWidth={800} margin={'auto'} sx={{ boxShadow: defaultShadow }}>
-      {cv && cv.layout.map((column, columnIndex) => {
-        return (
-          <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.backgroudColor} borderRadius={'inherit'}>
-            {column.componentList.map((component, componentIndex) => {
-              if (component.dataType === 'image') {
-                return (
-                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
-                    <CVUploadImage
-                      avatar={component.description}
-                      handleChangeAvatar={(value) => {
-                        handleChangeAvatar(value, columnIndex, componentIndex);
-                      }}
-                    />
-                  </ComponentWarper>
-                );
-              }
-              if (component.dataType === 'information') {
-                return (
-                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
-                    <InformationComponent
-                      component={component}
-                      primaryColor={cv.primaryColor}
-                      information={cv.personal}
-                      onChangeComponent={(newCVPersonalComponent, newCVComponent) => {
-                        handleChangeInformationComponent(newCVPersonalComponent, newCVComponent, columnIndex, componentIndex);
-                      }}
-                    />
-                  </ComponentWarper>
-                );
-              }
-              if (component.dataType === 'text') {
-                return (
-                  <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
-                    <HeaderComponent
-                      component={component}
-                      onChangeComponent={(newCVComponent) => {
-                        handelChangeHeaderComponent(newCVComponent, columnIndex, componentIndex);
-                      }}
-                    />
-                  </ComponentWarper>
-                );
-              }
-            })}
-          </Grid>
-        );
-      })}
+      {cv &&
+        cv.layout.map((column, columnIndex) => {
+          return (
+            <Grid key={columnIndex} xs={column.size} minHeight={100} bgcolor={column.backgroudColor} borderRadius={'inherit'}>
+              {column.componentList.map((component, componentIndex) => {
+                if (component.dataType === 'image') {
+                  return (
+                    <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
+                      <CVUploadImage
+                        avatar={component.description}
+                        handleChangeAvatar={(value) => {
+                          handleChangeAvatar(value, columnIndex, componentIndex);
+                        }}
+                      />
+                    </ComponentWarper>
+                  );
+                }
+                if (component.dataType === 'information') {
+                  return (
+                    <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
+                      <InformationComponent
+                        component={component}
+                        primaryColor={cv.primaryColor}
+                        information={cv.personal}
+                        onChangeComponent={(newCVPersonalComponent, newCVComponent) => {
+                          handleChangeInformationComponent(newCVPersonalComponent, newCVComponent, columnIndex, componentIndex);
+                        }}
+                      />
+                    </ComponentWarper>
+                  );
+                }
+                if (component.dataType === 'text') {
+                  return (
+                    <ComponentWarper key={componentIndex} index={[componentIndex, columnIndex]} componentName={component.componentName}>
+                      <HeaderComponent
+                        component={component}
+                        onChangeComponent={(newCVComponent) => {
+                          handelChangeHeaderComponent(newCVComponent, columnIndex, componentIndex);
+                        }}
+                      />
+                    </ComponentWarper>
+                  );
+                }
+              })}
+            </Grid>
+          );
+        })}
     </Grid>
   );
 };
