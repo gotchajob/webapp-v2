@@ -29,6 +29,8 @@ import { SkillOption } from 'package/api/skill-option';
 import SubCard from 'ui-component/cards/SubCard';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { Category } from 'package/api/category';
+import { formatDate } from 'package/util';
+import { CustomerToken } from 'hooks/use-login';
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
@@ -40,6 +42,8 @@ const yearOption = [
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const { customerToken } = CustomerToken();
 
   const [categoryId, setCategoryId] = useState(0);
 
@@ -109,7 +113,8 @@ export default function Page() {
         minYearExperience,
         skillOptionIdList,
         checkedState,
-        expertMatchingList: expertMatching
+        expertMatchingList: expertMatching,
+        lastCustomer: customerToken
       };
       localStorage.setItem('lastFilter', JSON.stringify(saveData));
     }
@@ -120,15 +125,18 @@ export default function Page() {
       const stringData = localStorage.getItem('lastFilter');
       if (stringData) {
         const saveData = JSON.parse(stringData);
-        setNation(saveData.nation);
-        setCategoryId(saveData.categoryId);
-        setMinYearExperience(saveData.minYearExperience);
-        setSkillOptionIdList(saveData.skillOptionIdList);
-        setCheckedState(saveData.checkedState);
-        setExpertMatchingList(saveData.expertMatchingList);
+        if (saveData.lastCustomer === customerToken) {
+          setNation(saveData.nation);
+          setCategoryId(saveData.categoryId);
+          setMinYearExperience(saveData.minYearExperience);
+          setSkillOptionIdList(saveData.skillOptionIdList);
+          setCheckedState(saveData.checkedState);
+          setExpertMatchingList(saveData.expertMatchingList);
+        }
       }
     }
   }, []);
+
   const filterSkillByCategory = (skills: Skill[], categoryId: number) => {
     return skills.filter((value) => value.categoryId === categoryId);
   };
