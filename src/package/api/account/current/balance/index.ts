@@ -1,16 +1,16 @@
 import { apiServerFetch, errorSystem } from "package/api/api-fetch";
 
-export interface GetBalanceResponse {
+export interface GetCurrentBalanceResponse {
     status: string;
     responseText: string;
-    data: Balance;
+    data: CurrentBalance;
 }
 
-export interface Balance {
+export interface CurrentBalance {
     balance: number;
 }
 
-export const GetBalance = async (accessToken: string): Promise<GetBalanceResponse> => {
+export const GetCurrentBalance = async (accessToken: string): Promise<GetCurrentBalanceResponse> => {
     try {
         const res = await apiServerFetch(`/account/current/balance`, 'GET', undefined, accessToken);
         return res;

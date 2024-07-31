@@ -234,7 +234,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         <Divider />
       </MainCard>
 
-      <OrderComplete open={open} transactionClick={handleTransactionClick} continueClick={handleContinueClick} />
+      <OrderComplete open={open} onClose={() => setOpen(false)} transactionClick={handleTransactionClick} continueClick={handleContinueClick} />
     </Box>
   );
 };

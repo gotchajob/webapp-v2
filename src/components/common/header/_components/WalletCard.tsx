@@ -16,13 +16,13 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // types
 import { FormattedMessage } from 'react-intl';
 import { ThemeMode } from 'types/config';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Asset
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
-import { useGetBalance } from 'hooks/use-get-balance';
 import { CustomerToken } from 'hooks/use-login';
 import { useEffect } from 'react';
-
+import { useGetCurrentBalance } from 'hooks/use-get-balance';
 
 // ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
 
@@ -31,7 +31,7 @@ const WalletCard = () => {
 
   const { customerToken } = CustomerToken();
 
-  const { balance } = useGetBalance(customerToken);
+  const { balance } = useGetCurrentBalance(customerToken);
 
   const cardSX = {
     content: '""',
@@ -83,7 +83,9 @@ const WalletCard = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              {balance?.balance} vnđ
+              {balance ? balance.balance : (
+                <CircularProgress size={14} sx={{ mr: 1 }} />
+              )} vnd
             </Typography>
           </Grid>
           <Grid item>

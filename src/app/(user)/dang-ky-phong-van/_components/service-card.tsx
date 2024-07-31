@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Checkbox } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Divider, Checkbox, Typography } from '@mui/material';
 import { Box, CardContent } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Rating from '@mui/material/Rating';
@@ -19,17 +19,11 @@ import { useGetCustomer } from 'hooks/use-get-current-user';
 import { GetCheckBuyService } from 'package/api/customer/check-buy-service';
 import { useRouter } from 'next/navigation';
 import SubCard from 'ui-component/cards/SubCard';
+import { PatchBuyService } from 'package/api/customer/buy-service';
+import { GetBookingPrice } from 'package/api/booking/price';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useGetCurrentBalance } from 'hooks/use-get-balance';
 
-const params = {
-  id: 'MockInterviewService',
-  image: '/assets/images/illu-1.png',
-  title: 'Mock Interview',
-  rating: 5,
-  totalRating: 112,
-  useTime: 173,
-  price: 375000,
-  priceDes: '1 buổi phòng vấn'
-};
 
 const StyledText = ({ children }: { children: ReactNode }) => {
   return (
@@ -58,13 +52,27 @@ export const ServiceCard = () => {
 
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
+  const [bookingPrice, setBookingPrice] = useState(0);
+
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
-  const [walletBalance, setWalletBalance] = useState(375000);
+  const { balance } = useGetCurrentBalance(customerToken);
 
   const [openRequire, setOpenRequire] = useState(false);
 
   const route = useRouter();
+
+  const fecthBookingPrice = async () => {
+    try {
+      const res = await GetBookingPrice();
+      if (res.status !== "success") {
+        throw new Error();
+      }
+      setBookingPrice(res.data.price);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleRegisterClick = () => {
     if (!customerToken) {
@@ -74,20 +82,40 @@ export const ServiceCard = () => {
     }
   };
 
-  const CheckBuyService = async () => {
-    // try {
-    //   if (!customerToken) {
-    //     return;
-    //   }
-    //   const res = await GetCheckBuyService(customerToken);
-    //   if (res.status !== "success") {
-    //     throw new Error();
-    //   }
-    //   route.push("http://localhost:3001/share-cv");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+  const HandleBuyService = async () => {
+    try {
+      if (!customerToken) {
+        return;
+      }
+      const res = await PatchBuyService(customerToken);
+      if (res.status !== "success") {
+        throw new Error();
+      }
+      route.push("http://localhost:3001/share-cv");
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+
+  const params = {
+    id: 'MockInterviewService',
+    image: '/assets/images/illu-1.png',
+    title: 'Mock Interview',
+    rating: 5,
+    totalRating: 112,
+    useTime: 173,
+    price: bookingPrice,
+    priceDes: '1 buổi phòng vấn'
+  };
+
+  useEffect(() => {
+    fecthBookingPrice();
+  }, []);
+
+  useEffect(() => {
+    console.log("balance:", balance);
+  }, [balance, customerToken]);
 
   return (
     <>
@@ -154,14 +182,19 @@ export const ServiceCard = () => {
                 overflow="hidden"
               >
                 <Text color="#0E82C4" fontWeight={700} fontSize={20}>
-                  <span
-                    style={{
-                      fontSize: 25
-                    }}
-                  >
-                    {formatNumber(params.price)} VND/
-                  </span>
-                  {params.priceDes}
+                  {bookingPrice === 0 ? (
+                    <>
+                      <CircularProgress size={18} sx={{ mr: 1 }} />
+                      {params.priceDes}
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ fontSize: 25 }}>
+                        {`${formatNumber(params?.price)} VND/`}
+                      </span>
+                      {params.priceDes}
+                    </>
+                  )}
                 </Text>
               </FlexCenter>
               <FlexCenter>
@@ -190,12 +223,12 @@ export const ServiceCard = () => {
 
       {/* Dialog thanh toán */}
       <Dialog open={openPaymentDialog} onClose={() => setOpenPaymentDialog(false)} aria-labelledby="wallet-dialog-title">
-        {walletBalance < params.price ? (
+        {balance?.balance < params?.price ? (
           <>
             <DialogTitle>Thông Báo Số Dư Ví</DialogTitle>
             <DialogContent>
               <Box>
-                <Text>Số dư trong ví của bạn không đủ để sử dụng dịch vụ này.</Text>
+                <Typography variant="body1">Số dư trong ví của bạn không đủ để sử dụng dịch vụ này.</Typography>
               </Box>
             </DialogContent>
             <DialogActions>
@@ -212,30 +245,47 @@ export const ServiceCard = () => {
             <DialogTitle>Xác Nhận Đăng Ký</DialogTitle>
             <DialogContent>
               <Box>
-                <Text>Vui lòng chấp nhận điều khoản dưới đây để đăng ký phỏng vấn CV.</Text>
-                <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 1 }}>
-                  <Text
-                    fontSize={15}
-                    sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                    color="primary"
-                    onClick={() => setOpenRequire(true)}
-                  >
-                    Điều khoản sử dụng dịch vụ
-                  </Text>
-                </Box>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  Vui lòng chấp nhận điều khoản dưới đây để đăng ký phỏng vấn CV.
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ textDecoration: 'underline', cursor: 'pointer', color: 'primary.main' }}
+                  onClick={() => setOpenRequire(true)}
+                >
+                  Điều khoản sử dụng dịch vụ
+                </Typography>
               </Box>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenPaymentDialog(false)} color="primary">
-                Đóng
-              </Button>
-              <Button color="primary" disabled={!isAgree} onClick={CheckBuyService}>
-                Đăng ký
-              </Button>
+            <DialogActions sx={{ justifyContent: 'space-between', paddingX: 2, paddingY: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  onChange={(e, checked) => setIsAgree(checked)}
+                  checked={isAgree}
+                  sx={{ padding: 0, marginRight: 1 }}
+                />
+                <Typography variant="body2" color="primary.main">
+                  Tôi đồng ý với các điều khoản sử dụng
+                </Typography>
+              </Box>
+              <Box>
+                <Button onClick={() => setOpenPaymentDialog(false)} color="primary" sx={{ marginRight: 2 }}>
+                  Đóng
+                </Button>
+                <Button
+                  color="primary"
+                  disabled={!isAgree}
+                  onClick={HandleBuyService}
+
+                >
+                  Đăng ký
+                </Button>
+              </Box>
             </DialogActions>
           </>
         )}
       </Dialog>
+
 
       {/* Dialog Điều khoản */}
       <Dialog open={openRequire} maxWidth="sm" fullWidth onClose={() => setOpenRequire(false)}>
@@ -253,15 +303,6 @@ export const ServiceCard = () => {
         </DialogContent>
         <DialogActions>
           <FlexBox sx={{ alignItems: 'center', flex: '1 1 auto' }}>
-            <Checkbox
-              onChange={(e, checked) => {
-                setIsAgree(checked);
-              }}
-              checked={isAgree}
-            />
-            <Text fontSize={15} color="primary">
-              Tôi đồng ý với các điều khoản sử dụng
-            </Text>
           </FlexBox>
           <FlexBox sx={{ flex: '0 0 auto' }}>
             <Button onClick={() => setOpenRequire(false)} color="primary">
