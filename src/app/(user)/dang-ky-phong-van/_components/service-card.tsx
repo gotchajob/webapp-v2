@@ -75,18 +75,18 @@ export const ServiceCard = () => {
   };
 
   const CheckBuyService = async () => {
-    try {
-      if (!customerToken) {
-        return;
-      }
-      const res = await GetCheckBuyService(customerToken);
-      if (res.status !== "success") {
-        throw new Error();
-      }
-      route.push("http://localhost:3001/share-cv");
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   if (!customerToken) {
+    //     return;
+    //   }
+    //   const res = await GetCheckBuyService(customerToken);
+    //   if (res.status !== "success") {
+    //     throw new Error();
+    //   }
+    //   route.push("http://localhost:3001/share-cv");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   return (

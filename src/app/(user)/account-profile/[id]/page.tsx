@@ -116,7 +116,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
     const patchDeposit = async () => {
       if (vnp_TransactionStatus == "00") {
         try {
-          const res = await PatchDeposit({ amount: +vnp_Amount, description: "nap tien" }, customerToken);
+          const res = await PatchDeposit({ amount: +vnp_Amount / 100, description: "Nạp tiền thành công qua VNPay" }, customerToken);
           if (res.status !== "success") {
             throw new Error();
           }
