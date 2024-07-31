@@ -13,6 +13,7 @@ export interface FeedbackQuestionType {
   typeId: number;
   description: string;
 }
+
 export interface FeedbackAnwer {
   questionId: number;
   value: string | number;
@@ -60,6 +61,7 @@ export const SampleFeedbackType: FeedbackQuestionType[] = [
     description: 'Database Design'
   }
 ];
+
 export const attitudeOption = [
   {
     value: 3,
@@ -77,6 +79,7 @@ export const attitudeOption = [
     icon: <SentimentSatisfiedAltIcon />
   }
 ];
+
 export const experienceOption = [
   {
     value: 1,
