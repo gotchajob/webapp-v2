@@ -69,11 +69,9 @@ const BookInvoicePage = ({ onBack, bookingInfo, params }: { onBack: () => void, 
                             <BookingInformationCard bookingInfo={bookingInfo} params={params} />
                         </Grid>
                         <Grid item xs={6}>
-                            {expertBooking?.map((expert: any, index) => (
-                                <Box px={10} key={index}>
-                                    <ExpertBookCard expert={expert} bookingInfo={bookingInfo} />
-                                </Box>
-                            ))}
+                            <Box px={10}>
+                                <ExpertBookCard bookingInfo={bookingInfo} />
+                            </Box>
                         </Grid>
                         <Grid item xs={12} mt={2} px={10}>
                             <Grid container spacing={3} alignItems="center" justifyContent="space-between">

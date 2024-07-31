@@ -31,7 +31,7 @@ const WalletCard = () => {
 
   const { customerToken } = CustomerToken();
 
-  const { balance } = useGetCurrentBalance(customerToken);
+  const { balance, loading } = useGetCurrentBalance(customerToken);
 
   const cardSX = {
     content: '""',
@@ -42,6 +42,8 @@ const WalletCard = () => {
   };
 
   return (
+    // <>
+    //   {customerToken && (
     <Card
       sx={{
         bgcolor: theme.palette.primary.light,
@@ -83,9 +85,11 @@ const WalletCard = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              {balance ? balance.balance : (
+              {loading ? (
                 <CircularProgress size={14} sx={{ mr: 1 }} />
-              )} vnd
+              ) : (
+                `${balance?.balance ?? 0} vnd`
+              )}
             </Typography>
           </Grid>
           <Grid item>
@@ -104,6 +108,8 @@ const WalletCard = () => {
         </Grid>
       </CardContent>
     </Card>
+    //   )}
+    // </>
   );
 };
 
