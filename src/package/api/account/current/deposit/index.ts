@@ -13,6 +13,7 @@ export interface PatchDepositRequest {
 export const PatchDeposit = async (params: PatchDepositRequest, accessToken: string): Promise<PatchDepositResponse> => {
     try {
         const res = await apiServerFetch(`/account/current/deposit`, 'PATCH', { amount: params.amount, description: params.description }, accessToken);
+        console.log(res);
         return res;
     } catch (error: any) {
         return errorSystem('Nạp tiền thất bại', "");

@@ -14,26 +14,13 @@ const formatNumber = (number: number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { open: boolean; onClose: () => void; transactionClick: () => void; continueClick: () => void }) => {
-
-  const [step, setStep] = useState(0);
+const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { open: number; onClose: () => void; transactionClick: () => void; continueClick: () => void }) => {
 
   const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
 
-  useEffect(() => {
-    if (open) {
-      setStep(0);
-      const timer = setTimeout(() => {
-        const isSuccess = Math.random() > 0.5;
-        setStep(isSuccess ? 1 : 2);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
   return (
     <Dialog
-      open={open}
+      open={open !== -1}
       onClose={onClose}
       maxWidth="lg"
       sx={{
@@ -47,12 +34,12 @@ const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { ope
           <Grid container direction="column" spacing={2} alignItems="center" justifyContent="center" sx={{ my: 1 }}>
             <Grid item xs={12}>
               <Typography variant={'h2'}>
-                {step === 0 && 'Đang thực hiện giao dịch'}
-                {step === 1 && 'Giao dịch thành công'}
-                {step === 2 && 'Giao dịch thất bại'}
+                {open === 0 && 'Đang thực hiện giao dịch'}
+                {open === 1 && 'Nạp tiền thành công'}
+                {open === 2 && 'Nạp tiền thất bại'}
               </Typography>
             </Grid>
-            {step === 1 && vnp_Amount && (
+            {open === 1 && vnp_Amount && (
               <Grid item xs={12}>
                 <Typography color="success" variant={"h3"} sx={{ textAlign: "center" }}>
                   {formatNumber(vnp_Amount / 100)}vnđ
@@ -60,11 +47,11 @@ const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { ope
               </Grid>
             )}
             <Grid item xs={12}>
-              {step === 0 && <CircularProgress size={100} />}
-              {step === 1 && <CheckCircleIcon color="success" sx={{ fontSize: 250 }} />}
-              {step === 2 && <ErrorIcon color="error" sx={{ fontSize: 250 }} />}
+              {open === 0 && <CircularProgress size={150} sx={{ my: 10 }} />}
+              {open === 1 && <CheckCircleIcon color="success" sx={{ my: 5, fontSize: 200 }} />}
+              {open === 2 && <ErrorIcon color="error" sx={{ my: 5, fontSize: 200 }} />}
             </Grid>
-            <Grid item xs={12} sm={9}>
+            <Grid item xs={12}>
               <Stack alignItems="center" spacing={1}>
                 <Typography variant="caption" align="center">
                   Nếu bạn có bất kỳ thắc mắc hoặc câu hỏi nào liên quan đến việc mua hàng, vui lòng liên hệ với chúng tôi
@@ -75,16 +62,16 @@ const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { ope
               </Stack>
             </Grid>
             <Grid item xs={12} sx={{ pt: 3 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
+              <Grid container spacing={5}>
+                <Grid item xs={4}>
                   <Button variant="outlined" fullWidth onClick={onClose}>
                     Đóng
                   </Button>
                 </Grid>
-                {step !== 0 && (
-                  <Grid item xs={6}>
+                {open !== 0 && (
+                  <Grid item xs={8}>
                     <Button variant="contained" fullWidth onClick={onClose}>
-                      {step === 1 ? 'Tiếp tục nạp' : 'Thử lại'}
+                      {open === 1 ? 'Tiếp tục nạp' : 'Thử lại'}
                     </Button>
                   </Grid>
                 )}

@@ -65,24 +65,25 @@ const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
       }}
     >
       <Grid container spacing={gridSpacing}>
-        {/* {cv && (
+        {cv && (
           <Grid item xs={12}>
             <Typography variant="body2" gutterBottom>
               Bạn đã chọn CV {cv.name}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <Image
-                src="https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"
+                src={cv.image !== "" ? cv.image : "https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
                 alt="CV Image"
-                width={500}
-                height={700}
-                objectFit="contain"
+                width={400}
+                height={600}
+                objectFit="cover"
+                objectPosition='center'
                 style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
               />
             </Box>
           </Grid>
-        )} */}
-        <Grid item xs={12}>
+        )}
+        {/* <Grid item xs={12}>
           <Typography variant="body2" gutterBottom>
             Bạn đã chọn CV
           </Typography>
@@ -96,7 +97,7 @@ const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
               style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
             />
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Card>
   );

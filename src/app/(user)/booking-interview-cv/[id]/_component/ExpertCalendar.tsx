@@ -294,8 +294,8 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
     };
 
     useEffect(() => {
-        console.log("selectedEvent:", selectedEvent);
-    }, [selectedEvent]);
+        console.log("cvs:", cvs);
+    }, [cvs]);
 
     useEffect(() => {
         const convertedEvents = convertEvents(validDateToBooking);
@@ -388,11 +388,12 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
                                     },
                                 }}>
                                     <Image
-                                        // src={cv.image}
-                                        src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                                        src={cv.image !== "" ? cv.image : "https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                                        //src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
                                         alt={cv.name}
                                         width={400}
                                         height={600}
+                                        style={{ objectFit: "cover", objectPosition: "center" }}
                                     />
                                 </SubCard>
                             </div>

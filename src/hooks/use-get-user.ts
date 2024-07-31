@@ -20,7 +20,7 @@ export function useGetUser(params: GetUserRequest, refresh: any) {
 
   useEffect(() => {
     fetchUser();
-  }, [refresh, params]);
+  }, [refresh, params.pageNumber, params.pageSize]);
 
   return {
     user,

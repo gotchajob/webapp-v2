@@ -89,13 +89,13 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<number>(0);
 
   const [value, setValue] = React.useState<number>(0);
 
   const { refreshTime, refresh } = useRefresh();
 
-  const { user, loading } = useGetUser({ pageNumber: 1, pageSize: 10, search: [`id:${params.id}`] }, refreshTime)
+  const { user, loading } = useGetUser({ pageNumber: 1, pageSize: 10, search: [`id:${params.id}`] }, refreshTime); //doi thanh GetCurrent
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -103,31 +103,33 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const handleTransactionClick = () => {
     setValue(1);
-    setOpen(false);
+    setOpen(-1);
   }
 
   const handleContinueClick = () => {
     setValue(2);
-    setOpen(false);
+    setOpen(-1);
   }
 
   useEffect(() => {
     setValue(2);
     const patchDeposit = async () => {
-      if (vnp_TransactionStatus == "00") {
+      if (vnp_TransactionStatus && customerToken) {
         try {
+          setOpen(0);
           const res = await PatchDeposit({ amount: +vnp_Amount / 100, description: "Nạp tiền thành công qua VNPay" }, customerToken);
           if (res.status !== "success") {
             throw new Error();
           }
+          setOpen(1);
         } catch (error) {
           console.log(error);
+          setOpen(2);
         }
-        setOpen(true);
       }
     };
     patchDeposit();
-  }, [vnp_TransactionStatus, vnp_Amount, customerToken]);
+  }, [vnp_TransactionStatus, customerToken]);
 
   useEffect(() => { }, []);
 
@@ -234,7 +236,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         <Divider />
       </MainCard>
 
-      <OrderComplete open={open} onClose={() => setOpen(false)} transactionClick={handleTransactionClick} continueClick={handleContinueClick} />
+      <OrderComplete open={open} onClose={() => setOpen(-1)} transactionClick={handleTransactionClick} continueClick={handleContinueClick} />
     </Box>
   );
 };
