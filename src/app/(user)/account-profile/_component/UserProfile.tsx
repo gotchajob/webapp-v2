@@ -19,11 +19,6 @@ import { Button } from '@mui/material';
 // ==============================|| PROFILE 2 - USER PROFILE ||============================== //
 
 const UserProfile = ({ user }: { user: User }) => {
-
-  useEffect(() => {
-    console.log(" UserProfile0, ", user)
-  }, []);
-
   return (
     <>
       {user && (<Grid container spacing={gridSpacing}>
