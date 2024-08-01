@@ -201,7 +201,7 @@ const BookingDetailPage = ({ event, onBack }: { event: any, onBack: () => void }
 
     const selectedSkills = useMemo(() => {
         return expertSkillOptions?.filter(skill =>
-            event?.extendedProps.expertSkillOptionId.includes(skill.id)
+            event?.extendedProps.expertSkillOptionId?.includes(skill.id) // bi loi
         );
     }, [expertSkillOptions, event]);
 

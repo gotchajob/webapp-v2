@@ -16,7 +16,8 @@ export const metadata = {
 // ==============================|| ROOT LAYOUT ||============================== //
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const accessTime = await getAccessTime(cookies());
+  
+  // const accessTime = await getAccessTime(cookies());
 
   return (
     <html lang="en">
@@ -28,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           overflowX: 'hidden'
         }}
       >
-        <UpdateAccessServer accessTime={accessTime} />
+        {/* <UpdateAccessServer accessTime={accessTime} /> */}
         <ProviderWrapper>
           <SnackbarProvider>{children}</SnackbarProvider>
         </ProviderWrapper>

@@ -11,11 +11,12 @@ import Grid from '@mui/material/Grid';
 import { ReactNode } from 'react';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
-interface QuestionAnswer extends FeedbackQuestion {
+import { BookingCustomerFeedbackQuestion } from 'package/api/booking-customer-feedback-question-controller';
+
+
+interface QuestionAnswer extends BookingCustomerFeedbackQuestion {
   answer?: FeedbackAnwer;
 }
-
-
 
 const renderLabel = (option: string, icon: ReactNode) => {
   return (
@@ -35,7 +36,7 @@ export const Answer = ({
 }: {
   answerList: FeedbackAnwer[];
   setAnswerList: (value: FeedbackAnwer[]) => void;
-  feedbackQuestionList: FeedbackQuestion[];
+  feedbackQuestionList: BookingCustomerFeedbackQuestion[];
 }) => {
   const handleUpdateAnwser = ({ questionId, value }: { questionId: number; value: any }) => {
     const newAnswer = [...answerList];
@@ -50,7 +51,7 @@ export const Answer = ({
 
   const RenderAnswer = (props: QuestionAnswer) => {
     let input = <></>;
-    switch (props.input) {
+    switch (props.type) {
       case 'text':
         input = <TextField fullWidth />;
         break;
@@ -91,7 +92,7 @@ export const Answer = ({
     const data: QuestionAnswer[] = [];
 
     feedbackQuestionList.forEach((value) => {
-      const answer = answerList.find((e) => e.questionId === value.questionId);
+      const answer = answerList.find((e) => e.questionId === value.id);
       data.push({
         ...value,
         answer

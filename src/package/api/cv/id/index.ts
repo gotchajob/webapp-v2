@@ -30,6 +30,7 @@ export interface GetCVByIdResponse {
   responseText: string;
   data: GetCVByIdData
 }
+
 export interface GetCVByIdData {
   id: number;
   cvTemplateId: number;
@@ -38,6 +39,7 @@ export interface GetCVByIdData {
   status: number;
   createdAt: string;
   updatedAt: string;
+  image: string;
 };
 
 export const GetCVById = async (params: GetCVByIdRequest, accessToken: string): Promise<GetCVByIdResponse> => {

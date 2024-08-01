@@ -39,24 +39,17 @@ const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
 // ==============================|| USER DETAILS CARD ||============================== //
 
-const ExpertBookCard = ({ expert, bookingInfo }: { expert: ExpertMatching, bookingInfo: any }) => {
+const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
   const theme = useTheme();
-
-  const formatNation = () => {
-    let nation = '';
-    expert.nationSupport.forEach((e) => {
-      nation = nation + e.nation;
-    });
-    return nation;
-  };
 
   const { customerToken } = CustomerToken();
 
   const { cv } = useGetCVById({ id: bookingInfo?.customerCvId }, customerToken);
 
   useEffect(() => {
+    console.log('bookingInfo?.customerCvId :', bookingInfo?.customerCvId);
     console.log('cv:', cv);
-  }, [bookingInfo, customerToken]);
+  }, [cv, bookingInfo]);
 
   return (
     <Card
@@ -70,26 +63,41 @@ const ExpertBookCard = ({ expert, bookingInfo }: { expert: ExpertMatching, booki
         '&:hover': { borderColor: 'primary.main' },
         transition: 'border-color 0.3s'
       }}
-
     >
       <Grid container spacing={gridSpacing}>
         {cv && (
           <Grid item xs={12}>
             <Typography variant="body2" gutterBottom>
-              Tên cv bạn đã chọn: {cv.name}
+              Bạn đã chọn CV {cv.name}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <Image
-                src="https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"
+                src={cv.image !== "" ? cv.image : "https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
                 alt="CV Image"
-                width={500}
-                height={700}
-                objectFit="contain"
+                width={400}
+                height={600}
+                objectFit="cover"
+                objectPosition='center'
                 style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
               />
             </Box>
           </Grid>
         )}
+        {/* <Grid item xs={12}>
+          <Typography variant="body2" gutterBottom>
+            Bạn đã chọn CV
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Image
+              src="https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"
+              alt="CV Image"
+              width={500}
+              height={700}
+              objectFit="contain"
+              style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
+            />
+          </Box>
+        </Grid> */}
       </Grid>
     </Card>
   );

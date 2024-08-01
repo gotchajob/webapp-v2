@@ -1,65 +1,27 @@
-import Image from 'next/image';
-import { forwardRef, useEffect, useState } from 'react';
-import Link from 'next/link';
-
-// material-ui
-import { Theme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Zoom, { ZoomProps } from '@mui/material/Zoom';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
-// project imports
+import CircularProgress from '@mui/material/CircularProgress';
+import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@mui/icons-material';
 import MainCard from 'ui-component/cards/MainCard';
-import { gridSpacing } from 'store/constant';
-
-// third-party
-import { Chance } from 'chance';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-// assets
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useGetSearchParams } from 'hooks/use-get-params';
-import { CircularProgress } from '@mui/material';
-
-const completed = '/assets/images/e-commerce/completed.png';
-
-const chance = new Chance();
 
 const formatNumber = (number: number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-// ==============================|| CHECKOUT CART - DISCOUNT COUPON CODE ||============================== //
-
-const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolean, transactionClick: () => void, continueClick: () => void }) => {
-
-  const [isProcessing, setIsProcessing] = useState(true);
+const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { open: number; onClose: () => void; transactionClick: () => void; continueClick: () => void }) => {
 
   const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
 
-  useEffect(() => {
-    if (open) {
-      const timer = setTimeout(() => {
-        setIsProcessing(false);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
-  const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
-
   return (
-
     <Dialog
-      open={open}
-      keepMounted
+      open={open !== -1}
+      onClose={onClose}
       maxWidth="lg"
       sx={{
         '& .MuiDialog-paper': {
@@ -67,65 +29,58 @@ const OrderComplete = ({ open, transactionClick, continueClick }: { open: boolea
         }
       }}
     >
-      {open && (
-        <MainCard>
-          <PerfectScrollbar style={{ overflowX: 'hidden', height: 565 }}>
-            <Grid container direction="column" spacing={2} alignItems="center" justifyContent="center" sx={{ my: 1 }}>
-              {/* <Grid item xs={12}>
-                <Image
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s"
-                  alt="Order Complete"
-                  layout="responsive"
-                  width={50}
-                  height={50}
-                  style={{ borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-                />
-              </Grid> */}
+      <MainCard>
+        <PerfectScrollbar style={{ overflowX: 'hidden', height: 565 }}>
+          <Grid container direction="column" spacing={2} alignItems="center" justifyContent="center" sx={{ my: 1 }}>
+            <Grid item xs={12}>
+              <Typography variant={'h2'}>
+                {open === 0 && 'Đang thực hiện giao dịch'}
+                {open === 1 && 'Nạp tiền thành công'}
+                {open === 2 && 'Nạp tiền thất bại'}
+              </Typography>
+            </Grid>
+            {open === 1 && vnp_Amount && (
               <Grid item xs={12}>
-                <Typography variant={'h2'}>Nạp tiền vào ví thành công</Typography>
+                <Typography color="success" variant={"h3"} sx={{ textAlign: "center" }}>
+                  {formatNumber(vnp_Amount / 100)}vnđ
+                </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Stack alignItems="center" spacing={1}>
-                  {vnp_Amount && (<Typography color="success" variant={"h3"} sx={{ textAlign: "center" }}>{formatNumber(vnp_Amount)}vnđ</Typography>)}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                {isProcessing ? (
-                  <CircularProgress size={100} />
-                ) : (
-                  <CheckCircleIcon color="success" sx={{ fontSize: 250 }} />
-                )}
-              </Grid>
-              <Grid item xs={12} sm={9}>
-                <Stack alignItems="center" spacing={1}>
-                  <Typography variant="caption" align="center">
-                    Nếu bạn có bất kỳ thắc mắc hoặc câu hỏi nào liên quan đến việc mua hàng, vui lòng liên hệ với chúng tôi
-                  </Typography>
-                  <Typography variant="subtitle1" color="primary" sx={{ cursor: 'pointer' }}>
-                    gotchajob@gmail.com
-                  </Typography>
-                </Stack>
-              </Grid>
+            )}
+            <Grid item xs={12}>
+              {open === 0 && <CircularProgress size={150} sx={{ my: 10 }} />}
+              {open === 1 && <CheckCircleIcon color="success" sx={{ my: 5, fontSize: 200 }} />}
+              {open === 2 && <ErrorIcon color="error" sx={{ my: 5, fontSize: 200 }} />}
+            </Grid>
+            <Grid item xs={12}>
+              <Stack alignItems="center" spacing={1}>
+                <Typography variant="caption" align="center">
+                  Nếu bạn có bất kỳ thắc mắc hoặc câu hỏi nào liên quan đến việc mua hàng, vui lòng liên hệ với chúng tôi
+                </Typography>
+                <Typography variant="subtitle1" color="primary" sx={{ cursor: 'pointer' }}>
+                  gotchajob@gmail.com
+                </Typography>
+              </Stack>
             </Grid>
             <Grid item xs={12} sx={{ pt: 3 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Button variant="outlined" fullWidth onClick={continueClick}>
+              <Grid container spacing={5}>
+                <Grid item xs={4}>
+                  <Button variant="outlined" fullWidth onClick={onClose}>
                     Đóng
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
-                  <Button variant="contained" fullWidth onClick={continueClick}>
-                    Tiếp tục nạp
-                  </Button>
-                </Grid>
+                {open !== 0 && (
+                  <Grid item xs={8}>
+                    <Button variant="contained" fullWidth onClick={onClose}>
+                      {open === 1 ? 'Tiếp tục nạp' : 'Thử lại'}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
-          </PerfectScrollbar>
-        </MainCard>
-      )
-      }
-    </Dialog >
+          </Grid>
+        </PerfectScrollbar>
+      </MainCard>
+    </Dialog>
   );
 };
 

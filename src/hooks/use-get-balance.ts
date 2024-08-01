@@ -1,21 +1,28 @@
-import { Balance, GetBalance } from "package/api/account/current/balance";
+
+import { CurrentBalance, GetCurrentBalance } from "package/api/account/current/balance";
 import { useEffect, useState } from "react";
 
-export const useGetBalance = (accessToken: string) => {
-    const [balance, setBalance] = useState<Balance>();
+export const useGetCurrentBalance = (accessToken: string) => {
+    const [balance, setBalance] = useState<CurrentBalance | null>(null);
 
-    const fetchBalance = async () => {
+    const [loading, setLoading] = useState(true);
+
+    const fetchCurrentBalance = async () => {
         try {
-            const data = await GetBalance(accessToken);
+            setLoading(true);
+            const data = await GetCurrentBalance(accessToken);
             setBalance(data.data);
         } catch (error) {
-            throw new Error();
+            console.error("Failed to fetch balance", error);
+        } finally {
+            setLoading(false);
         }
     }
 
-    useEffect(() => { fetchBalance() }, [accessToken]);
+    useEffect(() => { fetchCurrentBalance(); }, [accessToken]);
 
     return {
-        balance
+        balance,
+        loading
     }
 }

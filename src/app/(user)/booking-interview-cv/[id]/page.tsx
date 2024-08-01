@@ -177,7 +177,7 @@ const ExpertBookingPage = ({ params }: { params: { id: string } }) => {
                             <ExpertProfilePage onNext={handleNextStep} params={params} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <ExpertCalendarPage onBack={handlePrevStep} onNext={handleNextStep} params={params} booking={handleBooking} />
+                            <ExpertCalendarPage bookingInfo={bookingInfo} onBack={handlePrevStep} onNext={handleNextStep} params={params} booking={handleBooking} />
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             <BookInvoicePage onBack={handlePrevStep} bookingInfo={bookingInfo} params={params} />

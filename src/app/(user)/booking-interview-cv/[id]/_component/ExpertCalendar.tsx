@@ -62,7 +62,7 @@ const reverseConvertEvents = (event: any) => {
     };
 };
 
-const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () => void, onBack: () => void, params: { id: string }, booking: (info: any) => void }) => {
+const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { onNext: () => void, onBack: () => void, params: { id: string }, bookingInfo: any, booking: (info: any) => void }) => {
 
     const calendarRef = useRef<FullCalendar>(null);
 
@@ -210,13 +210,13 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () =>
 
     const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id })
 
-    const [note, setNote] = useState('');
+    const [note, setNote] = useState(bookingInfo ? bookingInfo.note : "");
 
-    const [selectedCV, setSelectedCV] = useState<number | null>(null);
+    const [selectedCV, setSelectedCV] = useState<number | null>(bookingInfo ? bookingInfo.customerCvId : "");
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
 
-    const [selectedSkills, setSelectedSkills] = useState<any>([]);
+    const [selectedSkills, setSelectedSkills] = useState<any>(bookingInfo ? bookingInfo.bookingSkill : []);
 
     // const { availabilities } = useGetAvailability({ expertId: +params?.id });
 
@@ -227,9 +227,10 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () =>
     const handleEventSelect = (arg: EventClickArg) => {
         if (arg.event.id) {
             const selectEvent = events.find((_event: FormikValues) => _event.id === arg.event.id);
-            setSelectedEvent(selectEvent as FormikValues[]);
-            // setSelectAvailabilitie(arg.event._def.publicId);
-            setIsModalOpen(true);
+            if (selectEvent) {
+                setSelectedEvent(selectEvent);
+                setIsModalOpen(true);
+            }
         } else {
             setSelectedEvent(null);
         }
@@ -292,10 +293,9 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () =>
         }
     };
 
-    // useEffect(() => {
-    //     const convertedEvents = convertEvents(availabilities);
-    //     setEvents(convertedEvents);
-    // }, [params.id, availabilities, params]);
+    useEffect(() => {
+        console.log("cvs:", cvs);
+    }, [cvs]);
 
     useEffect(() => {
         const convertedEvents = convertEvents(validDateToBooking);
@@ -388,11 +388,12 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () =>
                                     },
                                 }}>
                                     <Image
-                                        // src={cv.image}
-                                        src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                                        src={cv.image !== "" ? cv.image : "https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                                        //src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
                                         alt={cv.name}
                                         width={400}
                                         height={600}
+                                        style={{ objectFit: "cover", objectPosition: "center" }}
                                     />
                                 </SubCard>
                             </div>
@@ -468,10 +469,12 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking }: { onNext: () =>
                 open={isModalOpen}
                 onClose={handleModalClose}
             >
-                <DialogTitle>Xác nhận đặt lịch vào thời điểm {formatDate(selectedEvent?.start, "dd/MM/yyyy - hh:mm")} - {formatDate(selectedEvent?.end, "dd/MM/yyyy - hh:mm")}</DialogTitle>
+                <DialogTitle>Xác nhận đặt lịch chuyên gia {expert?.firstName} {expert?.lastName} </DialogTitle>
                 <DialogContent>
                     <DialogContentText >
-                        Bạn muốn đặt chuyên gia {expert?.firstName} {expert?.lastName} interview CV của bạn?
+                        Bạn muốn chuyên gia interview CV của bạn vào thời điểm  <Typography component="span" color="primary">
+                            {` ${formatDate(selectedEvent?.start, "dd/MM/yyyy  hh:mm")} - ${formatDate(selectedEvent?.end, "hh:mm")}`}
+                        </Typography>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

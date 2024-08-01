@@ -8,7 +8,7 @@ export interface BuyServiceRes {
 
 export const PatchBuyService = async (accessToken: string): Promise<BuyServiceRes> => {
     try {
-        const res = await apiServerFetch('customer/buy-service', 'PATCH', undefined, accessToken);
+        const res = await apiServerFetch('/customer/buy-service', 'PATCH', undefined, accessToken);
         return res;
     } catch (error) {
         return errorSystem('Thất bại', '');

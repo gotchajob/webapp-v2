@@ -20,6 +20,7 @@ export interface ValidAvailability {
 export const GetValidDateToBooking = async (params: GetValidDateToBookingRequest): Promise<GetValidDateToBookingResponse> => {
     try {
         const res = await apiServerFetch(`/availability/expert/${params.expertId}/valid-date-to-booking`, 'GET', undefined, undefined);
+        console.log("data:", res.data);
         return res;
     } catch (error: any) {
         return errorSystem('Lấy danh sách thất bại', []);
