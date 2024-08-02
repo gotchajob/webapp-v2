@@ -41,9 +41,9 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
 
   // useEffect(() => { console.log("answerList:", answerList) }, [answerList]);
 
-  // useEffect(() => { console.log("bookingById:", bookingById) }, [bookingById]);
+  useEffect(() => { console.log("bookingById:", bookingById) }, [bookingById]);
 
-  useEffect(() => { console.log("skillRatings:", skillRatings) }, [skillRatings]);
+  // useEffect(() => { console.log("skillRatings:", skillRatings) }, [skillRatings]);
 
   // useEffect(() => { console.log("expertById:", expertById) }, [expertById]);
 
