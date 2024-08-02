@@ -33,20 +33,44 @@ import { Autocomplete, FormControl } from '@mui/material';
 import PaymentSelect from 'components/application/e-commerce/Checkout/PaymentSelect';
 import { createPaymentUrl } from 'package/vnpay/VNPAY';
 import { useRouter } from 'next/navigation';
+import { GetCreatePayment } from 'package/api/account/create-payment';
+import { CustomerToken } from 'hooks/use-login';
 
 const formatNumber = (number: any) => {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 // ==============================|| PROFILE 2 - PAYMENT ||============================== //
 
+const Amounts = [
+  {
+    amount: 50000,
+    text: '50,000đ'
+  },
+  {
+    amount: 100000,
+    text: '100,000đ'
+  },
+  {
+    amount: 200000,
+    text: '200,000đ'
+  },
+  {
+    amount: 500000,
+    text: '500,000đ'
+  }
+];
+
+interface Amount {
+  amount: number;
+  text: string;
+}
 const Payment = () => {
-
-  const [amount, setAmount] = useState('');
-
-  const Amounts = [50000, 100000, 200000, 500000];
+  const [amount, setAmount] = useState<number>(0);
 
   const [value1, setValue1] = React.useState<string | undefined>('vnpay');
+
+  const {customerToken} = CustomerToken()
 
   const router = useRouter();
 
@@ -56,23 +80,20 @@ const Payment = () => {
 
   const handleChangeAmount = (event: any, newValue: any) => {
     setAmount(newValue);
-    console.log("newValue:", newValue);
   };
 
-  const handlePay = () => {
-    const url = createPaymentUrl(+amount, "http://localhost:3001/account-profile/2");
-    router.push(url);
-  }
+  const handlePay = async () => {
+    // const url = createPaymentUrl(amount, 'http://localhost:3001/account-profile/2');
+    const url = await GetCreatePayment({ amount }, customerToken);
+    router.push(url.data.paymentURL);
+  };
 
   return (
     <Grid container spacing={gridSpacing}>
       {/*RadioGroup */}
       <Grid item xs={12} md={6}>
         <FormControl>
-          <RadioGroup
-            aria-label="delivery-options"
-            name="delivery-options"
-          >
+          <RadioGroup aria-label="delivery-options" name="delivery-options">
             <Grid container spacing={gridSpacing} alignItems="center">
               {PaymentOptions.map((item: PaymentOptionsProps, index) => (
                 <Grid item xs={12} key={index}>
@@ -91,16 +112,10 @@ const Payment = () => {
               <Grid item xs={12}>
                 <Autocomplete
                   freeSolo
-                  options={Amounts.map((option) => option.toString())}
-                  value={amount}
+                  options={Amounts.map((option) => option.amount)}
                   onChange={handleChangeAmount}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Số tiền cần nạp"
-                      fullWidth
-                      onChange={(e) => handleChangeAmount(null, e.target.value)}
-                    />
+                    <TextField {...params} label="Số tiền cần nạp" fullWidth onChange={(e) => handleChangeAmount(null, e.target.value)} />
                   )}
                 />
               </Grid>
@@ -143,7 +158,13 @@ const Payment = () => {
               <Grid item xs={12}>
                 <Stack direction="row" justifyContent="flex-end">
                   <AnimateButton>
-                    <Button variant="contained" size="large" startIcon={<CreditCardTwoToneIcon />} sx={{ color: 'white' }} onClick={handlePay}>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      startIcon={<CreditCardTwoToneIcon />}
+                      sx={{ color: 'white' }}
+                      onClick={handlePay}
+                    >
                       Nạp vào ví gotchajob
                     </Button>
                   </AnimateButton>
@@ -195,5 +216,5 @@ const PaymentOptions: PaymentOptionsProps[] = [
       width: 36,
       height: 36
     }
-  },
+  }
 ];

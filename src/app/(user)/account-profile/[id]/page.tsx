@@ -35,6 +35,8 @@ import Payment from '../_component/Payment';
 import UserProfile from '../_component/UserProfile';
 import { PatchDeposit } from 'package/api/account/current/deposit';
 import { CustomerToken } from 'hooks/use-login';
+import { GetVNPayCallback } from 'package/api/account/vn-pay-callback';
+import { useSearchParams } from 'next/navigation';
 
 // tabs
 function TabPanel({ children, value, index, ...other }: TabsProps) {
@@ -79,17 +81,16 @@ const tabsOption = [
 // ==============================|| PROFILE 2 ||============================== //
 
 const ProfilePage = ({ params }: { params: { id: string } }) => {
-
   const { mode, borderRadius } = useConfig();
 
   const { customerToken } = CustomerToken();
 
   //get params
-  const { vnp_TransactionStatus } = useGetSearchParams(["vnp_TransactionStatus"]);
+  const { vnp_TransactionStatus } = useGetSearchParams(['vnp_TransactionStatus']);
 
-  const { vnp_Amount } = useGetSearchParams(["vnp_Amount"]);
+  const { vnp_Amount } = useGetSearchParams(['vnp_Amount']);
 
-  const [open, setOpen] = useState<number>(0);
+  const [open, setOpen] = useState<number>(-1);
 
   const [value, setValue] = React.useState<number>(0);
 
@@ -104,34 +105,36 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
   const handleTransactionClick = () => {
     setValue(1);
     setOpen(-1);
-  }
+  };
 
   const handleContinueClick = () => {
     setValue(2);
     setOpen(-1);
-  }
+  };
+
+  const searchParams = useSearchParams();
+  const patchDeposit = async () => {
+    try {
+      setOpen(0);
+      const res = await GetVNPayCallback({ searchParams: searchParams.toString() });
+      console.log(res)
+      if (res.status !== 'success') {
+        throw new Error();
+      }
+      setOpen(1);
+    } catch (error) {
+      console.log(error);
+      setOpen(2);
+    }
+  };
 
   useEffect(() => {
     setValue(2);
-    const patchDeposit = async () => {
-      if (vnp_TransactionStatus && customerToken) {
-        try {
-          setOpen(0);
-          const res = await PatchDeposit({ amount: +vnp_Amount / 100, description: "Nạp tiền thành công qua VNPay" }, customerToken);
-          if (res.status !== "success") {
-            throw new Error();
-          }
-          setOpen(1);
-        } catch (error) {
-          console.log(error);
-          setOpen(2);
-        }
-      }
-    };
-    patchDeposit();
+    console.log('test', vnp_TransactionStatus);
+    if (vnp_TransactionStatus && customerToken) {
+      patchDeposit();
+    }
   }, [vnp_TransactionStatus, customerToken]);
-
-  useEffect(() => { }, []);
 
   return (
     <Box
@@ -148,12 +151,12 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         boxShadow
         hover
         sx={{
-          minWidth: "100%",
-          maxHeight: "100%",
+          minWidth: '100%',
+          maxHeight: '100%'
         }}
       >
-        <Grid container spacing={gridSpacing} >
-          <Grid item xs={12} lg={3} >
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={12} lg={3}>
             <CardContent>
               <Tabs
                 value={value}
@@ -193,7 +196,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
                   },
                   '& > div > span': {
                     display: 'none'
-                  },
+                  }
                 }}
               >
                 {tabsOption.map((tab, index) => (
@@ -216,7 +219,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
               </Tabs>
             </CardContent>
           </Grid>
-          <Grid item xs={12} lg={9} >
+          <Grid item xs={12} lg={9}>
             <CardContent>
               <TabPanel value={value} index={0}>
                 <UserProfile user={user[0]} />
@@ -236,7 +239,12 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
         <Divider />
       </MainCard>
 
-      <OrderComplete open={open} onClose={() => setOpen(-1)} transactionClick={handleTransactionClick} continueClick={handleContinueClick} />
+      <OrderComplete
+        open={open}
+        onClose={() => setOpen(-1)}
+        transactionClick={handleTransactionClick}
+        continueClick={handleContinueClick}
+      />
     </Box>
   );
 };
