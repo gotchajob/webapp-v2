@@ -12,7 +12,7 @@ import { UseGetExpertById } from 'hooks/use-get-expert-profile';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
 import { enqueueSnackbar } from 'notistack';
-import { BookingAnswer, PostBookingCustomerFeedback } from 'package/api/booking-customer-feedback-controller';
+import { BookingAnswer, PostBookingCustomerFeedback, SkillRating } from 'package/api/booking-customer-feedback-controller';
 import { formatDate } from 'package/util';
 import { useEffect, useState } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
@@ -37,9 +37,13 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
 
   const [rating, setRating] = useState<number>(0);
 
+  const [skillRatings, setSkillRatings] = useState<SkillRating[]>([])
+
   // useEffect(() => { console.log("answerList:", answerList) }, [answerList]);
 
-  useEffect(() => { console.log("bookingById:", bookingById) }, [bookingById]);
+  // useEffect(() => { console.log("bookingById:", bookingById) }, [bookingById]);
+
+  useEffect(() => { console.log("skillRatings:", skillRatings) }, [skillRatings]);
 
   // useEffect(() => { console.log("expertById:", expertById) }, [expertById]);
 
@@ -52,7 +56,7 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
       if (!customerToken) {
         throw new Error("Cần đăng nhập");
       }
-      const res = await PostBookingCustomerFeedback({ bookingId: +params.id, rating, comment, answers: answerList }, customerToken);
+      const res = await PostBookingCustomerFeedback({ bookingId: +params.id, rating, comment, answers: answerList, skillRatings }, customerToken);
       console.log(res);
       if (res.status !== "success") {
         throw new Error();
@@ -65,6 +69,7 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
       setLoadingSubmit(false);
     }
   }
+
 
   return (
     <Box
@@ -120,17 +125,36 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
             </Typography>
           </Box>
           <Grid container spacing={3} mb={3}>
-            {bookingById && bookingById.skillOptionBooking?.map((value, index) => (
-              <Grid item xs={12} key={index}>
-                <SubCard
-                  title={`Đánh giá chuyên môn của chuyên gia về ${value.skillOptionName}`}
-                  sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}
-                >
-                  <Rating onChange={(e, value) => {
-                  }} />
-                </SubCard>
-              </Grid>
-            ))}
+            {bookingById && bookingById.skillOptionBooking?.map((skillOption, index) => {
+              return (
+                <Grid item xs={12} key={index}>
+                  <SubCard
+                    title={`Đánh giá chuyên môn của chuyên gia về ${skillOption.skillOptionName}`}
+                    sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}
+                  >
+                    <Rating
+                      onChange={(e, value) => {
+                        if (value) {
+                          setSkillRatings((prev) => {
+                            const existingIndex = prev.findIndex(
+                              (rating) => rating.expertSkillOptionId === skillOption.skillOptionId
+                            );
+
+                            if (existingIndex >= 0) {
+                              const updatedRatings = [...prev];
+                              updatedRatings[existingIndex].rating = value;
+                              return updatedRatings;
+                            } else {
+                              return [...prev, { rating: value, expertSkillOptionId: skillOption.skillOptionId }];
+                            }
+                          });
+                        }
+                      }}
+                    />
+                  </SubCard>
+                </Grid>
+              );
+            })}
           </Grid>
           <Answer
             answerList={answerList}

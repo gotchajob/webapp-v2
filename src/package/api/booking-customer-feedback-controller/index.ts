@@ -27,7 +27,13 @@ export interface PostBookingCustomerFeedbackRequest {
     bookingId: number,
     rating: number,
     comment: string,
-    answers: BookingAnswer[]
+    answers: BookingAnswer[],
+    skillRatings: SkillRating[];
+}
+
+export interface SkillRating {
+    rating: number,
+    expertSkillOptionId: number
 }
 
 export interface BookingAnswer {
@@ -39,7 +45,6 @@ export interface PostBookingCustomerFeedbackResponse {
     status: string;
     responseText: string;
 }
-
 
 export const PostBookingCustomerFeedback = async (params: PostBookingCustomerFeedbackRequest, accessToken: string): Promise<PostBookingCustomerFeedbackResponse> => {
     try {
