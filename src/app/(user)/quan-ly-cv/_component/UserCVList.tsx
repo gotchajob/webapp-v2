@@ -1,16 +1,35 @@
 'use client';
 
-import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import ShareIcon from '@mui/icons-material/Share';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import ShareIcon from '@mui/icons-material/Share';
+import { Box, Button, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { StyledLink } from 'components/common/link/styled-link';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { CVCurrent } from 'package/api/cv/current';
 import { formatDate } from 'package/util';
-import { StyledLink } from 'components/common/link/styled-link';
+import { useRef } from 'react';
 
 
 const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
+
+  const CVRef = useRef(null);
+
+  const handleDownload = async () => {
+    if (CVRef.current) {
+      const canvas = await html2canvas(CVRef.current);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('cv.pdf');
+    }
+  };
+
   return (
     <Grid container spacing={2}>
       {CVList.map((item, index) => (
@@ -116,6 +135,7 @@ const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
                     Chia sẻ
                   </Button>
                   <Button
+                    onClick={handleDownload}
                     sx={{
                       color: '#FFFFFF',
                       fontWeight: 700,

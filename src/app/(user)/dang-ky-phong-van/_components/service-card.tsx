@@ -97,7 +97,6 @@ export const ServiceCard = () => {
     }
   }
 
-
   const params = {
     id: 'MockInterviewService',
     image: '/assets/images/illu-1.png',
@@ -223,7 +222,7 @@ export const ServiceCard = () => {
 
       {/* Dialog thanh toán */}
       <Dialog open={openPaymentDialog} onClose={() => setOpenPaymentDialog(false)} aria-labelledby="wallet-dialog-title">
-        {balance?.balance ?? 0 < params?.price ? (
+        {balance?.balance < params?.price ? (
           <>
             <DialogTitle>Thông Báo Số Dư Ví</DialogTitle>
             <DialogContent>

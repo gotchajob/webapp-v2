@@ -28,26 +28,6 @@ import { useGetExpertProfile } from "hooks/use-get-expert-profile";
 import { useRefresh } from "hooks/use-refresh";
 import { useGetExpertSkillOptions } from "hooks/use-get-expert-skill-option";
 
-// const expert = {
-//   userId: 66,
-//   expertId: 31,
-//   userStatus: 1,
-//   email: " ",
-//   avatar: "https://as2.ftcdn.net/v2/jpg/03/31/69/91/1000_F_331699188_lRpvqxO5QRtwOM05gR50ImaaJgBx68vi.jpg",
-//   firstName: "Lý",
-//   lastName: "Kiệt",
-//   address: "854/1, Xã Bản Mế, Huyện Si Ma Cai, Thành phố Hà Nội",
-//   phone: "0898124853",
-//   yearExperience: 10,
-//   birthDate: "2024-06-02T00:00:00.000+00:00",
-//   bio: "lần đầu gửi đơn đăng kí",
-//   emailContact: "kietly456@gmail.com",
-//   portfolioUrl: "",
-//   facebookUrl: "https://www.facebook.com/",
-//   twitterUrl: "https://www.twitter.com/",
-//   linkedinUrl: "https://www.linkedin.com/",
-//   education: "[{\"time\":\"2014-2017\",\"timeDes\":\"Senior UI/UX designer\",\"title\":\"Master Degree in Computer Application\",\"titleDes\":\"University of Oxford, England\"}]"
-// };
 
 export interface EducationData {
   time: string;
@@ -69,6 +49,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params.id });
 
   useEffect(() => { console.log("expert", expert) }, [params, expert]);
+  
   return (
     <Box sx={{ px: 10, py: 5 }}>
       <Grid
