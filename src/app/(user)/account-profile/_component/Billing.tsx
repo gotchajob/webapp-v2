@@ -49,6 +49,7 @@ const columns: GridColDef[] = [
 ];
 
 let headers: any = [];
+
 columns.map((item) => {
   return headers.push({ label: item.headerName, key: item.field });
 });
@@ -63,11 +64,7 @@ export default function EditableColumn() {
   const { transaction } = useGetTransaction({ pageNumber: 1, pageSize: 6 }, customerToken);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setRows(sampleTransactions);
-      setLoading(false);
-    }, 1000);
+    setRows(sampleTransactions);
   }, []);
 
   useEffect(() => {
