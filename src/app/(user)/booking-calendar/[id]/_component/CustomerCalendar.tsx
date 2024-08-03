@@ -117,7 +117,7 @@ const BookingCalendar = ({
     if (loading) return <Loader />;
 
     return (
-        <Box sx={{ height: '100vh', paddingX: 5, paddingY: 1 }}>
+        <Box sx={{ paddingX: 5, paddingY: 1 }}>
             <Typography variant="body1" color="primary" sx={{ fontStyle: 'italic', mt: 2 }}>
                 Bạn chỉ có thể hủy đặt lịch những buổi phỏng vấn cách 3 ngày hiện tại.
             </Typography>
@@ -171,7 +171,9 @@ const BookingCalendar = ({
                                                 color="default"
                                                 size="large"
                                                 onClick={() => {
-                                                    router.push(`/expert/booking-calendar/${row.id}`);
+                                                    if (onSelectEvent) {
+                                                        onSelectEvent(row);
+                                                    }
                                                 }}
                                             >
                                                 <VisibilityIcon sx={{ fontSize: "1.1rem" }} />

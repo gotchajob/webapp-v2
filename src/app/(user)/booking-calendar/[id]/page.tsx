@@ -73,7 +73,7 @@ const BookingCalendarPage = () => {
 
     const handleSelectEvent = (event: any) => {
         setSelectEvent(event);
-        // console.log("handleSelectEvent:", event);
+        console.log("handleSelectEvent:", event);
     }
 
     return (

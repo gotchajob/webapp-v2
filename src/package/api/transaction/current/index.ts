@@ -19,7 +19,7 @@ export interface TransactionCurrentRes {
 export interface TransactionCurrent {
     id: number;
     amount: number;
-    typeId: string;
+    typeId: number;
     description: string;
     createdAt: string;
 }
