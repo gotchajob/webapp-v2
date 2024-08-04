@@ -13,6 +13,7 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
+    Pagination,
     Table,
     TableBody,
     TableCell,
@@ -32,7 +33,6 @@ import { useRouter } from "next/navigation";
 import { formatDate } from "package/util";
 import { useEffect, useState } from "react";
 
-// Function to get the status label
 const getStatusLabel = (status: any) => {
     switch (status) {
         case 1:
@@ -70,11 +70,14 @@ const BookingCalendar = ({
     onNext: () => void;
     onSelectEvent: (event: any) => void;
 }) => {
+
     const router = useRouter();
 
     const { refreshTime, refresh } = useRefresh();
 
     const [loading, setLoading] = useState<boolean>(true);
+
+    const [page, setPage] = useState<number>(0);
 
     const { customerToken } = CustomerToken();
 
@@ -86,13 +89,6 @@ const BookingCalendar = ({
     } | null>(null);
 
     const [cancelReason, setCancelReason] = useState<string>("");
-
-    const handleOpenDialog = (
-        bookingId: number,
-        type: "accept" | "reject" | "ban"
-    ) => {
-        setSelectedBooking({ id: bookingId, type });
-    };
 
     const handleCloseDialog = () => {
         setSelectedBooking(null);
@@ -139,9 +135,7 @@ const BookingCalendar = ({
                                 <TableRow hover key={row.id} >
                                     <TableCell sx={{ pl: 3 }}>{row.expertId}</TableCell>
                                     <TableCell>
-                                        <Typography variant="subtitle2" noWrap sx={{
-                                            color: isToday(row.createdAt) ? 'success.main' : 'black'
-                                        }}>
+                                        <Typography variant="subtitle2" noWrap>
                                             {formatDate(row.createdAt, "dd/MM/yyyy")}
                                         </Typography>
                                     </TableCell>
@@ -173,6 +167,7 @@ const BookingCalendar = ({
                                                 onClick={() => {
                                                     if (onSelectEvent) {
                                                         onSelectEvent(row);
+                                                        onNext();
                                                     }
                                                 }}
                                             >
@@ -183,7 +178,7 @@ const BookingCalendar = ({
                                             <IconButton
                                                 color="primary"
                                                 size="large"
-                                                onClick={() => handleOpenDialog(row.id, 'accept')}
+                                                onClick={() => setSelectedBooking({ id: row.id, type: 'accept' })}
                                             >
                                                 <CheckIcon sx={{ fontSize: "1.1rem" }} />
                                             </IconButton>
@@ -193,7 +188,7 @@ const BookingCalendar = ({
                                                 color="secondary"
                                                 size="large"
                                                 disabled={!row.canCancel}
-                                                onClick={() => handleOpenDialog(row.id, 'reject')}
+                                                onClick={() => setSelectedBooking({ id: row.id, type: 'reject' })}
                                             >
                                                 <CloseIcon sx={{ fontSize: "1.1rem" }} />
                                             </IconButton>
@@ -202,7 +197,7 @@ const BookingCalendar = ({
                                             <IconButton
                                                 color="error"
                                                 size="large"
-                                                onClick={() => handleOpenDialog(row.id, 'ban')}
+                                                onClick={() => setSelectedBooking({ id: row.id, type: 'ban' })}
                                             >
                                                 <BlockIcon sx={{ fontSize: "1.1rem" }} />
                                             </IconButton>
@@ -231,6 +226,17 @@ const BookingCalendar = ({
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', paddingY: 3 }}>
+                <Pagination
+                    count={10}
+                    page={page}
+                    onChange={(event, value) => setPage(value)}
+                    shape="rounded"
+                    variant="outlined"
+                    color="primary"
+                />
+            </Box>
 
             {/* Dialogs for actions */}
             <Dialog

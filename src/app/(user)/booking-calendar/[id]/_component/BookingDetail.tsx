@@ -26,6 +26,12 @@ import { formatDate } from "package/util";
 import { useEffect, useState } from "react";
 import Avatar from "ui-component/extended/Avatar";
 import { CustomerToken } from "hooks/use-login";
+import { UseGetBookingById } from "hooks/use-get-booking-by-id";
+import { UseGetBookingExpertFeedbackByBooking } from "hooks/use-get-booking-expert-feedback";
+import { UseGetBookingExpertFeedbackQuestion } from "hooks/use-get-booking-expert-feedback-question";
+import { BookingFeedbackAnwer } from "package/api/booking-expert-feedback-controller";
+import { BookingExpertFeedbackQuestion } from "package/api/booking-expert-feedback-question-controller";
+import { ReadOnlyAnswer } from "components/common/feedback/read-only-answer";
 
 
 const getStatusLabel = (status: number) => {
@@ -70,21 +76,35 @@ export default function BookingDetailPage({
 }) {
     const { refresh, refreshTime } = useRefresh();
 
-    useEffect(() => {
-        console.log("event:", event);
-    }, [])
-
     const [open, setOpen] = useState(false);
+
+    const [cancelReason, setCancelReason] = useState('');
+
+    const [isCanceling, setIsCanceling] = useState(false);
 
     const [comment, setComment] = useState<string>("");
 
     const { customerToken } = CustomerToken();
 
-    // const { bookingExpertFeedbackByBooking } = UseGetBookingExpertFeedbackByBooking({ bookingId: +params.id }, refreshTime);
+    const { bookingExpertFeedbackByBooking } = UseGetBookingExpertFeedbackByBooking({ bookingId: +event.id }, refreshTime);
 
-    // const { booking } = useGetBookingById({ id: +params.id });
+    const { bookingById } = UseGetBookingById({ id: +event.id }, refreshTime);
 
     const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+    const { bookingExpertFeedbackQuestion } =
+        UseGetBookingExpertFeedbackQuestion(refreshTime);
+
+    // const [selectFeedbackQuestionList, setSelectAddFeedbackQuestion] = useState<
+    //     BookingExpertFeedbackQuestion[]
+    // >([]);
+
+    // const { expertQuestionCategoryCurrent } = UseGetExpertQuestionCategoryCurrent(
+    //     expertToken,
+    //     refreshTime
+    // );
+
+    // const [answerList, setAnswerList] = useState<BookingFeedbackAnwer[]>([]);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -94,65 +114,36 @@ export default function BookingDetailPage({
         setOpen(false);
     };
 
-    // const { bookingExpertFeedbackQuestion } =
-    //     UseGetBookingExpertFeedbackQuestion(refreshTime);
+    const handleCancelBooking = () => {
+        setIsCanceling(false);
+        console.log('Lý do hủy:', cancelReason);
+    };
 
-    // const { expertQuestionCategoryCurrent } = UseGetExpertQuestionCategoryCurrent(
-    //     expertToken,
-    //     refreshTime
-    // );
+    useEffect(() => {
+        console.log("event:", event);
+    }, [])
 
-    // useEffect(() => {
-    //     console.log(booking);
-    // }, [booking]);
+    useEffect(() => {
+        console.log("bookingById:", bookingById);
+    }, [bookingById]);
 
-    // const [selectFeedbackQuestionList, setSelectAddFeedbackQuestion] = useState<
-    //     BookingExpertFeedbackQuestion[]
-    // >([]);
-
-    // const [answerList, setAnswerList] = useState<BookingFeedbackAnwer[]>([]);
-
-    // const handleGradeSubmission = async () => {
-    //     if (!answerList) {
-    //         return;
-    //     }
-    //     setLoadingSubmit(true);
-    //     try {
-    //         if (!expertToken) {
-    //             throw new Error("Cần đăng nhập");
-    //         }
-    //         const res = await PostBookingExpertFeedback(
-    //             { bookingId: +params.id, comment, answerList },
-    //             expertToken
-    //         );
-    //         if (res.status !== "success") {
-    //             throw new Error();
-    //         }
-    //         enqueueSnackbar("Đánh giá ứng viên thành công", { variant: "success" });
-    //     } catch (error) {
-    //         console.log(error);
-    //         enqueueSnackbar("Đánh giá ứng viên thất bại", { variant: "error" });
-    //     } finally {
-    //         setLoadingSubmit(false);
-    //     }
-    // };
 
     const mappedExpertSkillOption = () => {
         const mappedSkill: MappedSkill[] = [];
 
-        // if (booking) {
-        //     booking.skillOptionBooking.forEach((e) => {
-        //         const index = mappedSkill.findIndex((v) => v.skill === e.skillName);
-        //         if (index > -1) {
-        //             mappedSkill[index].skillOption.push(e.skillOptionName);
-        //         } else {
-        //             mappedSkill.push({
-        //                 skill: e.skillName,
-        //                 skillOption: [e.skillOptionName],
-        //             });
-        //         }
-        //     });
-        // }
+        if (bookingById) {
+            bookingById.skillOptionBooking.forEach((e) => {
+                const index = mappedSkill.findIndex((v) => v.skill === e.skillName);
+                if (index > -1) {
+                    mappedSkill[index].skillOption.push(e.skillOptionName);
+                } else {
+                    mappedSkill.push({
+                        skill: e.skillName,
+                        skillOption: [e.skillOptionName],
+                    });
+                }
+            });
+        }
 
         return (
             <Box
@@ -190,28 +181,26 @@ export default function BookingDetailPage({
         );
     };
 
-    useEffect(() => { console.log("booking:", booking) }, [booking]);
-
     return (
         <SubCard>
-            {booking && (
+            {bookingById && (
                 <Grid container spacing={3} justifyContent="center">
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6} md={4}>
                                 <Stack spacing={2}>
                                     <Typography variant="h4">Thông tin khách hàng</Typography>
                                     <Stack spacing={1}>
-                                        <FlexBox>
-                                            <Avatar alt="User 1" src={booking.customerInfo.avatar} />
+                                        <Box display="flex" alignItems="center">
+                                            <Avatar alt="User 1" src={bookingById.customerInfo?.avatar} />
                                             <Typography variant="body2" ml={1}>
-                                                {booking.customerInfo.fullName}
+                                                {bookingById.customerInfo.fullName}
                                             </Typography>
-                                        </FlexBox>
+                                        </Box>
                                         <Stack direction="row" spacing={1}>
                                             <Typography variant="subtitle1">Email :</Typography>
                                             <Typography variant="body2">
-                                                {booking.customerInfo.email}
+                                                {bookingById.customerInfo.email}
                                             </Typography>
                                         </Stack>
                                     </Stack>
@@ -227,7 +216,7 @@ export default function BookingDetailPage({
                                             </Typography>
                                             <Typography variant="body2">
                                                 {formatDate(
-                                                    booking.startInterviewDate,
+                                                    bookingById.startInterviewDate,
                                                     "yyyy-MM-dd hh:mm"
                                                 )}
                                             </Typography>
@@ -238,7 +227,7 @@ export default function BookingDetailPage({
                                             </Typography>
                                             <Typography variant="body2">
                                                 {formatDate(
-                                                    booking.endInterviewDate,
+                                                    bookingById.endInterviewDate,
                                                     "yyyy-MM-dd hh:mm"
                                                 )}
                                             </Typography>
@@ -247,16 +236,16 @@ export default function BookingDetailPage({
                                 </Stack>
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
                     <Grid item xs={12}>
                         <Stack spacing={2}>
                             <Typography variant="h4">CV khách hàng</Typography>
-                            <FlexCenter
+                            <Box
                                 onClick={handleClickOpen}
-                                sx={{ cursor: "pointer" }}
+                                sx={{ cursor: "pointer", display: "flex", justifyContent: "center" }}
                                 width={"100%"}
                             >
                                 <Image
@@ -268,82 +257,28 @@ export default function BookingDetailPage({
                                     height={1000}
                                     style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
                                 />
-                            </FlexCenter>
+                            </Box>
                         </Stack>
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
                     <Grid item xs={12}>
-                        <Stack spacing={2} minHeight={100}>
+                        {/* <Stack spacing={2} minHeight={100}>
                             <Typography variant="h4">Thông tin tư vấn</Typography>
                             {mappedExpertSkillOption()}
-                            <TextField label="Chú thích của khách hàng" multiline minRows={3} value={booking.note} >
-                            </TextField>
-                        </Stack>
+                            <TextField
+                                label="Chú thích của khách hàng"
+                                multiline
+                                minRows={3}
+                                value={bookingById.note}
+                            />
+                        </Stack> */}
                     </Grid>
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    {(booking.status === 3 || booking.status === 4) && (
-                        <>
-                            <Grid item xs={12}>
-                                <Stack spacing={3} minHeight={100}>
-                                    <Typography variant="h4">Câu hỏi phỏng vấn</Typography>
-                                    <Answer
-                                        answerList={answerList}
-                                        feedbackQuestionList={selectFeedbackQuestionList}
-                                        setAnswerList={setAnswerList}
-                                    />
-                                </Stack>
-                                <Feedback
-                                    feedbackQuestionList={bookingExpertFeedbackQuestion}
-                                    feedbackQuestionType={expertQuestionCategoryCurrent}
-                                    selectFeedbackQuestionList={selectFeedbackQuestionList}
-                                    setSelectAddFeedbackQuestion={setSelectAddFeedbackQuestion}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Divider />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <SubCard
-                                    title="Đánh giá chung về ứng viên"
-                                    sx={{ boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)" }}
-                                >
-                                    <TextField
-                                        multiline
-                                        rows={3}
-                                        value={comment}
-                                        fullWidth
-                                        onChange={(e) => setComment(e.target.value)}
-                                    ></TextField>
-                                </SubCard>
-                            </Grid>
-                            <Grid item xs={12} textAlign="center">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleGradeSubmission}
-                                    sx={{
-                                        padding: "10px 20px",
-                                        fontSize: "16px",
-                                        borderRadius: "8px",
-                                        backgroundColor: "#1976d2",
-                                        "&:hover": { backgroundColor: "#115293" },
-                                    }}
-                                    disabled={loadingSubmit}
-                                >
-                                    {loadingSubmit ? (
-                                        <CircularProgress size={24} sx={{ color: "white" }} />
-                                    ) : (
-                                        "Chấm điểm"
-                                    )}
-                                </Button>
-                            </Grid>
-                        </>
-                    )}
-                    {!(booking.status == 3 || booking.status == 4) && (
+                    {/* {!(bookingById.status === 3 || bookingById.status === 4) && (
                         <>
                             <Grid item xs={12}>
                                 <Stack spacing={3} minHeight={100}>
@@ -367,10 +302,45 @@ export default function BookingDetailPage({
                                         value={bookingExpertFeedbackByBooking?.comment}
                                         fullWidth
                                         disabled
-                                    ></TextField>
+                                    />
                                 </SubCard>
                             </Grid>
-                        </>)}
+                        </>
+                    )} */}
+                    <Grid item xs={12}>
+                        <Stack direction="row" spacing={2} justifyContent="space-between" mt={4}>
+                            <Button variant="outlined" onClick={onBack}>
+                                Quay lại
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setIsCanceling(!isCanceling)}
+                            >
+                                Hủy đặt lịch
+                            </Button>
+                        </Stack>
+                    </Grid>
+                    {isCanceling && (
+                        <Grid item xs={12} mt={3}>
+                            <TextField
+                                label="Lý do"
+                                multiline
+                                rows={3}
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                                fullWidth
+                            />
+                            <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
+                                <Button variant="outlined" onClick={() => setIsCanceling(false)}>
+                                    Đóng
+                                </Button>
+                                <Button variant="contained" color="primary" onClick={handleCancelBooking}>
+                                    Xác nhận
+                                </Button>
+                            </Stack>
+                        </Grid>
+                    )}
                 </Grid>
             )}
 
