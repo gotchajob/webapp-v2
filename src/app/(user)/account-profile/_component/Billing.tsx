@@ -1,97 +1,114 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-// material-ui
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import CircularProgress from '@mui/material/CircularProgress';
-
-// project import
-import MainCard from 'ui-component/cards/MainCard';
-import CardSecondaryAction from 'ui-component/cards/CardSecondaryAction';
-import CSVExport from 'views/forms/tables/tbl-exports';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Box, CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
+import { useGetTransactionCurrent } from 'hooks/use-get-transaction';
+import { useGetTransactionType } from 'hooks/use-get-transaction-type';
 import { CustomerToken } from 'hooks/use-login';
-import { useGetTransaction } from 'hooks/use-get-transaction';
+import { useRefresh } from 'hooks/use-refresh';
+import { TransactionCurrent } from 'package/api/transaction/current';
+import { formatDate } from 'package/util';
+import { useEffect, useState } from 'react';
 
-// sample data
-const sampleTransactions = [
-  {
-    id: 2,
-    amount: 10,
-    type: 'credit',
-    description: 'Sample transaction 2',
-    createdAt: '2024-06-15T00:36:56.000+00:00'
-  },
-  {
-    id: 1,
-    amount: 10,
-    type: 'credit',
-    description: 'Sample transaction 1',
-    createdAt: '2024-06-15T00:36:42.000+00:00'
-  }
-];
-
-// table columns
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', flex: 1, minWidth: 80 },
-  { field: 'amount', headerName: 'Số tiền nạp', flex: 1, minWidth: 100, type: 'number' },
-  { field: 'type', headerName: 'Dạng nạp', flex: 1, minWidth: 100 },
-  { field: 'description', headerName: 'Thông tin', flex: 2, minWidth: 200 },
-  {
-    field: 'createdAt',
-    headerName: 'Nạp vào',
-    flex: 1.5,
-    minWidth: 200,
-    type: 'dateTime',
-    valueGetter: (params) => new Date(params.value)
-  }
-];
-
-let headers: any = [];
-columns.map((item) => {
-  return headers.push({ label: item.headerName, key: item.field });
-});
-
-export default function EditableColumn() {
-  const [loading, setLoading] = useState(true);
-
-  const [rows, setRows] = useState<GridRowsProp>([]);
-
+export default function TransactionTable() {
+  const { refresh, refreshTime } = useRefresh();
   const { customerToken } = CustomerToken();
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const { transaction } = useGetTransaction({ pageNumber: 1, pageSize: 6 }, customerToken);
+  const { transactionCurrent, loading: transactionCurrentLoading } = useGetTransactionCurrent(
+    { pageNumber: page, pageSize: rowsPerPage },
+    customerToken,
+    refreshTime
+  );
 
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setRows(sampleTransactions);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const { transactionType, loading: transactionTypeLoading } = useGetTransactionType(refreshTime);
 
-  useEffect(() => {
-    console.log("transaction:", transaction);
-  }, [transaction, customerToken]);
-
-
-  if (loading) {
-    return <CircularProgress />;
+  const getTransactionTypeName = (typeId: number) => {
+    const type = transactionType?.find((type) => type.id === typeId);
+    return type ? type.description : 'Không xác định';
   }
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage + 1);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(1);
+  };
+
+  useEffect(() => {
+    console.log("transactionCurrent", transactionCurrent);
+    console.log("transactionType", transactionType);
+  }, [transactionCurrent, transactionType]);
 
   return (
-    <MainCard
-      content={false}
-      title="Danh sách giao dịch"
-      secondary={
-        <Stack direction="row" spacing={2} alignItems="center">
-          <CSVExport data={rows} filename={'danhsachgiaodich.csv'} header={headers} />
-        </Stack>
-      }
-    >
-      <Box sx={{ width: '100%' }}>
-        <DataGrid hideFooter autoHeight rows={rows} columns={columns} />
-      </Box>
-    </MainCard>
+    <Box>
+      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+        <Table>
+          <TableHead sx={{ bgcolor: '#2196F3', '& .MuiTableCell-root': { color: 'white', fontWeight: 'bold' } }}>
+            <TableRow>
+              <TableCell>ID Giao Dịch</TableCell>
+              <TableCell>Số Tiền Giao Dịch</TableCell>
+              <TableCell>Loại Giao Dịch</TableCell>
+              <TableCell>Mô Tả</TableCell>
+              <TableCell>Ngày Tạo</TableCell>
+              <TableCell align="center">Hành Động</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody sx={{ '& .MuiTableRow-root:hover': { bgcolor: '#E3F2FD' } }}>
+            {transactionCurrentLoading ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : transactionCurrent.list.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <Typography variant="body1" color="textSecondary">
+                    Hiện chưa có giao dịch nào.
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              transactionCurrent.list.map((transaction: TransactionCurrent) => (
+                <TableRow key={transaction.id}>
+                  <TableCell sx={{ color: '#2196F3', fontWeight: 500 }}>{transaction.id}</TableCell>
+                  <TableCell>{transaction.amount.toLocaleString()} VND</TableCell>
+                  <TableCell>{getTransactionTypeName(transaction.typeId)}</TableCell>
+                  <TableCell>{transaction.description}</TableCell>
+                  <TableCell>{formatDate(transaction.createdAt, "dd/MM/yyyy - hh:mm")}</TableCell>
+                  <TableCell align="center">
+                    <Tooltip title="Xem Chi Tiết">
+                      <IconButton onClick={() => { }} sx={{ color: '#2196F3' }}>
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+        <TablePagination
+          component="div"
+          count={(transactionCurrent.totalPage - 1) * rowsPerPage + transactionCurrent.list.length}
+          page={page - 1}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="Số hàng mỗi trang:"
+          rowsPerPageOptions={[5]}
+          sx={{
+            borderBottomLeftRadius: 2,
+            borderBottomRightRadius: 2,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+            bgcolor: '#E3F2FD', '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: '#2196F3' }
+          }}
+        />
+      </TableContainer>
+    </Box>
   );
 }

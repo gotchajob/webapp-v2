@@ -47,12 +47,12 @@ const tabsOption = [
     {
         label: "Lịch phỏng vấn",
         icon: <CalendarMonthIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: "Lịch sử lịch phỏng vấn của bạn"
+        caption: "Lịch sử đặt lịch của bạn"
     },
     {
-        label: 'Thông tin lịch phỏng vấn',
+        label: 'Thông tin buổi phỏng vấn',
         icon: <DescriptionTwoToneIcon sx={{ fontSize: '1.3rem' }} />,
-        caption: 'Thông tin lịch phỏng vấn của bạn  '
+        caption: 'Thông tin buổi phỏng vấn của bạn  '
     }
 ]
 
@@ -73,7 +73,6 @@ const BookingCalendarPage = () => {
 
     const handleSelectEvent = (event: any) => {
         setSelectEvent(event);
-        // console.log("handleSelectEvent:", event);
     }
 
     return (

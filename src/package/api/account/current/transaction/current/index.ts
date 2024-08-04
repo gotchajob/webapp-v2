@@ -1,43 +1,35 @@
 // import { apiServerFetch, errorSystem } from "package/api/api-fetch";
 
-// export interface GetTransactionReq {
+// export interface GetTransactionCurrentReq {
 //     pageNumber: number;
 //     pageSize: number;
-//     sortBy?: string;
-//     search?: string[];
 // }
 
-// export interface GetTransactionRes {
+// export interface GetTransactionCurrentRes {
 //     status: string;
 //     responseText: string;
-//     data: TransactionRes;
+//     data: TransactionCurrentRes;
 // }
 
-// export interface TransactionRes {
-//     list: Transaction[],
+// export interface TransactionCurrentRes {
+//     list: TransactionCurrent[],
 //     totalPage: number
 // }
 
-// export interface Transaction {
+// export interface TransactionCurrent {
 //     id: number;
-//     accountId: number;
 //     amount: number;
-//     balanceAfterTransaction: number;
 //     typeId: string;
-//     status: string;
 //     description: string;
 //     createdAt: string;
-//     referId: number;
 // }
 
-// export const GetTransaction = async (params: GetTransactionReq): Promise<GetTransactionRes> => {
+// export const GetTransactionCurrent = async (params: GetTransactionCurrentReq, accessToken: string): Promise<GetTransactionCurrentRes> => {
 //     try {
 //         const url = new URLSearchParams();
 //         url.append("pageNumber", params.pageNumber + "");
 //         url.append("pageSize", params.pageSize + "");
-//         url.append("sortBy", params.sortBy + "");
-//         url.append("search", params.search + "");
-//         const res = await apiServerFetch(`/transaction?` + url, 'GET', undefined, undefined);
+//         const res = await apiServerFetch(`/transaction/current?` + url, 'GET', undefined, accessToken);
 //         return res;
 //     } catch (error: any) {
 //         return errorSystem('Lấy danh sách thất bại', { list: [], totalPage: 0 });
