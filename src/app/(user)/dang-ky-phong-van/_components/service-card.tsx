@@ -222,7 +222,7 @@ export const ServiceCard = () => {
 
       {/* Dialog thanh toán */}
       <Dialog open={openPaymentDialog} onClose={() => setOpenPaymentDialog(false)} aria-labelledby="wallet-dialog-title">
-        {balance?.balance < params?.price ? (
+        {balance.balance < params.price ? (
           <>
             <DialogTitle>Thông Báo Số Dư Ví</DialogTitle>
             <DialogContent>
