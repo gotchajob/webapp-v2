@@ -18,7 +18,7 @@ export const UserRegister = async (
   params: UserRegisterRequest
 ): Promise<UserRegisterResponse> => {
   try {
-    const userRegister = await apiServerFetch("/user/register", "POST", params);
+    const userRegister = await apiServerFetch("/user/signup", "POST", params);
     
     return userRegister;
   } catch (error: any) {
