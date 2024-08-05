@@ -167,9 +167,9 @@ export default function Page() {
         sx={{
           width: '100%',
           height: '500px',
-          backgroundImage: 'url(https://mentori.vn/upload/banners/kts1554959520.png)',
+          backgroundImage: 'url(https://s30876.pcdn.co/wp-content/uploads/Enhance-your-CV-1170x630.jpg.optimal.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'start',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
