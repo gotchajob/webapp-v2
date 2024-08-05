@@ -49,7 +49,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params.id });
 
   useEffect(() => { console.log("expert", expert) }, [params, expert]);
-  
+
   return (
     <Box sx={{ px: 10, py: 5 }}>
       <Grid
@@ -115,7 +115,6 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
                     </Grid>
                   </Grid>
                 </Stack>
-
                 <Divider sx={{ margin: "16px 0" }} />
                 <Grid
                   container

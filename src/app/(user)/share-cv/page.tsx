@@ -166,56 +166,173 @@ export default function Page() {
       <Box
         sx={{
           width: '100%',
-          height: '300px',
+          height: '500px',
           backgroundImage: 'url(https://mentori.vn/upload/banners/kts1554959520.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: 'brightness(50%)'
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          position: 'relative',
         }}
-      />
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            top: 0,
+            left: 0,
+            zIndex: 0,
+          }}
+        />
+
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="flex-start"
+          sx={{
+            backgroundColor: '#AAD4EB',
+            opacity: 0.8,
+            maxWidth: '40%',
+            padding: '40px',
+            borderTopRightRadius: '35px',
+            borderBottomRightRadius: '35px',
+            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)',
+            height: '100%',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <Typography
+            variant="h3"
+            component="h1"
+            sx={{
+              color: '#333',
+              fontWeight: 700,
+              marginBottom: '16px',
+              fontSize: '60px',
+            }}
+          >
+            Khám phá chuyên gia hàng đầu
+          </Typography>
+          <Typography
+            variant="h6"
+            component="p"
+            sx={{
+              color: '#555',
+              marginBottom: '24px',
+              fontSize: '20px',
+              fontWeight: 500,
+            }}
+          >
+            Kết nối với những chuyên gia có tầm cỡ, người sẽ đưa sự nghiệp của bạn lên tầm cao mới. Đừng bỏ lỡ cơ hội vàng để mở rộng mạng lưới chuyên môn và học hỏi từ những người dẫn đầu trong ngành.
+          </Typography>
+        </Grid>
+      </Box>
+
+      {/* <Container sx={{ my: 2 }}>
+        <SubCard title="Hướng dẫn sử dụng">
+          <Typography variant="body1" color="textSecondary">
+            Sử dụng các trường tìm kiếm bên dưới để tìm kiếm các chuyên gia phù hợp theo quốc gia, kỹ năng, và số năm kinh nghiệm. Hệ thống sẽ tìm kiếm và hiển thị các chuyên gia có thông tin phù hợp với các tiêu chí bạn nhập vào để phỏng vấn và đánh giá CV.
+          </Typography>
+        </SubCard>
+      </Container> */}
 
       {/* Filter section */}
-      <Container maxWidth="md">
-        <Grid container spacing={3} mt={3}>
+      <Container>
+        <Grid container spacing={3} mt={1}>
           <Grid item xs={6}>
-            <Autocomplete
-              multiple
-              options={countries}
-              getOptionLabel={(option) => option}
-              filterSelectedOptions
-              renderInput={(params) => <TextField {...params} label="Quốc gia" />}
-              defaultValue={nation}
-              onChange={(e, v) => {
-                setNation(v);
-              }}
-            />
+            <SubCard title="Quốc gia của chuyên gia">
+              <Typography variant="body1" color="textSecondary" sx={{ py: 1 }}>
+                Chọn quốc gia của chuyên gia phù hợp với bạn
+              </Typography>
+              <Autocomplete
+                multiple
+                options={countries}
+                getOptionLabel={(option) => option}
+                filterSelectedOptions
+                renderInput={(params) => <TextField {...params} />}
+                defaultValue={nation}
+                onChange={(e, v) => {
+                  setNation(v);
+                }}
+              />
+            </SubCard>
           </Grid>
-          <Grid item xs={3}>
-            <Autocomplete
-              options={yearOption}
-              getOptionLabel={(option) => option.name}
-              filterSelectedOptions
-              renderInput={(params) => <TextField {...params} label="Năm kinh nghiệm" />}
-              defaultValue={yearOption.find((value) => value.id === minYearExperience)}
-              onChange={(e, v) => {
-                setMinYearExperience(v?.id || 0);
-              }}
-            />
+          <Grid item xs={6}>
+            <SubCard title="Năm kinh nghiệm của chuyên gia">
+              <Typography variant="body1" color="textSecondary" sx={{ py: 1 }}>
+                Chọn năm kinh nghiệm của chuyên gia
+              </Typography>
+              <Autocomplete
+                options={yearOption}
+                getOptionLabel={(option) => option.name}
+                filterSelectedOptions
+                renderInput={(params) => <TextField {...params} />}
+                defaultValue={yearOption.find((value) => value.id === minYearExperience)}
+                onChange={(e, v) => {
+                  setMinYearExperience(v?.id || 0);
+                }}
+              />
+            </SubCard>
           </Grid>
-          <Grid item xs={3}>
-            <Autocomplete
-              options={categories}
-              getOptionLabel={(option) => option.name}
-              filterSelectedOptions
-              renderInput={(params) => <TextField {...params} label="Ngành nghề" />}
-              defaultValue={categories.find((value) => value.id === categoryId)}
-              onChange={(e, v) => {
-                handleChangeCategory(v);
-              }}
-            />
+          <Grid item xs={12}>
+            <SubCard title="Ngành nghề của chuyên gia">
+              <Typography variant="body1" color="textSecondary" sx={{ py: 1 }}>
+                Chọn ngành nghề của chuyên gia
+              </Typography>
+              <Autocomplete
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                filterSelectedOptions
+                renderInput={(params) => <TextField {...params} />}
+                defaultValue={categories.find((value) => value.id === categoryId)}
+                onChange={(e, v) => {
+                  handleChangeCategory(v);
+                }}
+              />
+              <TreeView
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                sx={{
+                  '& .MuiTreeItem-root': {
+                    margin: '4px 0'
+                  },
+                  mt: 2
+                }}
+              >
+                {filterSkillByCategory(skill, categoryId).map((skillItem, index) => (
+                  <TreeItem key={index} nodeId={skillItem.name} label={skillItem.name}>
+                    <Grid container spacing={1} sx={{ my: 1 }}>
+                      {filterSkillOptionBySkill(skillOptions, skillItem.id).map((option) => {
+                        const isSelected = skillOptionIdList.includes(option.id);
+                        return (
+                          <Grid item key={option.id} xs={2}>
+                            <Button
+                              sx={{ minWidth: 120 }}
+                              variant={isSelected ? 'contained' : 'outlined'}
+                              onClick={() => {
+                                handleUpdateSkillOptionIdList(option.id);
+                              }}
+                            >
+                              {option.name}
+                            </Button>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
+                  </TreeItem>
+                ))}
+              </TreeView>
+            </SubCard>
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TreeView
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
@@ -248,9 +365,12 @@ export default function Page() {
                 </TreeItem>
               ))}
             </TreeView>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <SubCard title="Tùy chọn ưu tiên phù hợp">
+              <Typography variant="body1" color="textSecondary" sx={{ py: 1 }}>
+                Chúng tôi sẽ tìm kiếm chuyên gia dựa trên ưu tiên của bạn dưới đây
+              </Typography>
               <Grid container spacing={2}>
                 <Grid item>
                   <FormControlLabel
