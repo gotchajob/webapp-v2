@@ -13,7 +13,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
     console.log("layout", data);
 
     if (data.status !== "success") {
-        redirect("http://localhost:3001/dang-ky-phong-van");
+        redirect("/dang-ky-phong-van");
     }
 
     return <>{children}</>
