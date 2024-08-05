@@ -33,6 +33,7 @@ import { BookingFeedbackAnwer } from "package/api/booking-expert-feedback-contro
 import { BookingExpertFeedbackQuestion } from "package/api/booking-expert-feedback-question-controller";
 import { ReadOnlyAnswer } from "components/common/feedback/read-only-answer";
 import { UseGetExpertById } from "hooks/use-get-expert-profile";
+import { PatchBookingCancel } from "package/api/booking/id/cancel";
 
 
 const getStatusLabel = (status: number) => {
@@ -117,26 +118,35 @@ export default function BookingDetailPage({
         setOpen(false);
     };
 
-    const handleCancelBooking = () => {
+    const handleCancelBooking = async () => {
         setIsCanceling(false);
-        console.log('Lý do hủy:', cancelReason);
+        try {
+            const res = await PatchBookingCancel({ id: +event.id, reason: cancelReason }, customerToken);
+            if (res.status !== "success") {
+                throw new Error(res.responseText);
+            }
+            enqueueSnackbar("Hủy đặt lịch thành công", { variant: "success" });
+        } catch (error: any) {
+            console.log(error);
+            enqueueSnackbar(error, { variant: "error" });
+        }
     };
 
-    // useEffect(() => {
-    //     console.log("event:", event);
-    // }, [])
+    useEffect(() => {
+        console.log("event:", event);
+    }, [])
 
     useEffect(() => {
         console.log("bookingById:", bookingById);
     }, [bookingById]);
 
-    useEffect(() => {
-        console.log("expertbyid:", expertById);
-    }, [expertById]);
+    // useEffect(() => {
+    //     console.log("expertbyid:", expertById);
+    // }, [expertById]);
 
-    useEffect(() => {
-        console.log("bookingExpertFeedbackByBooking:", bookingExpertFeedbackByBooking);
-    }, [bookingExpertFeedbackByBooking]);
+    // useEffect(() => {
+    //     console.log("bookingExpertFeedbackByBooking:", bookingExpertFeedbackByBooking);
+    // }, [bookingExpertFeedbackByBooking]);
 
     const mappedExpertSkillOption = () => {
         const mappedSkill: MappedSkill[] = [];
@@ -275,18 +285,24 @@ export default function BookingDetailPage({
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <Grid item xs={12}>
-                        {/* <Stack spacing={2} minHeight={100}>
+                    {bookingById && (<Grid item xs={12}>
+                        <Stack spacing={2} minHeight={100}>
                             <Typography variant="h4">Thông tin tư vấn</Typography>
                             {mappedExpertSkillOption()}
-                            <TextField
-                                label="Chú thích của khách hàng"
-                                multiline
-                                minRows={3}
-                                value={bookingById.note}
-                            />
-                        </Stack> */}
-                    </Grid>
+                            <SubCard
+                                title="Chú thích của khách hàng"
+                                sx={{ boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)" }}
+                            >
+                                <TextField
+                                    multiline
+                                    minRows={3}
+                                    value={bookingById.note}
+                                    fullWidth
+                                    disabled
+                                />
+                            </SubCard>
+                        </Stack>
+                    </Grid>)}
                     {bookingById && (bookingById.status === 4 || bookingById.status === 5) && (
                         <>
                             <Grid item xs={12}>
@@ -319,12 +335,40 @@ export default function BookingDetailPage({
                             </Grid>
                         </>
                     )}
+                    {bookingById && (bookingById.status === 7) && (<Grid item xs={12}>
+                        <SubCard
+                            title="Lý do từ chối của chuyên gia"
+                            sx={{ boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)" }}
+                        >
+                            <TextField
+                                multiline
+                                rows={3}
+                                value={bookingById.rejectReason}
+                                fullWidth
+                                disabled
+                            ></TextField>
+                        </SubCard>
+                    </Grid>)}
+                    {bookingById && (bookingById.status === 6) && (<Grid item xs={12}>
+                        <SubCard
+                            title="Lý do từ chối của bạn"
+                            sx={{ boxShadow: "0 3px 5px rgba(0, 0, 0, 0.2)" }}
+                        >
+                            <TextField
+                                multiline
+                                rows={3}
+                                value={bookingById.rejectReason}
+                                fullWidth
+                                disabled
+                            ></TextField>
+                        </SubCard>
+                    </Grid>)}
                     <Grid item xs={12}>
                         <Stack direction="row" spacing={2} justifyContent="space-between" mt={4}>
                             <Button variant="outlined" onClick={onBack}>
                                 Quay lại
                             </Button>
-                            {bookingById && (bookingById.status === 1 || bookingById.status === 2) && (<Button
+                            {bookingById && bookingById.canCancel && (<Button
                                 variant="contained"
                                 color="primary"
                                 onClick={() => setIsCanceling(!isCanceling)}

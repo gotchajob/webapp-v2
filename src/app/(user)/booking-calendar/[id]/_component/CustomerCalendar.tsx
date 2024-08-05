@@ -32,6 +32,8 @@ import { useRefresh } from "hooks/use-refresh";
 import { useRouter } from "next/navigation";
 import { formatDate } from "package/util";
 import { useEffect, useState } from "react";
+import { PatchBookingCancel } from "package/api/booking/id/cancel";
+import { enqueueSnackbar } from "notistack";
 
 const getStatusLabel = (status: any) => {
     switch (status) {
@@ -101,6 +103,17 @@ const BookingCalendar = ({
 
     const handleConfirmCancel = async () => {
         handleCloseDialog();
+        try {
+            const res = await PatchBookingCancel({ id: selectedBooking ? selectedBooking.id : 0, reason: cancelReason }, customerToken);
+            if (res.status !== "success") {
+                throw new Error(res.responseText);
+            }
+            enqueueSnackbar("Hủy đặt lịch thành công", { variant: "success" });
+            refresh();
+        } catch (error: any) {
+            console.log(error);
+            enqueueSnackbar(error, { variant: "error" });
+        }
     };
 
     useEffect(() => {
