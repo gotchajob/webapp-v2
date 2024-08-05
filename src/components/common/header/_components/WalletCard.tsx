@@ -23,6 +23,8 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import { CustomerToken } from 'hooks/use-login';
 import { useEffect } from 'react';
 import { useGetCurrentBalance } from 'hooks/use-get-balance';
+import { StyledLink } from 'components/common/link/styled-link';
+import { useGetCustomer } from 'hooks/use-get-current-user';
 
 // ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
 
@@ -30,7 +32,7 @@ const WalletCard = () => {
   const theme = useTheme();
 
   const { customerToken } = CustomerToken();
-
+  const { customer } = useGetCustomer(customerToken);
   const { balance, loading } = useGetCurrentBalance(customerToken);
 
   const cardSX = {
@@ -69,15 +71,19 @@ const WalletCard = () => {
       <CardContent>
         <Grid container direction="column" spacing={1}>
           <Grid item>
-            <Stack direction={"row"} spacing={20} alignItems="center">
+            <Stack direction={'row'} spacing={20} alignItems="center">
               <Typography variant="h4">Số dư khả dụng</Typography>
               <Tooltip title="Lịch sử giao dịch" placement="top">
-                <IconButton size="small" onClick={() => { }} sx={{
-                  border: '2px solid #0782C6',
-                  borderRadius: '10%',
-                  padding: '0.5px',
-                  zIndex: 10
-                }}>
+                <IconButton
+                  size="small"
+                  onClick={() => {}}
+                  sx={{
+                    border: '2px solid #0782C6',
+                    borderRadius: '10%',
+                    padding: '0.5px',
+                    zIndex: 10
+                  }}
+                >
                   <ArrowOutwardIcon color="primary" sx={{ fontSize: '1.1rem' }} />
                 </IconButton>
               </Tooltip>
@@ -85,23 +91,18 @@ const WalletCard = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              {loading ? (
-                <CircularProgress size={14} sx={{ mr: 1 }} />
-              ) : (
-                `${balance?.balance ?? 0} vnd`
-              )}
+              {loading ? <CircularProgress size={14} sx={{ mr: 1 }} /> : `${balance?.balance ?? 0} vnd`}
             </Typography>
           </Grid>
-          <Grid item>
-          </Grid>
+          <Grid item></Grid>
           <Grid item>
             <Stack direction="row">
               <AnimateButton>
-                <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll" target="_blank">
-                  <Button variant="contained" sx={{ boxShadow: 'none', bgcolor: "#0782C6" }}>
+                <StyledLink href={`/account-profile/${customer?.id}`}>
+                  <Button variant="contained" sx={{ boxShadow: 'none', bgcolor: '#0782C6' }}>
                     Nạp thêm
                   </Button>
-                </Link>
+                </StyledLink>
               </AnimateButton>
             </Stack>
           </Grid>
