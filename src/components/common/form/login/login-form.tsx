@@ -16,8 +16,10 @@ import { apiClientFetch } from 'package/api/api-fetch';
 import { PRIMARYCOLOR } from '../../config';
 import { ContainedLoadingButton } from '../../button/loading-button';
 import { Login } from 'hooks/use-login';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const LoginForm = () => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);

@@ -3,13 +3,15 @@ import Grid from "@mui/material/Grid";
 import { FlexBetween } from "components/common/box/flex-box";
 import { ContainedButton } from "components/common/button/button";
 import { Input } from "components/common/input/input";
+import useSnackbarDialog from "components/common/snackbar-dialog/snackbar-dialog";
 import { useFormik } from "formik";
-import { enqueueSnackbar } from "notistack";
 // import { AdviceServiceRequest, AdviceServiceResponse } from "package/api/advice-service";
-import { apiClientFetch } from "package/api/api-fetch";
 import * as yup from "yup";
 
 export const ContactForm = () => {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
   const handleSubmitForm = async (values: any) => {
     // try {
     //   const params: AdviceServiceRequest = {
@@ -112,6 +114,8 @@ export const ContactForm = () => {
             <ContainedButton type="submit">Gửi</ContainedButton>
           </FlexBetween>
         </Grid>
+
+        <SnackbarDialog />
       </Grid>
     </form>
   );

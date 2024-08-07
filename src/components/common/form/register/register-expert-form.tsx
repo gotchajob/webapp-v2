@@ -11,9 +11,12 @@ import { useRouter } from 'next/navigation';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { VerifyPassword } from '../verify-password';
 import { PostExpertRegister, PostExpertRegisterRequest } from 'package/api/expert-register-request';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const ExpertRegisterForm = () => {
     const [isLoading, setIsLoading] = useState(false);
+
+    const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
     const router = useRouter();
 

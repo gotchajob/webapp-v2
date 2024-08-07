@@ -10,8 +10,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { VerifyPassword } from '../verify-password';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const RegisterForm = () => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const initialValues: UserRegisterRequest = {

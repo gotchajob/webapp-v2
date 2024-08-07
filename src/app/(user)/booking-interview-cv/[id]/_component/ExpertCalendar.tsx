@@ -1,13 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-
-// material-ui
 import Dialog from '@mui/material/Dialog';
 import { Theme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-// third-party
 import { DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
@@ -16,20 +12,19 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 import { FormikValues } from 'formik';
-
-// project imports
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Rating, TextField, Typography } from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import { FlexBetween } from 'components/common/box/flex-box';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { Text } from 'components/common/text/text';
-import { useGetAvailability, useGetValidDateToBooking } from 'hooks/use-get-availability';
+import { useGetValidDateToBooking } from 'hooks/use-get-availability';
+import { useGetCVCurrent } from 'hooks/use-get-cv';
 import { useGetExpertProfile } from 'hooks/use-get-expert-profile';
 import { useGetExpertSkillOptions } from 'hooks/use-get-expert-skill-option';
+import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
 import Image from 'next/image';
-import { enqueueSnackbar } from 'notistack';
-import { ExpertSkillOption } from 'package/api/expert-skill-option';
 import { formatDate } from 'package/util';
 import { dispatch, useSelector } from 'store';
 import { addEvent, getEvents, removeEvent, updateEvent } from 'store/slices/calendar';
@@ -37,9 +32,6 @@ import { DateRange } from 'types';
 import Loader from 'ui-component/Loader';
 import SubCard from 'ui-component/cards/SubCard';
 import ExpertToolbar from '../../_component/Toolbar';
-import { CustomerToken } from 'hooks/use-login';
-import { useGetCVCurrent } from 'hooks/use-get-cv';
-import { PostBooking } from 'package/api/booking';
 
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
@@ -63,6 +55,8 @@ const reverseConvertEvents = (event: any) => {
 };
 
 const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { onNext: () => void, onBack: () => void, params: { id: string }, bookingInfo: any, booking: (info: any) => void }) => {
+
+    const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
     const calendarRef = useRef<FullCalendar>(null);
 
@@ -289,7 +283,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
                 booking(bookingInfo);
             }
         } else {
-            enqueueSnackbar(message, { variant: 'warning' });
+            showSnackbarDialog(message, 'warning');
         }
     };
 
@@ -486,6 +480,8 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <SnackbarDialog />
         </Box>
     );
 };

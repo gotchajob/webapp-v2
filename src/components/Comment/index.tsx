@@ -42,6 +42,7 @@ import { PatchCommentReaction } from 'package/api/comment-reaction';
 import { formatDate } from 'package/util';
 import { FormInputProps } from 'types';
 import { ThemeMode } from 'types/config';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 const avatarImage = '/assets/images/users';
 
@@ -104,6 +105,8 @@ interface CommentComponentProps {
 
 const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level }: CommentComponentProps) => {
   const theme = useTheme();
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 

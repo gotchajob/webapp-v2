@@ -16,8 +16,10 @@ import { useTheme } from '@mui/material/styles';
 import OtpInput from 'react18-input-otp';
 import { UserCreateForgotPasswordResponse } from 'package/api/user/create-forgot-password';
 import { UserCheckCodeForgetPassword } from 'package/api/user/check-code-forget-password';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const PasswordVerifyForm = ({ res, email }: { res: UserCreateForgotPasswordResponse; email: string }) => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const theme = useTheme();

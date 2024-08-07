@@ -1,40 +1,33 @@
 "use client";
 
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import SubCard from "ui-component/cards/SubCard";
 import {
     Box,
     Button,
     Chip,
-    CircularProgress,
     Dialog,
     DialogContent,
     styled,
-    TextField,
+    TextField
 } from "@mui/material";
-import { FlexBox, FlexCenter } from "components/common/box/flex-box";
-import { Answer } from "components/common/feedback/answer";
-import { Feedback } from "components/common/feedback/question";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { ReadOnlyAnswer } from "components/common/feedback/read-only-answer";
+import useSnackbarDialog from "components/common/snackbar-dialog/snackbar-dialog";
 import { Text } from "components/common/text/text";
-import { useRefresh } from "hooks/use-refresh";
-import Image from "next/image";
-import { enqueueSnackbar } from "notistack";
-import { formatDate } from "package/util";
-import { useEffect, useState } from "react";
-import Avatar from "ui-component/extended/Avatar";
-import { CustomerToken } from "hooks/use-login";
 import { UseGetBookingById } from "hooks/use-get-booking-by-id";
 import { UseGetBookingExpertFeedbackByBooking } from "hooks/use-get-booking-expert-feedback";
 import { UseGetBookingExpertFeedbackQuestion } from "hooks/use-get-booking-expert-feedback-question";
-import { BookingFeedbackAnwer } from "package/api/booking-expert-feedback-controller";
-import { BookingExpertFeedbackQuestion } from "package/api/booking-expert-feedback-question-controller";
-import { ReadOnlyAnswer } from "components/common/feedback/read-only-answer";
 import { UseGetExpertById } from "hooks/use-get-expert-profile";
+import { CustomerToken } from "hooks/use-login";
+import { useRefresh } from "hooks/use-refresh";
+import Image from "next/image";
 import { PatchBookingCancel } from "package/api/booking/id/cancel";
-
+import { formatDate } from "package/util";
+import { useEffect, useState } from "react";
+import SubCard from "ui-component/cards/SubCard";
+import Avatar from "ui-component/extended/Avatar";
 
 const getStatusLabel = (status: number) => {
     switch (status) {
@@ -76,6 +69,9 @@ export default function BookingDetailPage({
     event: any
     onBack: () => void;
 }) {
+
+    const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
     const { refresh, refreshTime } = useRefresh();
 
     const { customerToken } = CustomerToken();
@@ -125,10 +121,10 @@ export default function BookingDetailPage({
             if (res.status !== "success") {
                 throw new Error(res.responseText);
             }
-            enqueueSnackbar("Hủy đặt lịch thành công", { variant: "success" });
+            showSnackbarDialog("Hủy đặt lịch thành công", "success");
         } catch (error: any) {
             console.log(error);
-            enqueueSnackbar(error, { variant: "error" });
+            showSnackbarDialog(error, "error");
         }
     };
 
@@ -416,6 +412,8 @@ export default function BookingDetailPage({
                     />
                 </DialogContent>
             </Dialog>
-        </SubCard>
+
+            <SnackbarDialog />
+        </SubCard >
     );
 }

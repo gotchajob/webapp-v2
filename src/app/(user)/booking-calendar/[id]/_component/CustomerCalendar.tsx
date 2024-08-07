@@ -1,7 +1,5 @@
 "use client";
 
-import BlockIcon from "@mui/icons-material/Block";
-import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
@@ -24,16 +22,16 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import CircularLoader from "ui-component/CircularLoader";
-import Loader from "ui-component/Loader";
+import useSnackbarDialog from "components/common/snackbar-dialog/snackbar-dialog";
 import { useGetBookingCurrent } from "hooks/use-get-booking";
 import { CustomerToken } from "hooks/use-login";
 import { useRefresh } from "hooks/use-refresh";
 import { useRouter } from "next/navigation";
+import { PatchBookingCancel } from "package/api/booking/id/cancel";
 import { formatDate } from "package/util";
 import { useEffect, useState } from "react";
-import { PatchBookingCancel } from "package/api/booking/id/cancel";
-import { enqueueSnackbar } from "notistack";
+import CircularLoader from "ui-component/CircularLoader";
+import Loader from "ui-component/Loader";
 
 const getStatusLabel = (status: any) => {
     switch (status) {
@@ -73,6 +71,8 @@ const BookingCalendar = ({
     onSelectEvent: (event: any) => void;
 }) => {
 
+    const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
     const router = useRouter();
 
     const { refreshTime, refresh } = useRefresh();
@@ -108,11 +108,11 @@ const BookingCalendar = ({
             if (res.status !== "success") {
                 throw new Error(res.responseText);
             }
-            enqueueSnackbar("Hủy đặt lịch thành công", { variant: "success" });
+            showSnackbarDialog("Hủy đặt lịch thành công", "success");
             refresh();
         } catch (error: any) {
             console.log(error);
-            enqueueSnackbar(error, { variant: "error" });
+            showSnackbarDialog(error, "error");
         }
     };
 
@@ -359,6 +359,7 @@ const BookingCalendar = ({
                     </Button>
                 </DialogActions>
             </Dialog> */}
+            <SnackbarDialog />
         </Box>
     );
 };

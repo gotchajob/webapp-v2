@@ -45,6 +45,7 @@ import { PatchBlogReaction } from 'package/api/blog-reaction';
 import { BlogDetailData, getBlogDetail } from 'package/api/blog/id';
 import { GetBlogComment, PostBlogComment } from 'package/api/blog/id/comment';
 import { formatDate } from 'package/util';
+import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
 
 const avatarImage = '/assets/images/users';
 
@@ -56,6 +57,8 @@ const validationSchema = yup.object().shape({
 
 const FormInput = ({ bug, label, size, fullWidth = true, name, required, ...others }: FormInputProps) => {
   const { control } = useFormContext();
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   let isError = false;
 

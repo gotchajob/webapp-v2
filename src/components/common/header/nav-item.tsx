@@ -11,9 +11,13 @@ import { enqueueSnackbar } from 'notistack';
 import { apiClientFetch } from 'package/api/api-fetch';
 import { FlexBetween } from '../box/flex-box';
 import { useRouter } from 'next/navigation';
+import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
 
 export const NavigationItem = () => {
+  
   const router = useRouter();
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const navItemList = [
     { name: 'Dịch vụ', targetId: 'dang-ky-phong-van', icon: ArrowDropDownIcon },

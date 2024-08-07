@@ -1,24 +1,27 @@
 'use client';
 
-import { toPng } from 'html-to-image';
-import { CreateCV } from 'components/cv-component/cv';
-import { CVTemplate, CVTemplateData, Column, PersonalComponent } from 'components/cv-component/interface';
-import { useEffect, useRef, useState } from 'react';
-import CreateCVHeader from './_component/CreateCVHeader';
-import TabsTable from './_component/TabsTable';
-import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import MainCard from 'ui-component/cards/MainCard';
-import { useReactToPrint } from 'react-to-print';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import { UpdateCV } from 'package/api/cv/id';
+import Grid from '@mui/material/Grid';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { CreateCV } from 'components/cv-component/cv';
+import { CVTemplate, CVTemplateData } from 'components/cv-component/interface';
 import { useGetCVById } from 'hooks/use-get-cv-by-id';
 import { CustomerToken } from 'hooks/use-login';
-import { enqueueSnackbar } from 'notistack';
 import { useRefresh } from 'hooks/use-refresh';
+import { toPng } from 'html-to-image';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { UpdateCV } from 'package/api/cv/id';
+import { useEffect, useRef, useState } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import MainCard from 'ui-component/cards/MainCard';
+import CreateCVHeader from './_component/CreateCVHeader';
+import TabsTable from './_component/TabsTable';
 
 export default function Page({ params }: { params: { id: string } }) {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
   const { customerToken } = CustomerToken();
 
   const { refresh, refreshTime } = useRefresh();
@@ -73,9 +76,9 @@ export default function Page({ params }: { params: { id: string } }) {
       if (data.status === 'error') {
         throw new Error('Lỗi không thể lưu cv');
       }
-      enqueueSnackbar({ variant: 'success', message: 'lưu cv thành công' });
+      showSnackbarDialog('lưu cv thành công', 'success');
     } catch (error) {
-      enqueueSnackbar({ variant: 'error', message: 'lưu cv thất bại' });
+      showSnackbarDialog('lưu cv thất bại', "error");
     } finally {
       refresh();
     }
@@ -98,7 +101,6 @@ export default function Page({ params }: { params: { id: string } }) {
       const formData = new FormData();
       formData.append('file', blob);
       formData.append('upload_preset', 'my3ib4l5'); // Thay bằng upload preset của bạn
-
       const response = await fetch('https://api.cloudinary.com/v1_1/dfwqbf3xr/image/upload', {
         method: 'POST',
         body: formData
@@ -131,6 +133,7 @@ export default function Page({ params }: { params: { id: string } }) {
       ) : (
         <></>
       )}
+      <SnackbarDialog />
     </MainCard>
   );
 }

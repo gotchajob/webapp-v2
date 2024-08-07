@@ -34,7 +34,7 @@ export default function PositioningSnackbar() {
           <Button
             variant="contained"
             onClick={() =>
-              enqueueSnackbar('his is success message', {
+              enqueueSnackbar('This is success message', {
                 anchorOrigin: {
                   vertical: 'top',
                   horizontal: 'center'
