@@ -91,7 +91,7 @@ export const ServiceCard = () => {
       if (res.status !== "success") {
         throw new Error();
       }
-      route.push("http://localhost:3001/share-cv");
+      route.push("/share-cv");
     } catch (error) {
       console.log(error);
     }

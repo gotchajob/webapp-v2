@@ -70,7 +70,7 @@ const Payment = () => {
 
   const [value1, setValue1] = React.useState<string | undefined>('vnpay');
 
-  const {customerToken} = CustomerToken()
+  const { customerToken } = CustomerToken()
 
   const router = useRouter();
 
@@ -83,7 +83,7 @@ const Payment = () => {
   };
 
   const handlePay = async () => {
-    // const url = createPaymentUrl(amount, 'http://localhost:3001/account-profile/2');
+    // const url = createPaymentUrl(amount, '/account-profile/2');
     const url = await GetCreatePayment({ amount }, customerToken);
     router.push(url.data.paymentURL);
   };

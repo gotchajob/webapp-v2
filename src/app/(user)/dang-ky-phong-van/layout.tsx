@@ -14,7 +14,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
     console.log("layout", data);
 
     if (data.status == "success") {
-        redirect("http://localhost:3001/share-cv");
+        redirect("/share-cv");
     }
 
     return <>{children}</>

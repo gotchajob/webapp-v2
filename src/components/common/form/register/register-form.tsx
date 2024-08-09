@@ -31,7 +31,7 @@ export const RegisterForm = () => {
       if (data.status === 'error') {
         throw new Error(data.responseText);
       }
-      router.push('/register/verify?email=' + value.email);
+      router.push('/login');
     } catch (error: any) {
       enqueueSnackbar(error.message, {
         variant: 'error'

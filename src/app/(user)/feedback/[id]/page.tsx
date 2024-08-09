@@ -136,7 +136,7 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
                         if (value) {
                           setSkillRatings((prev) => {
                             const existingIndex = prev.findIndex(
-                              (rating) => rating.expertSkillOptionId === skillOption.skillOptionId
+                              (rating) => rating.expertSkillOptionId === skillOption.expertSkillOptionId
                             );
 
                             if (existingIndex >= 0) {
@@ -144,7 +144,7 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
                               updatedRatings[existingIndex].rating = value;
                               return updatedRatings;
                             } else {
-                              return [...prev, { rating: value, expertSkillOptionId: skillOption.skillOptionId }];
+                              return [...prev, { rating: value, expertSkillOptionId: skillOption.expertSkillOptionId }];
                             }
                           });
                         }

@@ -115,10 +115,10 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
   const checkBuyHandle = () => {
     if (!status) {
       showSnackbarDialog("Bạn chưa từng sử dụng dịch vụ", "warning");
-      route.push("http://localhost:3001/dang-ky-phong-van");
+      route.push("/dang-ky-phong-van");
       return;
     }
-    route.push("http://localhost:3001/share-cv");
+    route.push("/share-cv");
   }
 
   return (
