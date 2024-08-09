@@ -16,7 +16,7 @@ export const metadata = {
 // ==============================|| ROOT LAYOUT ||============================== //
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  
+
   // const accessTime = await getAccessTime(cookies());
 
   return (

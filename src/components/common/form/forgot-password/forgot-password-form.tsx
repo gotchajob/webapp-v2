@@ -8,8 +8,10 @@ import { useState } from 'react';
 import { FlexCenter } from 'components/common/box/flex-box';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { Input } from 'components/common/input/input';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const ForgotPasswordForm = () => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

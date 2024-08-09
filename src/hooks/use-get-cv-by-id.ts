@@ -3,6 +3,7 @@ import { GetCVById, GetCVByIdData } from 'package/api/cv/id';
 import { useEffect, useState } from 'react';
 
 export const useGetCVById = (id: number, accessToken: string, refreshTime: number) => {
+
   const [cv, setCV] = useState<GetCVByIdData | null>(null);
   const getCVById = async () => {
     try {

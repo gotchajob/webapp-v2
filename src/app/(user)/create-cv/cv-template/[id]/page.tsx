@@ -1,25 +1,21 @@
 'use client';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Button, CardContent, Container, Divider, Grid, Stack, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Button, CardContent, Container, Divider, Grid, Stack, Typography } from '@mui/material';
 import { StyledLink } from 'components/common/link/styled-link';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { CreateCV } from 'components/cv-component/cv';
-import { CVCategoryByIdResponse, GetCVCategoryById } from 'package/api/cv-category/id';
-import { CVTemplateResponse, GetCVTemplate } from 'package/api/cv-template';
-import { CVTemplateByIdResponse, GetCVTemplateById } from 'package/api/cv-template/id';
+import { UseGetCategoryById } from 'hooks/use-get-category-by-id';
+import { UseGetCVTemplate, UseGetCVTemplateById } from 'hooks/use-get-cv-template';
+import { CustomerToken } from 'hooks/use-login';
+import { useRouter } from 'next/navigation';
+import { PostCreateCV } from 'package/api/cv';
 import { useEffect, useRef, useState } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
 import SubCard from 'ui-component/cards/SubCard';
 import GuidePage from '../_component/Guide';
 import SideCVTemplate from '../_component/SideCVTemplate';
-import { CustomerToken } from 'hooks/use-login';
-import { UseGetCVTemplate, UseGetCVTemplateById } from 'hooks/use-get-cv-template';
-import { UseGetCategoryById } from 'hooks/use-get-category-by-id';
-import Image from 'next/image';
-import { enqueueSnackbar } from 'notistack';
-import { PostCreateCV } from 'package/api/cv';
-import { useRouter } from 'next/navigation';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 const data = [
   { img: 'https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png', title: 'Thành Đạt' },
@@ -35,6 +31,9 @@ const data = [
 ];
 
 const CVTemplatePage = ({ params }: { params: { id: string } }) => {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
   const CVRef = useRef(null);
 
   const { customerToken } = CustomerToken();
@@ -72,15 +71,9 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
         throw new Error('');
       }
       router.push(`/create-cv/${data.data.id}`);
-      enqueueSnackbar({
-        variant: 'success',
-        message: 'Tạo CV thành công'
-      });
+      showSnackbarDialog('Tạo CV thành công', 'success');
     } catch (error) {
-      enqueueSnackbar({
-        variant: 'error',
-        message: 'Lỗi khi tạo CV'
-      });
+      showSnackbarDialog('Lỗi khi tạo CV', 'error');
     } finally {
       setIsLoading(false)
     }
@@ -98,7 +91,7 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
           <Grid container spacing={2}>
             <Grid item xs={9}>
               {CVTemplateById && CVTemplateById.templateJson !== undefined && (
-                <CreateCV onChangeCV={() => {}} cv={JSON.parse(CVTemplateById.templateJson)} cvRef={CVRef} />
+                <CreateCV onChangeCV={() => { }} cv={JSON.parse(CVTemplateById.templateJson)} cvRef={CVRef} />
               )}
               <Stack direction="row" spacing={1} sx={{ mt: 8 }} justifyContent="center" alignItems="center">
                 <StyledLink href={'/create-cv'}>
@@ -107,9 +100,9 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
                     Danh sách mẫu CV
                   </Button>
                 </StyledLink>
-                  <LoadingButton loading={isLoading} variant="contained" sx={{ minHeight: 40 }} onClick={handleCreateCV}>
-                    Tạo CV với thiết kế này
-                  </LoadingButton>
+                <LoadingButton loading={isLoading} variant="contained" sx={{ minHeight: 40 }} onClick={handleCreateCV}>
+                  Tạo CV với thiết kế này
+                </LoadingButton>
               </Stack>
             </Grid>
             <Grid item xs={3}>
@@ -120,7 +113,10 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
           </Grid>
         </CardContent>
       </MainCard>
+
       <GuidePage />
+
+      <SnackbarDialog />
     </Container>
   );
 };

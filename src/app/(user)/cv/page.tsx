@@ -13,17 +13,20 @@ import MainLayout from 'layout/MainLayout_plk';
 import HorizontalBar from 'layout/MainLayout_plk/HorizontalBar';
 import Divider from '@mui/material/Divider';
 import { FlexBox } from 'components/common/box/flex-box';
+import { Button } from '@mui/material';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export default function Page() {
   const [posts, setPosts] = useState<PostDataType>(data[0]);
 
-  const postCommentAdd = async (postId: string, comment: CommentType) => {};
+  const postCommentAdd = async (postId: string, comment: CommentType) => { };
 
-  const commentAdd = async (id: string, comment: CommentType, reply: CommentType) => {};
+  const commentAdd = async (id: string, comment: CommentType, reply: CommentType) => { };
 
-  const handlePostLikes = async (postId: string) => {};
+  const handlePostLikes = async (postId: string) => { };
 
-  const handleCommentLikes = async (postId: string, comment: CommentType) => {};
+  const handleCommentLikes = async (postId: string, comment: CommentType) => { };
+
   return (
     <Grid container spacing={gridSpacing} mt={0}>
       <Grid item xs={2.5} borderRight={'1px solid #e2e7ef'} mt={1}>

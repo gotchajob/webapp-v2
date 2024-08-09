@@ -1,40 +1,32 @@
 'Use client';
 
-import MainCard from 'ui-component/cards/MainCard';
-import * as React from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import InfoIcon from '@mui/icons-material/Info';
-import { FlexCenter } from 'components/common/box/flex-box';
-import { Text } from 'components/common/text/text';
-import SubCard from 'ui-component/cards/SubCard';
-import ListSubheader from '@mui/material/ListSubheader';
+import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import Stack from '@mui/material/Stack';
+import { FlexCenter } from 'components/common/box/flex-box';
+import { PRIMARYCOLOR } from 'components/common/config';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { Text } from 'components/common/text/text';
 import {
   CVComponent,
   CVTemplate,
   PersonalComponent,
 } from 'components/cv-component/interface';
 import Iconify from 'components/iconify/iconify';
-import { PRIMARYCOLOR } from 'components/common/config';
-import { StyledLink } from 'components/common/link/styled-link';
-import { GetCheckBuyService } from 'package/api/customer/check-buy-service';
-import { CustomerToken } from 'hooks/use-login';
 import { useGetCheckBuyService } from 'hooks/use-check-buy-service';
+import { CustomerToken } from 'hooks/use-login';
 import { useRouter } from 'next/navigation';
-import { enqueueSnackbar } from 'notistack';
+import * as React from 'react';
+import SubCard from 'ui-component/cards/SubCard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -62,6 +54,9 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemplate) => void }) => {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
   const [value, setValue] = React.useState(0);
 
   const handleTabChange = (tabIndex: number) => {
@@ -116,7 +111,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
 
   const checkBuyHandle = () => {
     if (!status) {
-      enqueueSnackbar("Bạn chưa từng sử dụng dịch vụ", { variant: "warning" });
+      showSnackbarDialog("Bạn chưa từng sử dụng dịch vụ", "warning");
       route.push("/dang-ky-phong-van");
       return;
     }
@@ -219,6 +214,8 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
           </Stack>
         </Grid>
       </Grid>
+
+      <SnackbarDialog />
     </>
   );
 };

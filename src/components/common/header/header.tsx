@@ -40,10 +40,13 @@ import { apiClientFetch } from 'package/api/api-fetch';
 import { enqueueSnackbar } from 'notistack';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import EventNoteIcon from '@mui/icons-material/EventNote';
+import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
 
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
   const theme = useTheme();
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   //get customer token
   const { customerToken } = CustomerToken();

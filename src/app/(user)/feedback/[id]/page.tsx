@@ -3,21 +3,20 @@
 import { Box, Button, CircularProgress, Grid, Paper, Rating, Stack, TextField, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
 import { Answer } from 'components/common/feedback/answer';
-import {
-  FeedbackAnwer
-} from 'components/common/feedback/interface';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { UseGetBookingById } from 'hooks/use-get-booking-by-id';
 import { UseGetBookingCustomerFeedbackQuestion } from 'hooks/use-get-booking-customer-feedback-question';
 import { UseGetExpertById } from 'hooks/use-get-expert-profile';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
-import { enqueueSnackbar } from 'notistack';
 import { BookingAnswer, PostBookingCustomerFeedback, SkillRating } from 'package/api/booking-customer-feedback-controller';
 import { formatDate } from 'package/util';
 import { useEffect, useState } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 
 export default function FeedBackDetailPage({ params }: { params: { id: string } }) {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const { customerToken } = CustomerToken();
 
@@ -61,10 +60,10 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
       if (res.status !== "success") {
         throw new Error();
       }
-      enqueueSnackbar("Phản hồi thành công", { variant: 'success' });
+      showSnackbarDialog("Phản hồi thành công", 'success');
     } catch (error) {
       console.log(error);
-      enqueueSnackbar("Phản hồi thất bại", { variant: 'error' });
+      showSnackbarDialog("Phản hồi thất bại", 'error');
     } finally {
       setLoadingSubmit(false);
     }
@@ -197,6 +196,8 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
           </Box>
         </Paper>
       </Container>
+
+      <SnackbarDialog />
     </Box >
   );
 }

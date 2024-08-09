@@ -11,8 +11,11 @@ import { enqueueSnackbar } from "notistack";
 import { apiClientFetch } from "package/api/api-fetch";
 import { FlexBetween } from "../box/flex-box";
 import { useState } from "react";
+import useSnackbarDialog from "../snackbar-dialog/snackbar-dialog";
 
 export const NavigationItem = () => {
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const navItemList = [
     { name: "Dịch vụ", targetId: "serviceDiv", icon: true },

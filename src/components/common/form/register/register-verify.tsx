@@ -14,8 +14,10 @@ import { UserVerify, UserVerifyRequest, UserVerifyResponse } from 'package/api/u
 import { ThemeMode } from 'types/config';
 import { useTheme } from '@mui/material/styles';
 import OtpInput from 'react18-input-otp';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 
 export const RegisterVerify = ({ email }: { email: string }) => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const theme = useTheme();

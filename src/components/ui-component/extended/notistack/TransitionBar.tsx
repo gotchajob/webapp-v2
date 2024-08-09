@@ -22,6 +22,7 @@ import SubCard from 'ui-component/cards/SubCard';
 // ==============================|| NOTISTACK - TRANSITIONS ||============================== //
 
 export default function TransitionBar() {
+
   const [value, setValue] = useState<string>('slide');
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

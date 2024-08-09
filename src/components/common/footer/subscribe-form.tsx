@@ -8,8 +8,10 @@ import { apiClientFetch } from "package/api/api-fetch";
 import { SubscribeNewsResponse } from "package/api/subscribe-news";
 import { useState } from "react";
 import { Input } from "../input/input";
+import useSnackbarDialog from "../snackbar-dialog/snackbar-dialog";
 
 export const SubscribeForm = () => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [input, setInput] = useState("");
   const handleClick = async () => {
     try {

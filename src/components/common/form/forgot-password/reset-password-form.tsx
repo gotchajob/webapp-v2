@@ -13,6 +13,7 @@ import * as yup from "yup";
 import { VerifyPassword } from "../verify-password";
 import { Input } from "components/common/input/input";
 import { Text } from 'components/common/text/text';
+import useSnackbarDialog from "components/common/snackbar-dialog/snackbar-dialog";
 
 export const ResetPasswordForm = ({
   email,
@@ -21,6 +22,7 @@ export const ResetPasswordForm = ({
   email: string;
   code: string;
 }) => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [isLoading, setIsLoading] = useState(false);
   const handleFormSubmit = async (value: any) => {
     try {

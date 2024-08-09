@@ -93,7 +93,7 @@ const BlogDetailsCard = ({
   const router = useRouter();  // Call useRouter here
 
   // const handleCardClick = () => {
-  //   router.push(`localhost:3000/blog-details/${id}`);
+  //   router.push(`/blog-details/${id}`);
   // };
 
   // const contentArray = content.split('<');
