@@ -19,9 +19,7 @@ import { StyledLink } from 'components/common/link/styled-link';
 import Image from 'next/image';
 import SubCard from 'ui-component/cards/SubCard';
 import { PRIMARYCOLOR } from 'components/common/config';
-import { CVCategory, CVCategoryResponse, GetCVCategory } from 'package/api/cv-category';
-import { useEffect, useState } from 'react';
-import { CVTemplateData } from 'components/cv-component/interface';
+import { useGetCVCategory } from 'hooks/use-get-cv-category';
 
 const url = 'https://d3vpszern3jgjo.cloudfront.net/wp-content/uploads/2021/08/resume-reading-768x432.png';
 
@@ -40,17 +38,18 @@ export default function Page() {
 
   // const CVCategory: CVCategoryResponse = use(GetCVCategory({}));
 
-  const [CVCategory, setCVCategory] = useState<CVCategory[]>();
+  // const [CVCategory, setCVCategory] = useState<CVCategory[]>();
 
-  const fetchCVCategory = async () => {
-    const data = await GetCVCategory({});
-    setCVCategory(data.data);
-  }
+  // const fetchCVCategory = async () => {
+  //   const data = await GetCVCategory({});
+  //   setCVCategory(data.data);
+  // }
 
-  useEffect(() => {
-    fetchCVCategory();
-  }, [])
+  // useEffect(() => {
+  //   fetchCVCategory();
+  // }, [])
 
+  const {cvCategory} = useGetCVCategory()
   return (
     <>
       <Box
@@ -119,8 +118,8 @@ export default function Page() {
         </Grid>
 
         <Grid component={Box} container spacing={5} sx={{ my: 2 }}>
-          {CVCategory &&
-            CVCategory.map((item, index) => (
+          {cvCategory &&
+            cvCategory.map((item, index) => (
               <Grid item xs={3} key={index}>
                 <StyledLink href={`/create-cv/cv-template/${item.id}`}>
                   <SubCard sx={{ borderColor: PRIMARYCOLOR }}>
@@ -136,7 +135,7 @@ export default function Page() {
                         width={100}
                         height={100}
                         alt="image"
-                        src={'https://static.topcv.vn/v4/image/cv_builder/choose-cv-data/item/case.png'}
+                        src={item.image}
                       ></Image>
                       {/* <WorkIcon sx={{ fontSize: 68, color: "#333333" }} /> */}
                       <Typography variant="body2" sx={{ fontFamily: 'Roboto, sans-serif', fontWeight: 'bold' }}>

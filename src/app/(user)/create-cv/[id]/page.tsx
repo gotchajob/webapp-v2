@@ -2,7 +2,7 @@
 
 import { toPng } from 'html-to-image';
 import { CreateCV } from 'components/cv-component/cv';
-import { CVTemplate, CVTemplateData, Column, PersonalComponent } from 'components/cv-component/interface';
+import { CVTemplate, Column, PersonalComponent } from 'components/cv-component/interface';
 import { useEffect, useRef, useState } from 'react';
 import CreateCVHeader from './_component/CreateCVHeader';
 import TabsTable from './_component/TabsTable';
@@ -27,10 +27,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const [historyTemplate, setHistoryTemplate] = useState<CVTemplate[]>([]);
 
-  const [currentTemplate, setCurrentTemplate] = useState<CVTemplate>(CVTemplateData);
+  const [currentTemplate, setCurrentTemplate] = useState<CVTemplate>();
 
   const onChangeCV = (cv: CVTemplate) => {
-    setHistoryTemplate([...historyTemplate, currentTemplate]);
+    if (currentTemplate) {
+      setHistoryTemplate([...historyTemplate, currentTemplate]);
+    }
     setCurrentTemplate(cv);
   };
 
@@ -60,18 +62,22 @@ export default function Page({ params }: { params: { id: string } }) {
   const saveCV = async () => {
     try {
       const imageUrl = await handleGetImage();
-      console.log(imageUrl)
-      const data = await UpdateCV(
-        {
-          id: cv?.id || 1,
-          cv: JSON.stringify(currentTemplate),
-          name: currentTemplate.name,
-          image: imageUrl
-        },
-        customerToken
-      );
-      if (data.status === 'error') {
-        throw new Error('Lỗi không thể lưu cv');
+      console.log(imageUrl);
+      if (currentTemplate) {
+        const data = await UpdateCV(
+          {
+            id: cv?.id || 1,
+            cv: JSON.stringify(currentTemplate),
+            name: currentTemplate.name,
+            image: imageUrl
+          },
+          customerToken
+        );
+        if (data.status === 'error') {
+          throw new Error('Lỗi không thể lưu cv');
+        }
+      } else {
+        throw new Error('Lỗi không tìm thấy cv');
       }
       enqueueSnackbar({ variant: 'success', message: 'lưu cv thành công' });
     } catch (error) {
@@ -113,7 +119,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <MainCard boxShadow hover sx={{ m: 3 }}>
-      {cv ? (
+      {currentTemplate && (
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <CreateCVHeader cv={currentTemplate} onChangeCV={onChangeCV} download={handleDownload} review={handleReview} saveCV={saveCV} />
@@ -128,8 +134,6 @@ export default function Page({ params }: { params: { id: string } }) {
             <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
           </Grid>
         </Grid>
-      ) : (
-        <></>
       )}
     </MainCard>
   );
