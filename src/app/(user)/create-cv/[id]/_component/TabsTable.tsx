@@ -19,10 +19,7 @@ import { Text } from 'components/common/text/text';
 import {
   CVComponent,
   CVTemplate,
-  ComponentTemplateList,
   PersonalComponent,
-  PersonalInformationTemplate,
-  introduction
 } from 'components/cv-component/interface';
 import Iconify from 'components/iconify/iconify';
 import { useGetCheckBuyService } from 'hooks/use-check-buy-service';
@@ -127,7 +124,8 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
         <Grid item xs={9}>
           <TabPanel value={value} index={0}>
             <SubCard title={'Hướng dẫn viết CV'} sx={{ width: '100%', boxShadow: defaultShadow }} contentSX={{ py: 0, px: 1 }}>
-              <div dangerouslySetInnerHTML={{ __html: introduction }}></div>
+              {/* <div dangerouslySetInnerHTML={{ __html: introduction }}></div> */}
+              ...
             </SubCard>
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -139,7 +137,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </ListItemButton>
                 <Collapse in={openComponent} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {PersonalInformationTemplate.map((information, index) => {
+                    {/* {PersonalInformationTemplate.map((information, index) => {
                       const isAdded = cv.personal.find((value) => value.field === information.field);
                       return (
                         <ListItemButton
@@ -156,7 +154,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                           />
                         </ListItemButton>
                       );
-                    })}
+                    })} */}
                   </List>
                 </Collapse>
                 <ListItemButton onClick={handleOpenInformation}>
@@ -165,7 +163,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                 </ListItemButton>
                 <Collapse in={openInformation} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    {ComponentTemplateList.map((component, index) => {
+                    {/* {ComponentTemplateList.map((component, index) => {
                       const isAdded = allComponent.find((value) => value.componentName === component.componentName);
                       return (
                         <ListItemButton
@@ -181,7 +179,7 @@ const TabsTable = ({ cv, onChangeCV }: { cv: CVTemplate; onChangeCV: (cv: CVTemp
                           <ListItemText primary={'Thêm ' + component.title} />
                         </ListItemButton>
                       );
-                    })}
+                    })} */}
                   </List>
                 </Collapse>
               </List>
