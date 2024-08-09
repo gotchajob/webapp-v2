@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { CreateCV } from 'components/cv-component/cv';
-import { CVTemplate, CVTemplateData } from 'components/cv-component/interface';
+import { CVTemplate } from 'components/cv-component/interface';
 import { useGetCVById } from 'hooks/use-get-cv-by-id';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
