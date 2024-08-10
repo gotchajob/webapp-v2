@@ -3195,6 +3195,7 @@ __metadata:
     react-18-image-lightbox: "npm:^5.1.4"
     react-alice-carousel: "npm:^2.8.0"
     react-apexcharts: "npm:^1.4.1"
+    react-colorful: "npm:^5.6.1"
     react-copy-to-clipboard: "npm:^5.1.0"
     react-csv: "npm:^2.2.2"
     react-dom: "npm:^18.2.0"
@@ -8093,6 +8094,16 @@ __metadata:
   peerDependencies:
     react: ">=16.4.1"
   checksum: 10c0/89450912110c380abc08258ce17d2fb18d31d6b7179a74f6bc504c0761a4ca271edb671e402fa8e5ea4250b5c17fa953af80a9f1c4ebb26c9e81caee8476c903
+  languageName: node
+  linkType: hard
+
+"react-colorful@npm:^5.6.1":
+  version: 5.6.1
+  resolution: "react-colorful@npm:5.6.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 10c0/48eb73cf71e10841c2a61b6b06ab81da9fffa9876134c239bfdebcf348ce2a47e56b146338e35dfb03512c85966bfc9a53844fc56bc50154e71f8daee59ff6f0
   languageName: node
   linkType: hard
 

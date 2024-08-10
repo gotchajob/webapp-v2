@@ -1,47 +1,40 @@
 'use client';
 
-
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { CreateCV } from 'components/cv-component/cv';
-import { CVTemplate } from 'components/cv-component/interface';
-import { useGetCVById } from 'hooks/use-get-cv-by-id';
-import { CustomerToken } from 'hooks/use-login';
-import { useRefresh } from 'hooks/use-refresh';
-import { toPng } from 'html-to-image';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { UpdateCV } from 'package/api/cv/id';
+import { CVTemplate, CVTemplateData, Column, PersonalComponent } from 'components/cv-component/interface';
 import { useEffect, useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import data from 'views/widget/data';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 import MainCard from 'ui-component/cards/MainCard';
-import CreateCVHeader from './_component/CreateCVHeader';
-import TabsTable from './_component/TabsTable';
+import { useReactToPrint } from 'react-to-print';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
+import { HeaderComponent } from 'components/cv-component/header-component';
+import TabsTable from './_component/edit-tab';
+import ManageCVHeader from './_component/header';
+import { UseGetCVTemplateById } from 'hooks/use-get-cv-template';
+import { enqueueSnackbar } from 'notistack';
+import { useGetSearchParams } from 'hooks/use-get-params';
+import { CustomerToken } from 'hooks/use-login';
+import { UpdateCV } from 'package/api/cv/id';
+import { useGetCVById } from 'hooks/use-get-cv-by-id';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { useRefresh } from 'hooks/use-refresh';
 
 export default function Page({ params }: { params: { id: string } }) {
-
-  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
-
-  const { customerToken } = CustomerToken();
-
-  const { refresh, refreshTime } = useRefresh();
-
-  const { cv } = useGetCVById(+params.id, customerToken, refreshTime);
-
   const [historyTemplate, setHistoryTemplate] = useState<CVTemplate[]>([]);
 
   const [currentTemplate, setCurrentTemplate] = useState<CVTemplate>();
 
   const onChangeCV = (cv: CVTemplate) => {
-    if (currentTemplate) {
-      setHistoryTemplate([...historyTemplate, currentTemplate]);
-    }
+    // setHistoryTemplate([...historyTemplate, currentTemplate]);
     setCurrentTemplate(cv);
   };
 
   const CVRef = useRef(null);
-  //Tải dưới dạng pdf
+
   const handleDownload = async () => {
     if (CVRef.current) {
       const canvas = await html2canvas(CVRef.current);
@@ -53,24 +46,28 @@ export default function Page({ params }: { params: { id: string } }) {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('cv.pdf');
     }
-    await saveCV();
   };
 
-  //Xuất ra dưới dạng ảnh
   const handleReview = useReactToPrint({
     content: () => CVRef.current,
     documentTitle: 'CV'
   });
 
-  //Lưu vào database
-  const saveCV = async () => {
+  const { customerToken } = CustomerToken();
+
+  const { refresh, refreshTime } = useRefresh();
+  const { cv } = useGetCVById(+params.id, customerToken, refreshTime);
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
+  const handleSaveToDatabase = async () => {
     try {
       const imageUrl = await handleGetImage();
       console.log(imageUrl);
-      if (currentTemplate) {
+      if (currentTemplate && cv) {
         const data = await UpdateCV(
           {
-            id: cv?.id || 1,
+            id: cv.id,
             cv: JSON.stringify(currentTemplate),
             name: currentTemplate.name,
             image: imageUrl
@@ -85,17 +82,11 @@ export default function Page({ params }: { params: { id: string } }) {
       }
       showSnackbarDialog('lưu cv thành công', 'success');
     } catch (error) {
-      showSnackbarDialog('lưu cv thất bại', "error");
+      showSnackbarDialog('lưu cv thất bại', 'error');
     } finally {
       refresh();
     }
   };
-
-  useEffect(() => {
-    if (cv) {
-      setCurrentTemplate(JSON.parse(cv.cv));
-    }
-  }, [cv]);
 
   const handleGetImage = async () => {
     if (CVRef.current === null) {
@@ -120,15 +111,29 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   };
 
+  useEffect(() => {
+    if (cv) {
+      try {
+        setCurrentTemplate(JSON.parse(cv.cv));
+      } catch (error) {
+        setCurrentTemplate(CVTemplateData);
+      }
+    }
+  }, [cv]);
+
   return (
-    <MainCard boxShadow hover sx={{ m: 3 }}>
+    <Grid container spacing={3}>
       {currentTemplate && (
-        <Grid container spacing={3}>
+        <>
+          {' '}
           <Grid item xs={12}>
-            <CreateCVHeader cv={currentTemplate} onChangeCV={onChangeCV} download={handleDownload} review={handleReview} saveCV={saveCV} />
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
+            <ManageCVHeader
+              cv={currentTemplate}
+              onChangeCV={onChangeCV}
+              download={handleDownload}
+              review={handleReview}
+              save={handleSaveToDatabase}
+            />
           </Grid>
           <Grid item xs={8}>
             <CreateCV onChangeCV={onChangeCV} cv={currentTemplate} cvRef={CVRef} />
@@ -136,9 +141,9 @@ export default function Page({ params }: { params: { id: string } }) {
           <Grid item xs={4}>
             <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
           </Grid>
-        </Grid>
+        </>
       )}
       <SnackbarDialog />
-    </MainCard>
+    </Grid>
   );
 }
