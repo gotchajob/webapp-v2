@@ -12,24 +12,30 @@ import { FlexBox } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
 import { useRouter } from 'next/navigation';
 import { useGetSearchParams, useSearchParamsNavigation } from 'hooks/use-get-params';
+import { useGetBlogCategory } from 'hooks/use-get-blog-category';
 
 export default function Layout({ children }: { children: ReactNode }) {
-
   //fetchCategory
-  const { categories } = useGetCategories({});
+  const { blogCategory } = useGetBlogCategory({});
 
   //route hook
   const { push } = useSearchParamsNavigation();
 
   //push params
   const handleChangeCategory = (categoryId: number, categoryName: string) => {
-    push([{
-      name: "category", value: `${categoryName.replace(/[^a-zA-Z0-9]/g, '')}-${categoryId}`
-    }], false);
-  }
+    push(
+      [
+        {
+          name: 'category',
+          value: `${categoryName.replace(/[^a-zA-Z0-9]/g, '')}-${categoryId}`
+        }
+      ],
+      false
+    );
+  };
 
   //get params
-  const { category: paramsCategory } = useGetSearchParams(["category"]);
+  const { category: paramsCategory } = useGetSearchParams(['category']);
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -40,7 +46,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               <Iconify icon={'heroicons:home-20-solid'} width={25} color={PRIMARYCOLOR} />
             </StyledLink>
           </Box>
-          {categories.map((category, index) => (
+          {blogCategory.map((category, index) => (
             <Text
               key={index}
               minWidth={160}
@@ -54,20 +60,24 @@ export default function Layout({ children }: { children: ReactNode }) {
                 ':hover': {
                   bgcolor: '#f1f8fc'
                 },
-                ...(category.id == paramsCategory?.split("-")[1] ? {
-                  bgcolor: '#f1f8fc'
-                } : {
-                  bgcolor: ''
-                })
+                ...(category.id == paramsCategory?.split('-')[1]
+                  ? {
+                      bgcolor: '#f1f8fc'
+                    }
+                  : {
+                      bgcolor: ''
+                    })
               }}
-              onClick={() => { handleChangeCategory(category.id, category.name) }}
+              onClick={() => {
+                handleChangeCategory(category.id, category.category);
+              }}
             >
-              {category.name}
+              {category.category}
             </Text>
           ))}
         </FlexBox>
         {children}
       </MainCard>
-    </Container >
+    </Container>
   );
 }
