@@ -9,7 +9,7 @@ import { Fragment, ReactNode } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
-import { BookingExpertFeedbackAnswer } from 'package/api/booking-expert-feedback-controller/by-booking';
+import { BookingExpertFeedbackAnswer } from 'package/api/booking-expert-feedback/by-booking';
 
 const renderLabel = (option: string, icon: ReactNode) => {
   return (

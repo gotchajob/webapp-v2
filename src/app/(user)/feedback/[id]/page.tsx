@@ -9,7 +9,7 @@ import { UseGetBookingCustomerFeedbackQuestion } from 'hooks/use-get-booking-cus
 import { UseGetExpertById } from 'hooks/use-get-expert-profile';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
-import { BookingAnswer, PostBookingCustomerFeedback, SkillRating } from 'package/api/booking-customer-feedback-controller';
+import { BookingAnswer, PostBookingCustomerFeedback, SkillRating } from 'package/api/booking-customer-feedback';
 import { formatDate } from 'package/util';
 import { useEffect, useState } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
