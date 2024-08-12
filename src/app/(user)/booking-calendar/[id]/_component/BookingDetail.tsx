@@ -327,7 +327,7 @@ export default function BookingDetailPage({ event, onBack }: { event: any; onBac
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogContent>
           <Image
-            src={'https://marketplace.canva.com/EAFcO7DTEHM/1/0/1131w/canva-blue-professional-modern-cv-resume-pPAKwLoiobE.jpg'}
+            src={bookingById?.customerCv.image || ""}
             alt="Customer CV"
             layout="intrinsic"
             width={700}

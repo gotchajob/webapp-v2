@@ -22,31 +22,25 @@ const renderLabel = (option: string, icon: ReactNode) => {
   );
 };
 
-export const ReadOnlyAnswer = ({
-  answerList,
-}: {
-  answerList: BookingExpertFeedbackAnswer[];
-}) => {
-
+export const ReadOnlyAnswer = ({ answerList }: { answerList: BookingExpertFeedbackAnswer[] }) => {
   const RenderAnswer = (props: BookingExpertFeedbackAnswer) => {
     let input = <></>;
 
     switch (props.questionType) {
       case 'text':
-        input = <TextField fullWidth minRows={5} multiline />;
+        input = <TextField fullWidth minRows={5} multiline disabled />;
         break;
       case 'attitude':
         input = (
           <FormControl>
             <RadioGroup>
-              <FormControlLabel defaultValue={props.answer} control={<Radio />} label={renderLabel(props.question, '')} />
+              <FormControlLabel defaultValue={props.answer} control={<Radio />} label={renderLabel(props.question, '')} disabled />
             </RadioGroup>
           </FormControl>
         );
         break;
       case 'number':
-        input = <TextField value={props.answer} disabled
-          type="number" />;
+        input = <TextField value={props.answer} disabled type="number" />;
         break;
       case 'rating':
         input = <Rating defaultValue={+props.answer} readOnly />;
@@ -68,9 +62,7 @@ export const ReadOnlyAnswer = ({
   return (
     <Stack spacing={3}>
       {answerList.map((questionAnswer, index) => (
-        <Fragment key={index}>
-          {RenderAnswer(questionAnswer)}
-        </Fragment>
+        <Fragment key={index}>{RenderAnswer(questionAnswer)}</Fragment>
       ))}
     </Stack>
   );

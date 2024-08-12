@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 
 export default function FeedBackDetailPage({ params }: { params: { id: string } }) {
-
   const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const { customerToken } = CustomerToken();
@@ -32,15 +31,17 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
 
   const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
 
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>('');
 
   const [rating, setRating] = useState<number>(0);
 
-  const [skillRatings, setSkillRatings] = useState<SkillRating[]>([])
+  const [skillRatings, setSkillRatings] = useState<SkillRating[]>([]);
 
   // useEffect(() => { console.log("answerList:", answerList) }, [answerList]);
 
-  useEffect(() => { console.log("bookingById:", bookingById) }, [bookingById]);
+  useEffect(() => {
+    console.log('bookingById:', bookingById);
+  }, [bookingById]);
 
   // useEffect(() => { console.log("skillRatings:", skillRatings) }, [skillRatings]);
 
@@ -53,22 +54,24 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
     setLoadingSubmit(true);
     try {
       if (!customerToken) {
-        throw new Error("Cần đăng nhập");
+        throw new Error('Cần đăng nhập');
       }
-      const res = await PostBookingCustomerFeedback({ bookingId: +params.id, rating, comment, answers: answerList, skillRatings }, customerToken);
+      const res = await PostBookingCustomerFeedback(
+        { bookingId: +params.id, rating, comment, answers: answerList, skillRatings },
+        customerToken
+      );
       console.log(res);
-      if (res.status !== "success") {
+      if (res.status !== 'success') {
         throw new Error();
       }
-      showSnackbarDialog("Phản hồi thành công", 'success');
+      showSnackbarDialog('Phản hồi thành công', 'success');
     } catch (error) {
       console.log(error);
-      showSnackbarDialog("Phản hồi thất bại", 'error');
+      showSnackbarDialog('Phản hồi thất bại', 'error');
     } finally {
       setLoadingSubmit(false);
     }
-  }
-
+  };
 
   return (
     <Box
@@ -90,82 +93,89 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
             borderRadius: 2
           }}
         >
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{ color: '#0d47a1' }}
-          >
+          <Typography variant="h3" gutterBottom sx={{ color: '#0d47a1' }}>
             Đơn Phản Hồi Buổi Phỏng Vấn
           </Typography>
           <Box sx={{ mb: 4 }}>
-            <Typography
-              variant="h5"
-              sx={{ mb: 1, color: '#1565c0' }}
-            >
+            <Typography variant="h5" sx={{ mb: 1, color: '#1565c0' }}>
               Thời gian buổi phỏng vấn
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ mb: 2, color: '#424242' }}
-            >
-              {formatDate(bookingById ? bookingById.startInterviewDate : '', "dd/MM/yyyy hh:mm")} ⎯ {formatDate(bookingById ? bookingById.endInterviewDate : '', "dd/MM/yyyy hh:mm")}
+            <Typography variant="body2" sx={{ mb: 2, color: '#424242' }}>
+              {formatDate(bookingById ? bookingById.startInterviewDate : '', 'dd/MM/yyyy hh:mm')} ⎯{' '}
+              {formatDate(bookingById ? bookingById.endInterviewDate : '', 'dd/MM/yyyy hh:mm')}
             </Typography>
-            <Typography
-              variant="h5"
-              sx={{ mb: 1, color: '#1565c0' }}
-            >
+            <Typography variant="h5" sx={{ mb: 1, color: '#1565c0' }}>
               Phỏng vấn với chuyên gia
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: '#424242' }}
-            >
+            <Typography variant="body2" sx={{ color: '#424242' }}>
               {expertById?.firstName} {expertById?.lastName}
             </Typography>
           </Box>
           <Grid container spacing={3} mb={3}>
-            {bookingById && bookingById.skillOptionBooking?.map((skillOption, index) => {
-              return (
-                <Grid item xs={12} key={index}>
-                  <SubCard
-                    title={`Đánh giá chuyên môn của chuyên gia về ${skillOption.skillOptionName}`}
-                    sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}
-                  >
-                    <Rating
-                      onChange={(e, value) => {
-                        if (value) {
-                          setSkillRatings((prev) => {
-                            const existingIndex = prev.findIndex(
-                              (rating) => rating.expertSkillOptionId === skillOption.expertSkillOptionId
-                            );
+            {bookingById &&
+              bookingById.skillOptionBooking?.map((skillOption, index) => {
+                return (
+                  <Grid item xs={12} key={index}>
+                    <SubCard title={`Đánh giá chuyên môn của chuyên gia về ${skillOption.skillOptionName}`}>
+                      <Rating
+                        onChange={(e, value) => {
+                          if (value) {
+                            setSkillRatings((prev) => {
+                              const existingIndex = prev.findIndex(
+                                (rating) => rating.expertSkillOptionId === skillOption.expertSkillOptionId
+                              );
 
-                            if (existingIndex >= 0) {
-                              const updatedRatings = [...prev];
-                              updatedRatings[existingIndex].rating = value;
-                              return updatedRatings;
-                            } else {
-                              return [...prev, { rating: value, expertSkillOptionId: skillOption.expertSkillOptionId }];
-                            }
-                          });
-                        }
-                      }}
-                    />
-                  </SubCard>
-                </Grid>
-              );
-            })}
+                              if (existingIndex >= 0) {
+                                const updatedRatings = [...prev];
+                                updatedRatings[existingIndex].rating = value;
+                                return updatedRatings;
+                              } else {
+                                return [...prev, { rating: value, expertSkillOptionId: skillOption.expertSkillOptionId, comment: '' }];
+                              }
+                            });
+                          }
+                        }}
+                      />
+                      <TextField
+                        sx={{ mt: 1 }}
+                        fullWidth
+                        multiline
+                        minRows={2}
+                        onChange={(e) => {
+                          const comment = e.target.value;
+                          if (comment) {
+                            setSkillRatings((prev) => {
+                              const existingIndex = prev.findIndex(
+                                (rating) => rating.expertSkillOptionId === skillOption.expertSkillOptionId
+                              );
+
+                              if (existingIndex >= 0) {
+                                const updatedRatings = [...prev];
+                                updatedRatings[existingIndex].comment = comment;
+                                return updatedRatings;
+                              } else {
+                                return [...prev, { rating: 0, expertSkillOptionId: skillOption.expertSkillOptionId, comment }];
+                              }
+                            });
+                          }
+                        }}
+                      />
+                    </SubCard>
+                  </Grid>
+                );
+              })}
           </Grid>
-          <Answer
-            answerList={answerList}
-            feedbackQuestionList={bookingCustomerFeedbackQuestion}
-            setAnswerList={setAnswerList}
-          />
+          <Answer answerList={answerList} feedbackQuestionList={bookingCustomerFeedbackQuestion} setAnswerList={setAnswerList} />
           <Grid item xs={12} mt={3}>
-            <SubCard
-              title="Đánh giá chung về chuyên gia"
-              sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
+            <SubCard title="Đánh giá chung về chuyên gia">
               <Stack direction="column" spacing={3}>
-                <Rating onChange={(e, value) => { if (value) { setRating(value) } }} />
+                <Rating
+                  onChange={(e, value) => {
+                    if (value) {
+                      setRating(value);
+                    }
+                  }}
+                />
                 <TextField
                   label="Ý kiến của bạn"
                   multiline
@@ -198,6 +208,6 @@ export default function FeedBackDetailPage({ params }: { params: { id: string } 
       </Container>
 
       <SnackbarDialog />
-    </Box >
+    </Box>
   );
 }

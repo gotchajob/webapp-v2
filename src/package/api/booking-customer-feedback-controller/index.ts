@@ -34,6 +34,7 @@ export interface PostBookingCustomerFeedbackRequest {
 export interface SkillRating {
     rating: number,
     expertSkillOptionId: number
+    comment: string
 }
 
 export interface BookingAnswer {
