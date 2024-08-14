@@ -201,23 +201,21 @@ export default function BookingDetailPage({ event, onBack }: { event: any; onBac
                 </Stack>
               </Grid>
               {bookingById && (
-                <>
-                  <Grid item xs={12} sm={6} md={4}>
-                    <Stack spacing={2}>
-                      <Typography variant="h4">Thông tin đặt lịch</Typography>
-                      <Stack spacing={1}>
-                        <Stack direction="row" spacing={1}>
-                          <Typography variant="subtitle1">Thời gian bắt đầu:</Typography>
-                          <Typography variant="body2">{formatDate(bookingById.startInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
-                        </Stack>
-                        <Stack direction="row" spacing={1}>
-                          <Typography variant="subtitle1">Thời gian kết thúc:</Typography>
-                          <Typography variant="body2">{formatDate(bookingById.endInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
-                        </Stack>
+                <Grid item xs={12} sm={6} md={4}>
+                  <Stack spacing={2}>
+                    <Typography variant="h4">Thông tin đặt lịch</Typography>
+                    <Stack spacing={1}>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Thời gian bắt đầu:</Typography>
+                        <Typography variant="body2">{formatDate(bookingById.startInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1}>
+                        <Typography variant="subtitle1">Thời gian kết thúc:</Typography>
+                        <Typography variant="body2">{formatDate(bookingById.endInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
                       </Stack>
                     </Stack>
-                  </Grid>
-                </>
+                  </Stack>
+                </Grid>
               )}
             </Grid>
           </Grid>
@@ -327,7 +325,7 @@ export default function BookingDetailPage({ event, onBack }: { event: any; onBac
       <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogContent>
           <Image
-            src={bookingById?.customerCv.image || ""}
+            src={bookingById?.customerCv.image || ''}
             alt="Customer CV"
             layout="intrinsic"
             width={700}

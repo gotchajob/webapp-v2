@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid';
 import { ReactNode } from 'react';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
-import { BookingCustomerFeedbackQuestion } from 'package/api/booking-customer-feedback-question-controller';
+import { BookingCustomerFeedbackQuestion } from 'package/api/booking-customer-feedback-question';
 import { BookingAnswer } from 'package/api/booking-customer-feedback';
 
 interface QuestionAnswer extends BookingCustomerFeedbackQuestion {

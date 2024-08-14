@@ -8,11 +8,11 @@ export const UseGetBookingCustomerFeedback = () => {
 
     const fetchGetBookingCustomerFeedback = async () => {
         try {
-            const res = await GetBookingCustomerFeedback();
+            const res = await GetBookingCustomerFeedback({});
             if (res.status !== "success") {
                 return;
             }
-            setBookingCustomerFeedback(res.data);
+            setBookingCustomerFeedback(res.data.list);
         } catch (error) {
             console.log(error);
         }
