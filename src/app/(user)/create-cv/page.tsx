@@ -4,6 +4,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Container,
   FormControlLabel,
   Grid,
   Pagination,
@@ -84,7 +85,7 @@ export default function Page() {
         </Stack>
       </Box>
 
-      <Box sx={{ paddingX: 20, paddingY: 2 }}>
+      <Container maxWidth="lg" sx={{mt: 10}}>
         <Grid container justifyContent="space-between" spacing={2}>
           <Grid item xs={12} sx={{ justifyContent: 'flex-end' }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: 25, color: '#1E88E5' }}>
@@ -153,7 +154,7 @@ export default function Page() {
             <Pagination count={10} variant="text" shape="rounded" color="primary" />
           </Grid>
         </Grid>
-      </Box>
+      </Container>
     </>
   );
 }

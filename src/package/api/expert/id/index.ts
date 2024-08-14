@@ -24,6 +24,9 @@ export interface Expert {
   birthDate: string;
   emailContact: string;
   bio: string;
+  cost: number;
+  backgroundImage: string;
+  shortDescription: string
   portfolioUrl: string;
   facebookUrl: string;
   twitterUrl: string;

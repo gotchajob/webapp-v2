@@ -125,14 +125,12 @@ export default function Page() {
       const stringData = localStorage.getItem('lastFilter');
       if (stringData) {
         const saveData = JSON.parse(stringData);
-        if (saveData.lastCustomer === customerToken) {
-          setNation(saveData.nation);
-          setCategoryId(saveData.categoryId);
-          setMinYearExperience(saveData.minYearExperience);
-          setSkillOptionIdList(saveData.skillOptionIdList);
-          setCheckedState(saveData.checkedState);
-          setExpertMatchingList(saveData.expertMatchingList);
-        }
+        setNation(saveData.nation);
+        setCategoryId(saveData.categoryId);
+        setMinYearExperience(saveData.minYearExperience);
+        setSkillOptionIdList(saveData.skillOptionIdList);
+        setCheckedState(saveData.checkedState);
+        setExpertMatchingList(saveData.expertMatchingList);
       }
     }
   }, []);
@@ -177,7 +175,7 @@ export default function Page() {
           borderRadius: '8px',
           overflow: 'hidden',
           position: 'relative',
-          filter: 'brightness(1.1) contrast(1.05)',
+          filter: 'brightness(1.1) contrast(1.05)'
         }}
       >
         <Box
@@ -188,7 +186,7 @@ export default function Page() {
             backgroundColor: 'rgba(0, 0, 0, 0.2)',
             top: 0,
             left: 0,
-            zIndex: 0,
+            zIndex: 0
           }}
         />
 
@@ -207,7 +205,7 @@ export default function Page() {
             boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)',
             height: '100%',
             position: 'relative',
-            zIndex: 1,
+            zIndex: 1
           }}
         >
           <Typography
@@ -217,7 +215,7 @@ export default function Page() {
               color: '#333',
               fontWeight: 700,
               marginBottom: '16px',
-              fontSize: '60px',
+              fontSize: '60px'
             }}
           >
             Khám phá chuyên gia hàng đầu
@@ -229,10 +227,11 @@ export default function Page() {
               color: '#555',
               marginBottom: '24px',
               fontSize: '20px',
-              fontWeight: 500,
+              fontWeight: 500
             }}
           >
-            Kết nối với những chuyên gia có tầm cỡ, người sẽ đưa sự nghiệp của bạn lên tầm cao mới. Đừng bỏ lỡ cơ hội vàng để mở rộng mạng lưới chuyên môn và học hỏi từ những người dẫn đầu trong ngành.
+            Kết nối với những chuyên gia có tầm cỡ, người sẽ đưa sự nghiệp của bạn lên tầm cao mới. Đừng bỏ lỡ cơ hội vàng để mở rộng mạng
+            lưới chuyên môn và học hỏi từ những người dẫn đầu trong ngành.
           </Typography>
         </Grid>
       </Box>
@@ -286,7 +285,7 @@ export default function Page() {
           <Grid item xs={12}>
             <SubCard title="Ngành nghề của chuyên gia">
               <Typography variant="body1" color="textSecondary" sx={{ py: 1 }}>
-                Chọn ngành nghề của chuyên gia
+                Chọn ngành nghề cần tư vấn
               </Typography>
               <Autocomplete
                 options={categories}
