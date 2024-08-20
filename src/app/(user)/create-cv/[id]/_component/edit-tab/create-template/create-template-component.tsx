@@ -33,7 +33,7 @@ export const CreateTemplateComponent = ({
   const [icon, setIcon] = useState("");
 
   const handleSetTemplateComponent = () => {
-    const newTemplateComponent: CVComponent= {
+    const newTemplateComponent: CVComponent = {
       componentName,
       dataType,
       title,

@@ -18,6 +18,7 @@ import NorthIcon from "@mui/icons-material/North";
 import Tooltip from "@mui/material/Tooltip";
 import WestIcon from "@mui/icons-material/West";
 import { DefaultComponent } from "./default-component";
+import { FlexCenter } from "components/common/box/flex-box";
 
 const defaultShadow = "0 2px 14px 0 rgb(33 150 243 / 10%)";
 
@@ -214,101 +215,102 @@ export const CreateCV = ({
       >
         <ClearIcon color="error" />
       </IconButton>
-      <Grid
-        position={"relative"}
-        ref={cvRef}
-        container
-        width={800}
-        height={1131}
-        margin={"auto"}
-        sx={{ boxShadow: defaultShadow, overFlowY: "hidden" }}
-      >
-        {cv &&
-          cv.layout.map((column, columnIndex) => (
-            <Grid
-              key={columnIndex}
-              xs={column.size}
-              minHeight={100}
-              bgcolor={column.backgroudColor}
-              borderRadius={"inherit"}
-            >
-              <Grid container>
-                {column.componentList.map((component, componentIndex) => {
-                  const returnComponentList = {
-                    image: (
-                      <CVUploadImage
-                        avatar={component.description}
-                        handleChangeAvatar={(value) => {
-                          handleChangeAvatarComponent(
-                            value,
-                            columnIndex,
-                            componentIndex
-                          );
-                        }}
-                      />
-                    ),
-                    information: (
-                      <InformationComponent
-                        component={component}
-                        primaryColor={cv.primaryColor}
-                        information={cv.personal}
-                        onChangeComponent={(
-                          newCVPersonalComponent,
-                          newCVComponent
-                        ) => {
-                          handleChangeInformationComponent(
+      <FlexCenter>
+        <Grid
+          position={"relative"}
+          ref={cvRef}
+          container
+          width={800}
+          height={1131}
+          sx={{ boxShadow: defaultShadow, overFlowY: "hidden" }}
+        >
+          {cv &&
+            cv.layout.map((column, columnIndex) => (
+              <Grid
+                key={columnIndex}
+                xs={column.size}
+                minHeight={100}
+                bgcolor={column.backgroudColor}
+                borderRadius={"inherit"}
+              >
+                <Grid container>
+                  {column.componentList.map((component, componentIndex) => {
+                    const returnComponentList = {
+                      image: (
+                        <CVUploadImage
+                          avatar={component.description}
+                          handleChangeAvatar={(value) => {
+                            handleChangeAvatarComponent(
+                              value,
+                              columnIndex,
+                              componentIndex
+                            );
+                          }}
+                        />
+                      ),
+                      information: (
+                        <InformationComponent
+                          component={component}
+                          primaryColor={cv.primaryColor}
+                          information={cv.personal}
+                          onChangeComponent={(
                             newCVPersonalComponent,
-                            newCVComponent,
-                            columnIndex,
-                            componentIndex
-                          );
-                        }}
-                      />
-                    ),
-                    text: (
-                      <HeaderComponent
-                        primaryColor={cv.primaryColor}
-                        component={component}
-                        onChangeComponent={(newCVComponent) => {
-                          handelChangeHeaderComponent(
-                            newCVComponent,
-                            columnIndex,
-                            componentIndex
-                          );
-                        }}
-                      />
-                    ),
-                    default: (
-                      <DefaultComponent
-                        primaryColor={cv.primaryColor}
-                        component={component}
-                        onChangeComponent={(newCVComponent) => {
-                          handelChangeHeaderComponent(
-                            newCVComponent,
-                            columnIndex,
-                            componentIndex
-                          );
-                        }}
-                      />
-                    ),
-                  };
-                  return (
-                    <Grid item xs={column.componentSize[componentIndex]}>
-                      <ComponentWarper
-                        key={componentIndex}
-                        index={[componentIndex, columnIndex]}
-                        componentName={component.componentName}
-                      >
-                        {/* @ts-ignore */}
-                        {returnComponentList[component.dataType]}
-                      </ComponentWarper>
-                    </Grid>
-                  );
-                })}
+                            newCVComponent
+                          ) => {
+                            handleChangeInformationComponent(
+                              newCVPersonalComponent,
+                              newCVComponent,
+                              columnIndex,
+                              componentIndex
+                            );
+                          }}
+                        />
+                      ),
+                      text: (
+                        <HeaderComponent
+                          primaryColor={cv.primaryColor}
+                          component={component}
+                          onChangeComponent={(newCVComponent) => {
+                            handelChangeHeaderComponent(
+                              newCVComponent,
+                              columnIndex,
+                              componentIndex
+                            );
+                          }}
+                        />
+                      ),
+                      default: (
+                        <DefaultComponent
+                          primaryColor={cv.primaryColor}
+                          component={component}
+                          onChangeComponent={(newCVComponent) => {
+                            handelChangeHeaderComponent(
+                              newCVComponent,
+                              columnIndex,
+                              componentIndex
+                            );
+                          }}
+                        />
+                      ),
+                    };
+                    return (
+                      <Grid item xs={column.componentSize[componentIndex]} key={componentIndex}>
+                        <ComponentWarper
+                          key={componentIndex}
+                          index={[componentIndex, columnIndex]}
+                          componentName={component.componentName}
+                        >
+                          {/* @ts-ignore */}
+                          {returnComponentList[component.dataType]}
+                        </ComponentWarper>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
               </Grid>
-            </Grid>
-          ))}
-      </Grid>
+            ))}
+        </Grid>
+      </FlexCenter>
     </Box>
   );
 };

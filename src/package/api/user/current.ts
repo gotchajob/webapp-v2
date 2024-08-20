@@ -1,15 +1,11 @@
 import { apiServerFetch, errorSystem } from 'package/api/api-fetch';
 
-export interface UserCurrentRequest {}
+export interface UserCurrentRequest { }
 
 export interface UserCurrentResponse {
   status: string;
   responseText: string;
-  data: {
-    id: string;
-    fullName: string;
-    avatar: string;
-  };
+  data: UserProfile;
 }
 
 export interface UserProfile {

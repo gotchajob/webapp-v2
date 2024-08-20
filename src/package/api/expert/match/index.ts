@@ -49,7 +49,7 @@ export const GetExpertMatching = async (params: ExpertMatchingRequest): Promise<
     params.skillOptionId.forEach((value) => {
       url.append('skillOptionId', value + '');
     });
-    const res = await apiServerFetch(`/expert/match?${url.toString()}`, 'GET', undefined);
+    const res = await apiServerFetch(`/expert/match-v2?${url.toString()}`, 'GET', undefined);
     if (res.status === 'error') {
       throw new Error('');
     }

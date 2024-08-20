@@ -88,7 +88,7 @@ export const ComponentTab = ({
 
   const RenderCreateComponent = (
     <Box width={"100%"} px={2}>
-      <Button
+      {/* <Button
         variant="contained"
         fullWidth
         onClick={() => {
@@ -96,7 +96,7 @@ export const ComponentTab = ({
         }}
       >
         Tạo mới danh mục
-      </Button>
+      </Button> */}
       <CreateTemplateComponent
         open={openCreate}
         setOpen={setOpenCreate}
@@ -130,7 +130,7 @@ export const ComponentTab = ({
   const RenderInformationTemplate = (
     <Collapse in={openInformation} timeout="auto" unmountOnExit>
       <List component="div" disablePadding>
-        {cv.templatePersonal.map((information) => {
+        {cv.templatePersonal.map((information, index) => {
           const isAdded = cv.personal.find(
             (value) => value.field === information.field
           );
@@ -139,6 +139,7 @@ export const ComponentTab = ({
               onClick={() => {
                 handleUpdateInformation(information, Boolean(isAdded));
               }}
+              key={index}
             >
               <ListItemIcon>
                 <Iconify

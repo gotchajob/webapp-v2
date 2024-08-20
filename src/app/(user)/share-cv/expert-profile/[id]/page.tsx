@@ -220,12 +220,32 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ p: 0 }}>
-              {value === 0 && <Profile expert={expert}/>}
-              {value === 1 && <Followers expertId={expert.expertId}/>}
+              {value === 0 && <Profile expert={expert} />}
+              {value === 1 && <Followers expertId={expert.expertId} />}
             </Box>
           </Grid>
         </Grid>
       )}
+
+      {/* Dialog xác nhận chọn chuyên gia */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Xác nhận chọn chuyên gia</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Bạn muốn đặt lịch phỏng vấn CV với chuyên gia {expert?.firstName} {expert?.lastName}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Đóng
+          </Button>
+          <StyledLink href={`/booking-interview-cv/${params.id}`}>
+            <Button color="primary" autoFocus>
+              Đồng ý
+            </Button>
+          </StyledLink>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
   // return (
@@ -442,26 +462,8 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   //         <Typography variant="h6">Loading...</Typography>
   //       )}
 
-  //       {/* Dialog xác nhận chọn chuyên gia */}
-  //       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-  //         <DialogTitle>Xác nhận chọn chuyên gia</DialogTitle>
-  //         <DialogContent>
-  //           <DialogContentText>
-  //             Bạn muốn đặt lịch phỏng vấn CV với chuyên gia {expert?.firstName} {expert?.lastName}?
-  //           </DialogContentText>
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button onClick={() => setOpenDialog(false)} color="primary">
-  //             Đóng
-  //           </Button>
-  //           <StyledLink href={`/booking-interview-cv/${params.id}`}>
-  //             <Button color="primary" autoFocus>
-  //               Đồng ý
-  //             </Button>
-  //           </StyledLink>
-  //         </DialogActions>
-  //       </Dialog>
-  //     </Grid>
+
+  // </Grid>
   //   </Box>
   // );
 };
