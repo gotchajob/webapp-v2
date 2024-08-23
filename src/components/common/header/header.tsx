@@ -41,6 +41,7 @@ import { enqueueSnackbar } from 'notistack';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
+import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
@@ -285,7 +286,18 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             />
                           </ListItemButton>
                         </StyledLink>
-                        <ListItemButton>
+                        <ListItemButton component={Link} href='/booking-report'>
+                          <ListItemIcon>
+                            < ReportProblemIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={
+                            <Typography variant='body2'>
+                              <FormattedMessage id="Quản lý báo cáo" />
+                            </Typography>
+                          }>
+                          </ListItemText>
+                        </ListItemButton>
+                        <ListItemButton >
                           <ListItemIcon>
                             <ContactsIcon />
                           </ListItemIcon>
