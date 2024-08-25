@@ -3,33 +3,26 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 
+
 // material-ui
 import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-// third-party
 import { yupResolver } from '@hookform/resolvers/yup';
 import uniqueId from 'lodash/uniqueId';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import * as yup from 'yup';
-
-// project imports
 import useConfig from 'hooks/useConfig';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import Avatar from 'ui-component/extended/Avatar';
+
 import ImageList from 'ui-component/extended/ImageList';
 import Comment from './comment';
 
@@ -41,8 +34,14 @@ import { CommentData, CommentType, PostDataType } from './interface';
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
-import ThumbUpAltTwoToneIcon from '@mui/icons-material/ThumbUpAltTwoTone';
+import { Box, Button, Collapse, IconButton, Stack } from '@mui/material';
+import { useGetCustomer } from 'hooks/use-get-current-user';
+import { useGetCVShareComment } from 'hooks/use-get-cv-share-comment';
+import { CustomerToken } from 'hooks/use-login';
+import { useRefresh } from 'hooks/use-refresh';
+import Image from 'next/image';
+import { CVs } from 'package/api/cv-share';
+import { UserProfile } from 'package/api/user/current';
 import MainCard from 'ui-component/cards/MainCard';
 import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
@@ -59,7 +58,7 @@ const avatarImage = '/assets/images/users';
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
-export interface PostProps {
+
   postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
   handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
   handlePostLikes: (postId: number) => Promise<void>;
@@ -76,6 +75,7 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
   const accessToken = CustomerToken();
 
   const { customer } = useGetCustomer(accessToken.customerToken);
+
 
   const RenderAddComment = (
     <Stack spacing={2} sx={{pt: 5}}>
@@ -104,6 +104,7 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1} justifyContent={'space-between'}>
                 <Grid item>
+
                   <Typography variant="h5">{post.userInfo.fullName}</Typography>
                 </Grid>
                 <Grid item>
@@ -120,11 +121,12 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
         </Grid>
 
         {/* post - photo grid */}
+
         {post && (
           <Grid item xs={12}>
             <ImageCard src={post.cvImage} />
           </Grid>
-        )}
+
 
         {/* post - comment, likes and replay history */}
         <Grid item xs={12}>
@@ -137,6 +139,7 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
           >
             <Grid item>
               <Stack direction="row" spacing={2}>
+
                 <Rating readOnly value={post.rating[0].rating} precision={0.5} />
                 <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
                   {post ? post.rating[0].count : 0} comments

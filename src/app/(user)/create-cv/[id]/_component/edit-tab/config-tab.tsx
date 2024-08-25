@@ -11,7 +11,6 @@ import {
   CVTemplate,
   SampleColumn,
 } from "components/cv-component/interface";
-import { HexColorPicker } from "react-colorful";
 import SubCard from "ui-component/cards/SubCard";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -37,7 +36,7 @@ export const ConfigTab = ({
       try {
         const number = Number.parseInt(value);
         newScale.push(number);
-      } catch (error) {}
+      } catch (error) { }
     });
     if (newScale.length > 0) {
       newCV.layout[columnIndex].componentSize = newScale;

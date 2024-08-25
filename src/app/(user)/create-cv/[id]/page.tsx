@@ -56,6 +56,7 @@ export default function Page({ params }: { params: { id: string } }) {
   const { customerToken } = CustomerToken();
 
   const { refresh, refreshTime } = useRefresh();
+
   const { cv } = useGetCVById(+params.id, customerToken, refreshTime);
 
   const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
@@ -139,7 +140,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <CreateCV onChangeCV={onChangeCV} cv={currentTemplate} cvRef={CVRef} />
           </Grid>
           <Grid item xs={4}>
-            <TabsTable cv={currentTemplate} onChangeCV={onChangeCV} />
+            <TabsTable params={params} currentImage={cv ? cv.image : ""} cv={currentTemplate} onChangeCV={onChangeCV} />
           </Grid>
         </>
       )}

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 
 import { sampleData, PostDataType, CommentType } from '../../../components/common/post/interface';
 
@@ -8,15 +9,16 @@ import PostComment from '../../../components/common/post';
 
 import Grid from '@mui/material/Grid';
 
-import { gridSpacing } from 'store/constant - vh';
-import MainLayout from 'layout/MainLayout_plk';
-import HorizontalBar from 'layout/MainLayout_plk/HorizontalBar';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { FlexBox } from 'components/common/box/flex-box';
-import { Button } from '@mui/material';
-import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { useGetCVShare } from 'hooks/use-get-cv-share';
+import { CustomerToken } from 'hooks/use-login';
+import { useRefresh } from 'hooks/use-refresh';
+import HorizontalBar from 'layout/MainLayout_plk/HorizontalBar';
+import { gridSpacing } from 'store/constant - vh';
 
 export default function Page() {
+
   const [posts, setPosts] = useState<PostDataType>(sampleData.data);
 
   const postCommentAdd = async (postId: number, comment: CommentType) => {};
@@ -31,6 +33,7 @@ export default function Page() {
         <HorizontalBar />
       </Grid>
       <Grid item xs={0.5}></Grid>
+
       <Grid item xs={6} mt={4} mb={15}>
         <PostComment
           postCommentAdd={postCommentAdd}
