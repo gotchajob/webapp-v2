@@ -1,234 +1,75 @@
-export interface PostData {
-  id?: string;
-  content: string;
-  images: PostImage[];
-  video?: string;
-  likes: Likes;
-  comments: number;
-}
+import { string } from 'yup';
 
-export interface PostImage {
-  img: string;
-  featured?: boolean;
-  title?: string;
-}
-
-export interface Profile {
-  id: string;
-  avatar: string;
-  name: string;
-  time: string;
-}
-
-export interface Likes {
-  like: boolean;
-  value: number;
-}
-
-export interface CommentType {
-  id: string;
-  parentId: string;
-  profile: Profile;
-  data?: CommentData;
-}
-
-export type CommentData = {
-  name?: string;
-  comment?: string;
-  likes?: Likes;
-  replies?: number;
+export const sampleData = {
+  status: 'success',
+  responseText: 'Data retrieved successfully',
+  data: {
+    id: 10,
+    caption: 'A day at the amusement park',
+    cvImage: 'https://example.com/images/amusement_park.jpg',
+    categoryId: 7,
+    category: 'Leisure',
+    createdAt: '2024-08-25T06:48:38.291Z',
+    rating: [
+      {
+        rating: 4.5,
+        count: 250
+      }
+    ],
+    userInfo: {
+      fullName: 'Tran Minh H',
+      email: 'tranminhh@example.com',
+      avatar: 'https://example.com/avatars/avatar10.jpg'
+    }
+  }
 };
 
-export type PostDataType = { id: string; data: PostData; profile: Profile };
+export type PostDataType = typeof sampleData.data;
 
-export const data: PostDataType[] = [
-  {
-    id: '#1POST_JONE_DOE',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'John Doe',
-      time: '15 min ago'
-    },
-    data: {
-      content:
-        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. There are many variations of passages.',
-      images: [
-        {
-          img: 'img-profile1.png',
-          featured: true
-        }
-      ],
-      likes: {
-        like: true,
-        value: 102
-      },
-      comments: 3
-    }
-  }
-];
-
-export interface ReplyCommentType {
-  id: string;
-  parentId: string;
-  profile: Profile;
+export const CommentData = {
+  status: 'success',
+  responseText: 'Comments retrieved successfully',
   data: {
-    comment: string;
-    likes: Likes;
-    replies: number;
-  };
-}
-
-export const comments_post: CommentType[] = [
-  {
-    id: '#COMMENT_1',
-    parentId: '#1POST_JONE_DOE',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'John Doe',
-      time: '15 min ago'
-    },
-    data: {
-      comment: 'Test',
-      likes: {
-        like: true,
-        value: 1
+    list: [
+      {
+        id: 1,
+        cvShareId: 101,
+        rating: 4,
+        createdAt: '12-02-2024',
+        profile: {
+          fullName: 'Tran Minh H',
+          email: 'tranminhh@example.com',
+          avatar: 'https://example.com/avatars/avatar10.jpg'
+        },
+        comment: 'This CV is well-written and impressive!'
       },
-      replies: 2
-    }
-  },
-  {
-    id: '#3COMMENT_JONE_DOE',
-    parentId: '#1POST_JONE_DOE',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-3.png',
-      name: 'Barney Thea',
-      time: '8 min ago '
-    },
-    data: {
-      comment: 'It is a long established fact that a reader will be distracted by the readable content of a page.',
-      likes: {
-        like: true,
-        value: 55
+      {
+        id: 2,
+        cvShareId: 102,
+        rating: 5,
+        createdAt: '12-02-2024',
+        profile: {
+          fullName: 'Tran Minh H',
+          email: 'tranminhh@example.com',
+          avatar: 'https://example.com/avatars/avatar10.jpg'
+        },
+        comment: 'The design is clean and professional.'
       },
-      replies: 0
-    }
-  },
-  {
-    id: '#2COMMENT_JONE_DOE',
-    parentId: '#1POST_JONE_DOE',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-4.png',
-      name: 'Maddison Wilber',
-      time: '5 min ago '
-    },
-    data: {
-      comment:
-        'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.There are many variations of passages.',
-      likes: {
-        like: true,
-        value: 69
-      },
-      replies: 1
-    }
+      {
+        id: 3,
+        cvShareId: 103,
+        rating: 4,
+        createdAt: '12-02-2024',
+        profile: {
+          fullName: 'Tran Minh H',
+          email: 'tranminhh@example.com',
+          avatar: 'https://example.com/avatars/avatar10.jpg'
+        },
+        comment: 'Great use of keywords relevant to the job.'
+      }
+    ],
+    totalPage: 1
   }
-];
+};
 
-export const replies_comment: CommentType[] = [
-  {
-    id: '#REPLY_1',
-    parentId: '#COMMENT_1',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'John Doe',
-      time: '15 min ago'
-    },
-    data: {
-      comment: 'Test Reply',
-      likes: {
-        like: true,
-        value: 1
-      },
-      replies: 1
-    }
-  },
-  {
-    id: '#REPLY_2',
-    parentId: '#COMMENT_1',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'JWT User',
-      time: '15 min ago'
-    },
-    data: {
-      comment: 'Demo',
-      likes: {
-        like: false,
-        value: 0
-      },
-      replies: 0
-    }
-  },
-  {
-    id: '#1REPLY_JONE_DOE',
-    parentId: '#2COMMENT_JONE_DOE',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-5.png',
-      name: 'John Doe',
-      time: 'just now '
-    },
-    data: {
-      comment: 'It is a long established fact that a reader will be distracted by the readable content.',
-      likes: {
-        like: true,
-        value: 10
-      },
-      replies: 0
-    }
-  },
-  {
-    id: '#REPLY_#REPLY_1',
-    parentId: '#REPLY_1',
-    profile: {
-      id: '#52JONE_DOE',
-      avatar: 'avatar-1.png',
-      name: 'John Doe',
-      time: '15 min ago'
-    },
-    data: {
-      comment: 'Test Reply',
-      likes: {
-        like: true,
-        value: 1
-      },
-      replies: 0
-    }
-  }
-];
-
-// export const replies_reply: CommentType[] = [
-//   {
-//     id: '#REPLY_#REPLY_1',
-//     parentId: '#REPLY_1',
-//     profile: {
-//       id: '#52JONE_DOE',
-//       avatar: 'avatar-1.png',
-//       name: 'John Doe',
-//       time: '15 min ago'
-//     },
-//     data: {
-//       comment: 'Test Reply',
-//       likes: {
-//         like: true,
-//         value: 1
-//       },
-//       replies: 0
-//     }
-//   }
-// ];
+export type CommentType = (typeof CommentData.data.list)[0];

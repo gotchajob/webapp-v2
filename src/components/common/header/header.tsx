@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -42,7 +42,6 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-
 
 export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
   const theme = useTheme();
@@ -105,7 +104,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
         throw new Error('Không thể đăng xuất');
       }
       enqueueSnackbar('Đăng xuất thành công', { variant: 'success' });
-      window.location.href = "/login"
+      window.location.href = '/login';
     } catch (err) {
       enqueueSnackbar('Đăng xuất thất bại', { variant: 'error' });
     }
@@ -119,7 +118,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
   }, [open]);
 
   return (
-    < Box
+    <Box
       sx={{
         width: '100%',
         height: '96px',
@@ -141,12 +140,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
         {alreadyLogin ? (
           <FlexBox>
             <IconButton size="small" onClick={handleClick}>
-              {customer ? (<Avatar
-                sx={{ width: 36, height: 36 }}
-                size="sm"
-                alt="User"
-                src={customer.avatar}
-              />) : (<UserIcon width={36} />)}
+              {customer ? <Avatar sx={{ width: 36, height: 36 }} size="sm" alt="User" src={customer.avatar} /> : <UserIcon width={36} />}
             </IconButton>
           </FlexBox>
         ) : (
@@ -204,19 +198,26 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
           <Transitions in={open} {...TransitionProps}>
             <Paper>
               {open && (
-                <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]} sx={{ backgroundColor: "#F8FAFC" }}>
+                <MainCard
+                  border={false}
+                  elevation={16}
+                  content={false}
+                  boxShadow
+                  shadow={theme.shadows[16]}
+                  sx={{ backgroundColor: '#F8FAFC' }}
+                >
                   <Box sx={{ p: 2, pb: 0 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">Kính chào,</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          {customer ? customer.fullName : "Quí khách"}
+                          {customer ? customer.fullName : 'Quí khách'}
                         </Typography>
                       </Stack>
                     </Stack>
                   </Box>
                   <Box sx={{ p: 2, pt: 0 }}>
-                    <WalletCard />  {/* Wallet Card */}
+                    <WalletCard /> {/* Wallet Card */}
                     {/* <Card sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.800' : 'primary.light', my: 2 }}>
                       <CardContent>
                         <Grid container spacing={3} direction="column">
@@ -262,30 +263,12 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                         minWidth: 300,
                         bgcolor: theme.palette.background.paper,
                         borderRadius: `${borderRadius}px`,
-                        '& .MuiListItemButton-root': { mt: 0.5 },
+                        '& .MuiListItemButton-root': { mt: 0.5 }
                       }}
                     >
                       <StyledLink href={`/quan-ly-cv`} >
-                        <StyledLink href={`/booking-calendar/${customer?.id}`}>
-                          <ListItemButton
-                            sx={{
-                              borderRadius: `${borderRadius}px`,
-                            }}
-                            selected={selectedIndex === 0}
-                            onClick={() => { }}
-                          >
-                            <ListItemIcon>
-                              <EventNoteIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">
-                                  <FormattedMessage id="Lịch sử phỏng vấn" />
-                                </Typography>
-                              }
-                            />
-                          </ListItemButton>
-                        </StyledLink>
+                  
+                   
                         <ListItemButton component={Link} href='/booking-report'>
                           <ListItemIcon>
                             < ReportProblemIcon />
@@ -298,6 +281,49 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                           </ListItemText>
                         </ListItemButton>
                         <ListItemButton >
+                           </StyledLink>
+                      <StyledLink href={`/manage-share-cv`}>
+                        <ListItemButton
+                          sx={{
+                            borderRadius: `${borderRadius}px`
+                          }}
+                          selected={selectedIndex === 0}
+                          onClick={() => {}}
+                        >
+                          <ListItemIcon>
+                            <EventNoteIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">
+                                <FormattedMessage id="Quản lý chia sẻ CV" />
+                              </Typography>
+                            }
+                          />
+                        </ListItemButton>
+                      </StyledLink>
+                      <StyledLink href={`/booking-calendar/${customer?.id}`}>
+                        <ListItemButton
+                          sx={{
+                            borderRadius: `${borderRadius}px`
+                          }}
+                          selected={selectedIndex === 0}
+                          onClick={() => {}}
+                        >
+                          <ListItemIcon>
+                            <EventNoteIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">
+                                <FormattedMessage id="Lịch sử phỏng vấn" />
+                              </Typography>
+                            }
+                          />
+                        </ListItemButton>
+                      </StyledLink>
+                      <StyledLink href={`/quan-ly-cv`}>
+                        <ListItemButton>
                           <ListItemIcon>
                             <ContactsIcon />
                           </ListItemIcon>
@@ -306,17 +332,17 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                               <Typography variant="body2">
                                 <FormattedMessage id="Quản lý CV" />
                               </Typography>
-                            }>
-                          </ListItemText>
+                            }
+                          ></ListItemText>
                         </ListItemButton>
                       </StyledLink>
                       <StyledLink href={`/account-profile/${customer?.id}`}>
                         <ListItemButton
                           sx={{
-                            borderRadius: `${borderRadius}px`,
+                            borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => { }}
+                          onClick={() => {}}
                         >
                           <ListItemIcon>
                             <IconSettings />
@@ -332,10 +358,11 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                       </StyledLink>
                       <ListItemButton
                         sx={{
-                          borderRadius: `${borderRadius}px`,
+                          borderRadius: `${borderRadius}px`
                         }}
                         selected={selectedIndex === 0}
-                        onClick={handleLogout}>
+                        onClick={handleLogout}
+                      >
                         <ListItemIcon>
                           <LogoutIcon />
                         </ListItemIcon>
@@ -344,8 +371,8 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             <Typography variant="body2">
                               <FormattedMessage id="Đăng xuất" />
                             </Typography>
-                          }>
-                        </ListItemText>
+                          }
+                        ></ListItemText>
                       </ListItemButton>
                     </List>
                   </Box>
@@ -355,7 +382,6 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
           </Transitions>
         )}
       </Popper>
-
-    </Box >
+    </Box>
   );
 };
