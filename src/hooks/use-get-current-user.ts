@@ -1,9 +1,9 @@
 import { accessToken } from 'mapbox-gl';
-import { GetUserCurrent } from 'package/api/user/current';
+import { GetUserCurrent, UserProfile } from 'package/api/user/current';
 import { useState, useEffect } from 'react';
 
 export const useGetCustomer = (userToken: string) => {
-  const [customer, setCustomer] = useState<any>(null);
+  const [customer, setCustomer] = useState<UserProfile | null>(null);
 
   const getCustomer = async () => {
     try {
