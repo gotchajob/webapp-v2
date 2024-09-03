@@ -267,8 +267,8 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                       }}
                     >
                       <StyledLink href={`/quan-ly-cv`} >
-                  
-                   
+
+
                         <ListItemButton component={Link} href='/booking-report'>
                           <ListItemIcon>
                             < ReportProblemIcon />
@@ -280,15 +280,14 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                           }>
                           </ListItemText>
                         </ListItemButton>
-                        <ListItemButton >
-                           </StyledLink>
+                      </StyledLink>
                       <StyledLink href={`/manage-share-cv`}>
                         <ListItemButton
                           sx={{
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <EventNoteIcon />
@@ -308,7 +307,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <EventNoteIcon />
@@ -342,7 +341,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <IconSettings />
