@@ -3,11 +3,11 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 
-
 // material-ui
-import Button from '@mui/material/Button';
-import CardMedia from '@mui/material/CardMedia';
-import Collapse from '@mui/material/Collapse';
+// The following imports are currently commented out as they are not in use
+// import Button from '@mui/material/Button';
+// import CardMedia from '@mui/material/CardMedia';
+// import Collapse from '@mui/material/Collapse';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
@@ -24,7 +24,8 @@ import useConfig from 'hooks/useConfig';
 import Avatar from 'ui-component/extended/Avatar';
 
 import ImageList from 'ui-component/extended/ImageList';
-import Comment from './comment';
+// Commented out as it's not being used
+// import Comment from './comment';
 
 // types
 import { FormInputProps } from 'types';
@@ -46,11 +47,13 @@ import MainCard from 'ui-component/cards/MainCard';
 import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
 import { formatDate } from 'package/util';
-import { CustomerToken } from 'hooks/use-login';
-import { useGetCustomer } from 'hooks/use-get-current-user';
+// These imports are not currently in use
+// import { CustomerToken } from 'hooks/use-login';
+// import { useGetCustomer } from 'hooks/use-get-current-user';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
+import { PostProps } from '../comment';
 
 const avatarImage = '/assets/images/users';
 
@@ -59,44 +62,47 @@ const avatarImage = '/assets/images/users';
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 
-  postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
-  handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
-  handlePostLikes: (postId: number) => Promise<void>;
-  post: PostDataType;
-  showAddFeedback?: boolean;
-  showTotalFeedback?: boolean;
-}
+// The following commented out lines appear to be related to handling comments, post likes, and customer data
+// postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
+// handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
+// handlePostLikes: (postId: number) => Promise<void>;
+// post: PostDataType;
+// showAddFeedback?: boolean;
+// showTotalFeedback?: boolean;
+// }
 
-const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showAddFeedback, showTotalFeedback }: PostProps) => {
-  const theme = useTheme();
+const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
+  // The theme and media query hooks are not being used in the current code
+  // const theme = useTheme();
+  // const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  // Access token and customer data fetching are currently commented out
+  // const accessToken = CustomerToken();
+  // const { customer } = useGetCustomer(accessToken.customerToken);
 
-  const accessToken = CustomerToken();
-
-  const { customer } = useGetCustomer(accessToken.customerToken);
-
-
-  const RenderAddComment = (
-    <Stack spacing={2} sx={{pt: 5}}>
-      {customer && (
-        <FlexBox>
-          <Avatar src={customer?.avatar} alt="" size='sm'/>
-          <Text ml={2} variant='h4'>{customer.fullName}</Text>
-        </FlexBox>
-      )}
-      <Rating defaultValue={0} />
-      <TextField label="Thêm đánh giá" multiline minRows={3}/>
-      <DialogActions>
-        <Button variant='outlined'>Gửi</Button>
-      </DialogActions>
-    </Stack>
-  );
+  // The code below is for rendering an add comment section, but it's commented out
+  // const RenderAddComment = (
+  //   <Stack spacing={2} sx={{pt: 5}}>
+  //     {customer && (
+  //       <FlexBox>
+  //         <Avatar src={customer?.avatar} alt="" size='sm'/>
+  //         <Text ml={2} variant='h4'>{customer.fullName}</Text>
+  //       </FlexBox>
+  //     )}
+  //     <Rating defaultValue={0} />
+  //     <TextField label="Thêm đánh giá" multiline minRows={3}/>
+  //     <DialogActions>
+  //       <Button variant='outlined'>Gửi</Button>
+  //     </DialogActions>
+  //   </Stack>
+  // );
 
   return (
-    <MainCard boxShadow hover>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
+    <Box>
+      <MainCard boxShadow hover>
+        <Grid container spacing={1}>
+          {/* The following section is commented out - it seems to be for rendering user information and the post content */}
+          {/* <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
             <Grid item>
               <Avatar alt="User 1" src={`${avatarImage}/${post.userInfo.avatar}`} />
@@ -113,55 +119,55 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
 
-        {/* post - content */}
-        <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
+          {/* This section is for rendering the post content as markdown, currently commented out */}
+          {/* <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
           <Markdown remarkPlugins={[remarkGfm]}>{post.caption}</Markdown>
-        </Grid>
+        </Grid> */}
 
-        {/* post - photo grid */}
-
-        {post && (
+          {/* The photo grid section is also commented out */}
+          {/* {post && (
           <Grid item xs={12}>
             <ImageCard src={post.cvImage} />
-          </Grid>
+          </Grid> */}
 
+          {/* Comment, likes, and replay history sections are commented out */}
+          {/* // <Grid item xs={12}>
+        //   <Grid
+        //     container
+        //     alignItems="center"
+        //     justifyContent="space-between"
+        //     spacing={2}
+        //     sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
+        //   >
+        //     <Grid item>
+        //       <Stack direction="row" spacing={2}>
 
-        {/* post - comment, likes and replay history */}
-        <Grid item xs={12}>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={2}
-            sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
-          >
-            <Grid item>
-              <Stack direction="row" spacing={2}>
+        //         <Rating readOnly value={post.rating[0].rating} precision={0.5} />
+        //         <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
+        //           {post ? post.rating[0].count : 0} comments
+        //         </Button>
+        //       </Stack>
+        //     </Grid>
+        //     <Grid item>
+        //       <IconButton size="large" aria-label="more options">
+        //         <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
+        //       </IconButton>
+        //     </Grid>
+        //   </Grid>
+        // </Grid> */}
 
-                <Rating readOnly value={post.rating[0].rating} precision={0.5} />
-                <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
-                  {post ? post.rating[0].count : 0} comments
-                </Button>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <IconButton size="large" aria-label="more options">
-                <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-              </IconButton>
-            </Grid>
-          </Grid>
+          {/* // The code for rendering comments is also commented out
+        // {CommentData.data.list.map((comment, index) => (
+        //   <Comment comment={comment} key={index} />
+        // ))}
+        // <Grid item xs={12}>
+        //   {RenderAddComment}
+        // </Grid> */}
         </Grid>
-
-        {CommentData.data.list.map((comment, index) => (
-          <Comment comment={comment} key={index} />
-        ))}
-        <Grid item xs={12}>
-          {RenderAddComment}
-        </Grid>
-      </Grid>
-    </MainCard>
+      </MainCard>
+    </Box >
   );
 };
 

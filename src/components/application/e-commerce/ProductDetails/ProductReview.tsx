@@ -130,14 +130,14 @@ const ProductReviews = ({ product }: { product: Products }) => {
       {reviews &&
         reviews.map((review, index) => (
           <Grid item xs={12} key={index}>
-            <ProductReview
+            {/* <ProductReview
               avatar={review.profile.avatar}
               date={review.date}
               name={review.profile.name}
               status={review.profile.status}
               rating={review.rating}
               review={review.review}
-            />
+            /> */}
           </Grid>
         ))}
       <Grid item xs={12}>
