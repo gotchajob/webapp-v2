@@ -35,12 +35,12 @@ export default function Page() {
       <Grid item xs={0.5}></Grid>
 
       <Grid item xs={6} mt={4} mb={15}>
-        <PostComment
+        {/* <PostComment
           postCommentAdd={postCommentAdd}
           handleCommentLikes={handleCommentLikes}
           handlePostLikes={handlePostLikes}
           post={posts}
-        />
+        /> */}
       </Grid>
     </Grid>
   );

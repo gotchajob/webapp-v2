@@ -43,7 +43,7 @@ export type Address = {
 export type Reviews = {
   id: string | number | undefined;
   rating: number;
-  review: string;
+  review: string | Date;
   date: Date | string;
   profile: {
     avatar: string;

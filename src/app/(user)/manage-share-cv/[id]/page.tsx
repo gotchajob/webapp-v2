@@ -15,7 +15,7 @@ export default function Page() {
   const handleCommentLikes = async (postId: number, comment: CommentType) => {};
   return (
     <Container>
-      <PostComment postCommentAdd={postCommentAdd} handleCommentLikes={handleCommentLikes} handlePostLikes={handlePostLikes} post={posts} />
+      {/* <PostComment postCommentAdd={postCommentAdd} handleCommentLikes={handleCommentLikes} handlePostLikes={handlePostLikes} post={posts} /> */}
     </Container>
   );
 }
