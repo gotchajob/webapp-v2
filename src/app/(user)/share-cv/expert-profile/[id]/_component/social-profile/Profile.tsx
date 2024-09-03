@@ -31,6 +31,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LayersTwoToneIcon from '@mui/icons-material/LayersTwoTone';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
 import PublicTwoToneIcon from '@mui/icons-material/PublicTwoTone';
@@ -174,7 +175,8 @@ const Profile = ({ expert }: { expert: Expert }) => {
             </Grid>
             <Grid item xs={12}>
               <Link href="https://www.facebook.com/codedthemes" target="_blank" underline="hover">
-                <FacebookIcon color="primary" /> {expert.facebookUrl}
+                <FacebookIcon color="primary" />
+                {expert.facebookUrl}
               </Link>
             </Grid>
             <Grid item xs={12}>
@@ -185,16 +187,16 @@ const Profile = ({ expert }: { expert: Expert }) => {
             </Grid>
             <Grid item xs={12}>
               <Link href="https://in.linkedin.com/company/codedthemes" target="_blank" underline="hover">
-                <LinkedInIcon sx={{ color: 'grey.900' }} />
+                <MailOutlineIcon sx={{ color: 'grey.900' }} />
                 {expert.email}
               </Link>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Link href="https://in.linkedin.com/company/codedthemes" target="_blank" underline="hover">
                 <LinkedInIcon sx={{ color: 'grey.900' }} />
                 {expert.phone}
               </Link>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MainCard>
       </Grid>
