@@ -54,7 +54,7 @@ export default function Page() {
           Hiện chưa có bài viết nào
         </Typography>)}
         <FlexCenter sx={{ pt: 3 }}>
-          <Pagination page={+pageNumber} count={totalPage + 1} onChange={handleChangePage} shape="rounded" />
+          <Pagination page={+pageNumber} count={totalPage} onChange={handleChangePage} shape="rounded" />
         </FlexCenter>
       </Grid>
       <Grid item xs={4}>
