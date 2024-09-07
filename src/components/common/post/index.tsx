@@ -35,6 +35,7 @@ import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
+import Comment from './comment';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
@@ -131,7 +132,6 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: Pos
             </Grid>
           </Grid>
         </Grid>
-
         {CommentData.data.list.map((comment, index) => (
           <Comment comment={comment} key={index} />
         ))}
