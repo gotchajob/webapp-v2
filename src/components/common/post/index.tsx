@@ -1,30 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { ReactElement } from 'react';
 
-
-// material-ui
-import Button from '@mui/material/Button';
-import CardMedia from '@mui/material/CardMedia';
-import Collapse from '@mui/material/Collapse';
-import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { yupResolver } from '@hookform/resolvers/yup';
-import uniqueId from 'lodash/uniqueId';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import * as yup from 'yup';
-import useConfig from 'hooks/useConfig';
 import Avatar from 'ui-component/extended/Avatar';
 
 import ImageList from 'ui-component/extended/ImageList';
-import Comment from './comment';
 
 // types
 import { FormInputProps } from 'types';
@@ -34,7 +19,7 @@ import { CommentData, CommentType, PostDataType } from './interface';
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { IconButton, Stack } from '@mui/material';
+import { Button, IconButton, Stack } from '@mui/material';
 import { useGetCVShareComment } from 'hooks/use-get-cv-share-comment';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
@@ -49,14 +34,14 @@ import { useGetCustomer } from 'hooks/use-get-current-user';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
-import ShareTwoToneIcon from "@mui/icons-material/ShareTwoTone"
+import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
-export interface PostProps{
+export interface PostProps {
   postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
   handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
   handlePostLikes: (postId: number) => Promise<void>;
@@ -65,15 +50,13 @@ export interface PostProps{
   showTotalFeedback?: boolean;
 }
 
-const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showAddFeedback, showTotalFeedback }: PostProps) => {
+const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
+  // The theme and media query hooks are not being used in the current code
   const theme = useTheme();
-
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const accessToken = CustomerToken();
-
   const { customer } = useGetCustomer(accessToken.customerToken);
-
 
   const RenderAddComment = (
     <Stack spacing={2} sx={{pt: 5}}>
@@ -102,7 +85,6 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1} justifyContent={'space-between'}>
                 <Grid item>
-
                   <Typography variant="h5">{post.userInfo.fullName}</Typography>
                 </Grid>
                 <Grid item>
@@ -113,14 +95,13 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
           </Grid>
         </Grid>
 
-        {/* post - content */}
-        <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
+        {/* This section is for rendering the post content as markdown, currently commented out */}
+        {/* <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
           <Markdown remarkPlugins={[remarkGfm]}>{post.caption}</Markdown>
-        </Grid>
+        </Grid> */}
 
-        {/* post - photo grid */}
-
-        {post && (
+        {/* The photo grid section is also commented out */}
+        {/* {post && (
           <Grid item xs={12}>
             <ImageCard src={post.cvImage} />
           </Grid>
@@ -137,7 +118,6 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
           >
             <Grid item>
               <Stack direction="row" spacing={2}>
-
                 <Rating readOnly value={post.rating[0].rating} precision={0.5} />
                 <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
                   {post ? post.rating[0].count : 0} comments

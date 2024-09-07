@@ -250,7 +250,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <EventNoteIcon />
@@ -270,7 +270,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <EventNoteIcon />
@@ -304,7 +304,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                             borderRadius: `${borderRadius}px`
                           }}
                           selected={selectedIndex === 0}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <ListItemIcon>
                             <IconSettings />
