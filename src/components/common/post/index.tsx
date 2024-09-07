@@ -34,8 +34,7 @@ import { CommentData, CommentType, PostDataType } from './interface';
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Box, Button, Collapse, IconButton, Stack } from '@mui/material';
-import { useGetCustomer } from 'hooks/use-get-current-user';
+import { IconButton, Stack } from '@mui/material';
 import { useGetCVShareComment } from 'hooks/use-get-cv-share-comment';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
@@ -46,19 +45,18 @@ import MainCard from 'ui-component/cards/MainCard';
 import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
 import { formatDate } from 'package/util';
-import { CustomerToken } from 'hooks/use-login';
 import { useGetCustomer } from 'hooks/use-get-current-user';
 import { FlexBox } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
-
+import ShareTwoToneIcon from "@mui/icons-material/ShareTwoTone"
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
-
+export interface PostProps{
   postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
   handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
   handlePostLikes: (postId: number) => Promise<void>;
@@ -127,7 +125,7 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd, showA
             <ImageCard src={post.cvImage} />
           </Grid>
 
-
+        )}
         {/* post - comment, likes and replay history */}
         <Grid item xs={12}>
           <Grid
