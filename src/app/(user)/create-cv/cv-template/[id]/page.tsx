@@ -42,7 +42,7 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
 
   const { CVTemplateList, loading: UseGetCVTemplateLoading } = UseGetCVTemplate({ cvCategoryId: +params.id });
 
-  const [selectId, setSelectId] = useState<number>(CVTemplateList[0]?.id);
+  const [selectId, setSelectId] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter();
