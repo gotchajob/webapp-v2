@@ -54,7 +54,7 @@ const CVTemplatePage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (CVTemplateList.length > 0) {
-      setSelectId(+CVTemplateList[0]?.id);
+      setSelectId(+CVTemplateList[0].id);
     }
   }, [CVTemplateList]);
 
