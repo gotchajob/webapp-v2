@@ -1,67 +1,47 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 // material-ui
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import CardContent from "@mui/material/CardContent";
-import LinearProgress from "@mui/material/LinearProgress";
-import Rating from "@mui/material/Rating";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import CardContent from '@mui/material/CardContent';
+import LinearProgress from '@mui/material/LinearProgress';
+import Rating from '@mui/material/Rating';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 // project imports
-import MainCard from "ui-component/cards/MainCard";
+import MainCard from 'ui-component/cards/MainCard';
 
 // assets
-import StarTwoToneIcon from "@mui/icons-material/StarTwoTone";
-import StarBorderTwoToneIcon from "@mui/icons-material/StarBorderTwoTone";
-import RateReviewTwoToneIcon from "@mui/icons-material/RateReviewTwoTone";
-import { StyledLink } from "components/common/link/styled-link";
-import { formatDate } from "package/util";
-import SubCard from "ui-component/cards/SubCard";
-import ProductReview from "./ProductReview";
+import StarTwoToneIcon from '@mui/icons-material/StarTwoTone';
+import StarBorderTwoToneIcon from '@mui/icons-material/StarBorderTwoTone';
+import RateReviewTwoToneIcon from '@mui/icons-material/RateReviewTwoTone';
+import { StyledLink } from 'components/common/link/styled-link';
+import { formatDate } from 'package/util';
+import SubCard from 'ui-component/cards/SubCard';
+import ProductReview from './ProductReview';
+import { CommentData } from 'components/common/post/interface';
+import { Comment } from 'components/common/post/comment-post';
 
 interface ProgressProps {
   like: number;
   star: number;
   value: number;
-  color?:
-    | "inherit"
-    | "primary"
-    | "secondary"
-    | "error"
-    | "info"
-    | "success"
-    | "warning"
-    | undefined;
+  color?: 'inherit' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | undefined;
 }
 
 // progress
-function LinearProgressWithLabel({
-  like,
-  star,
-  color,
-  value,
-  ...others
-}: ProgressProps) {
+function LinearProgressWithLabel({ like, star, color, value, ...others }: ProgressProps) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ minWidth: 50 }}>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-        >{`${Math.round(star)} Stars`}</Typography>
+        <Typography variant="body2" color="textSecondary">{`${Math.round(star)} Stars`}</Typography>
       </Box>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress
-          value={value}
-          variant="determinate"
-          color={color}
-          {...others}
-        />
+      <Box sx={{ width: '100%', mr: 1 }}>
+        <LinearProgress value={value} variant="determinate" color={color} {...others} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="subtitle1">{`(${Math.round(like)})`}</Typography>
@@ -72,7 +52,7 @@ function LinearProgressWithLabel({
 
 export interface RatingParams {
   totalRatingList: TotalRating[];
-  feedbackList: Feedback[];
+  feedbackList: any[];
 }
 
 interface TotalRating {
@@ -84,36 +64,16 @@ interface TotalRatingPercent extends TotalRating {
   percent: number;
 }
 
-interface Feedback {
-  rating: number;
-  comment: string;
-  createdAt: string;
-  href: string;
-  user: {
-    avatar: string;
-    fullName: string;
-  };
-}
 
-export const CustomerReview = ({
-  ratingParams,
-}: {
-  ratingParams: RatingParams;
-}) => {
-  const { total, numberRating, totalRatingPercentList } = calculateTotalRating(
-    ratingParams.totalRatingList
-  );
 
+export const CustomerReview = ({ ratingParams }: { ratingParams: RatingParams }) => {
+  const { total, numberRating, totalRatingPercentList } = calculateTotalRating(ratingParams.totalRatingList);
+console.log(ratingParams.feedbackList)
   const RenderTotalRating = (
-    <MainCard content={false} sx={{ height: "100%" }}>
-      <CardContent sx={{ height: "100%" }}>
+    <MainCard content={false} sx={{ height: '100%' }}>
+      <CardContent sx={{ height: '100%' }}>
         {ratingParams.totalRatingList && (
-          <Stack
-            alignItems="center"
-            justifyContent="center"
-            spacing={2}
-            sx={{ height: "100%" }}
-          >
+          <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ height: '100%' }}>
             <Typography variant="subtitle1">Average Rating</Typography>
             <Typography variant="h1" color="primary">
               {Number(total || 0).toFixed(1)}/5
@@ -136,22 +96,12 @@ export const CustomerReview = ({
   );
 
   const RenderDetailRating = (
-    <MainCard content={false} sx={{ height: "100%" }}>
+    <MainCard content={false} sx={{ height: '100%' }}>
       <CardContent>
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={1}
-        >
+        <Grid container alignItems="center" justifyContent="space-between" spacing={1}>
           {totalRatingPercentList.map((value, index) => (
             <Grid item xs={12} key={index}>
-              <LinearProgressWithLabel
-                color="secondary"
-                star={value.rating}
-                value={value.percent}
-                like={value.count}
-              />
+              <LinearProgressWithLabel color="secondary" star={value.rating} value={value.percent} like={value.count} />
             </Grid>
           ))}
         </Grid>
@@ -159,26 +109,6 @@ export const CustomerReview = ({
     </MainCard>
   );
 
-  const RenderReview = (
-    <SubCard>
-      <Grid container spacing={3}>
-        {ratingParams.feedbackList &&
-          ratingParams.feedbackList.map((feedback, index) => (
-            <Grid item xs={12} key={index}>
-              <StyledLink href={feedback.href}>
-                <ProductReview
-                  avatar={feedback.user.avatar}
-                  date={feedback.createdAt}
-                  name={feedback.user.fullName}
-                  rating={feedback.rating}
-                  review={feedback.comment}
-                />
-              </StyledLink>
-            </Grid>
-          ))}
-      </Grid>
-    </SubCard>
-  );
   return (
     <Grid container spacing={3}>
       <Grid item xs={8}>
@@ -188,7 +118,11 @@ export const CustomerReview = ({
         {RenderDetailRating}
       </Grid>
       <Grid item xs={12}>
-        {RenderReview}
+        {ratingParams.feedbackList.map((comment, index) => (
+          <Grid item xs={12} key={index}>
+            <Comment comment={comment} />
+          </Grid>
+        ))}
       </Grid>
       <Grid item xs={12}>
         <Stack direction="row" justifyContent="center">
@@ -210,11 +144,11 @@ const calculateTotalRating = (totalRatingList: TotalRating[]) => {
   });
 
   totalRatingList.forEach((value) => {
-    const newRatingPercent: TotalRatingPercent ={
-       ...value,
-       percent: value.count / numberRating * 100
-    }
-    totalRatingPercentList.push(newRatingPercent)
+    const newRatingPercent: TotalRatingPercent = {
+      ...value,
+      percent: (value.count / numberRating) * 100
+    };
+    totalRatingPercentList.push(newRatingPercent);
   });
   return { total: total / numberRating, numberRating, totalRatingPercentList };
 };

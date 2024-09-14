@@ -191,12 +191,6 @@ const Profile = ({ expert }: { expert: Expert }) => {
                 {expert.email}
               </Link>
             </Grid>
-            {/* <Grid item xs={12}>
-              <Link href="https://in.linkedin.com/company/codedthemes" target="_blank" underline="hover">
-                <LinkedInIcon sx={{ color: 'grey.900' }} />
-                {expert.phone}
-              </Link>
-            </Grid> */}
           </Grid>
         </MainCard>
       </Grid>

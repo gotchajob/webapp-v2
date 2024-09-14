@@ -47,9 +47,10 @@ export interface PostProps {
   post: PostDataType;
   showAddFeedback?: boolean;
   showTotalFeedback?: boolean;
+  listComment: any[];
 }
 
-const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
+const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostProps) => {
   // The theme and media query hooks are not being used in the current code
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
@@ -59,7 +60,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
 
   const ratingParams = React.useMemo(() => {
     const newRatingParams: RatingParams = {
-      feedbackList: [],
+      feedbackList: listComment,
       totalRatingList: [
         { rating: 5, count: 0 },
         { rating: 4, count: 0 },
@@ -104,9 +105,9 @@ const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
     >
       <Grid item>
         <Stack direction="row" spacing={2}>
-          <Rating readOnly value={post.rating[0].rating} precision={0.5} />
+          <Rating readOnly value={calculateTotalRating(post.rating).total} precision={0.5} />
           <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
-            {post ? post.rating[0].count : 0} comments
+            {post ? calculateTotalRating(post.rating).numberRating : 0} rating
           </Button>
         </Stack>
       </Grid>
@@ -119,6 +120,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
   );
 
   const renderTotalFeedback = <CustomerReview ratingParams={ratingParams} />;
+
   return (
     <MainCard boxShadow hover>
       <Grid container spacing={1}>
@@ -154,12 +156,21 @@ const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
           </Grid>
         )}
         {/* {/* post - comment, likes and replay history */}
+
         <Grid item xs={12}>
-          {showTotalFeedback ? renderTotalFeedback : renderFeedback}
+          {showTotalFeedback ? (
+            renderTotalFeedback
+          ) : (
+            <>
+              {renderFeedback}
+              {CommentData.data.list.map((comment, index) => (
+                <Grid item xs={12} key={index}>
+                  <Comment comment={comment} />
+                </Grid>
+              ))}
+            </>
+          )}
         </Grid>
-        {CommentData.data.list.map((comment, index) => (
-          <Comment comment={comment} key={index} />
-        ))}
         <Grid item xs={12}>
           {showAddFeedback && RenderAddComment}
         </Grid>
@@ -169,3 +180,23 @@ const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
 };
 
 export default Post;
+
+const calculateTotalRating = (totalRatingList: any[]) => {
+  let total = 0;
+  let numberRating = 0;
+  let totalRatingPercentList: any[] = [];
+
+  totalRatingList.forEach((value) => {
+    total = total + value.rating * value.count;
+    numberRating = numberRating + value.count;
+  });
+
+  totalRatingList.forEach((value) => {
+    const newRatingPercent: any = {
+      ...value,
+      percent: (value.count / numberRating) * 100
+    };
+    totalRatingPercentList.push(newRatingPercent);
+  });
+  return { total: total / numberRating, numberRating, totalRatingPercentList };
+};
