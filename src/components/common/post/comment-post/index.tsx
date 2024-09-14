@@ -28,7 +28,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // project imports
 import Avatar from 'ui-component/extended/Avatar';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import { CommentType } from './interface';
+import { CommentType } from '../interface';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MoreVertTwoToneIcon from '@mui/icons-material/MoreVertTwoTone';

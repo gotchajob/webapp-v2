@@ -36,7 +36,7 @@ import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import { CustomerReview, RatingParams } from 'components/review';
-import { Comment } from './comment';
+import { Comment } from './comment-post';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
