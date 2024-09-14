@@ -21,9 +21,9 @@ export default async function Page() {
       <FlexCenter>
         <PartnerCarousel />
       </FlexCenter>
-      <FlexCenter>
+      {/* <FlexCenter>
         <ServiceList />
-      </FlexCenter>
+      </FlexCenter> */}
       <FlexCenter>
         <BlogList />
       </FlexCenter>
@@ -31,9 +31,9 @@ export default async function Page() {
       <FlexCenter>
         <MentorList />
       </FlexCenter>
-      <FlexCenter>
+      {/* <FlexCenter>
         <Contact />
-      </FlexCenter>
+      </FlexCenter> */}
     </>
   );
 }

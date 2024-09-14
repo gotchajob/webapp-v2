@@ -1,149 +1,138 @@
-import { Avatar, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { formatNumber, formatDate, stringToDate, calculateAverageRating } from 'package/util';
 import { FlexBox } from 'components/common/box/flex-box';
-import { PRIMARYCOLOR } from 'components/common/config';
+import MainCard from 'ui-component/cards/MainCard';
+
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import Grid from '@mui/material/Grid';
+import { useGetFilter } from 'hooks/use-get-filter';
+import { DataGridHeader, DataGridTable, DataGridTableProps } from 'components/common/table/data-grid';
+import { GridColDef } from '@mui/x-data-grid/models';
+import { IconEdit, IconEye, IconEyeCancel } from '@tabler/icons-react';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { Avatar, Rating } from '@mui/material';
 import { Text } from 'components/common/text/text';
-import { formatDate } from 'package/util';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import HideImageIcon from '@mui/icons-material/HideImage';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
 import { StyledLink } from 'components/common/link/styled-link';
-const sampleData = {
-  status: 'success',
-  responseText: 'success',
-  data: {
-    list: [
-      {
-        id: 1,
-        customerId: 1001,
-        caption: 'A beautiful sunset at the beach',
-        cvImage: 'https://example.com/images/sunset.jpg',
-        categoryId: 5,
-        category: 'Nature',
-        createdAt: '2024-08-25T06:29:18.834Z',
-        userInfo: {
-          fullName: 'Nguyen Van A',
-          email: 'nguyenvana@example.com',
-          avatar: 'https://example.com/avatars/avatar1.jpg'
-        }
-      },
-      {
-        id: 2,
-        customerId: 1002,
-        caption: 'Delicious homemade pizza',
-        cvImage: 'https://example.com/images/pizza.jpg',
-        categoryId: 2,
-        category: 'Food',
-        createdAt: '2024-08-24T10:15:45.734Z',
-        userInfo: {
-          fullName: 'Tran Thi B',
-          email: 'tranthib@example.com',
-          avatar: 'https://example.com/avatars/avatar2.jpg'
-        }
-      },
-      {
-        id: 3,
-        customerId: 1003,
-        caption: 'Exploring the mountains',
-        cvImage: 'https://example.com/images/mountains.jpg',
-        categoryId: 5,
-        category: 'Nature',
-        createdAt: '2024-08-23T14:22:10.512Z',
-        userInfo: {
-          fullName: 'Le Van C',
-          email: 'levanc@example.com',
-          avatar: 'https://example.com/avatars/avatar3.jpg'
-        }
-      },
-      {
-        id: 4,
-        customerId: 1004,
-        caption: 'Modern city skyline at night',
-        cvImage: 'https://example.com/images/city.jpg',
-        categoryId: 3,
-        category: 'Urban',
-        createdAt: '2024-08-22T18:47:33.915Z',
-        userInfo: {
-          fullName: 'Pham Thi D',
-          email: 'phamthid@example.com',
-          avatar: 'https://example.com/avatars/avatar4.jpg'
-        }
-      },
-      {
-        id: 5,
-        customerId: 1005,
-        caption: 'Artistic abstract painting',
-        cvImage: 'https://example.com/images/abstract.jpg',
-        categoryId: 4,
-        category: 'Art',
-        createdAt: '2024-08-21T08:03:21.145Z',
-        userInfo: {
-          fullName: 'Hoang Van E',
-          email: 'hoangvane@example.com',
-          avatar: 'https://example.com/avatars/avatar5.jpg'
-        }
+
+export const ShareCVTable = ({ data }: { data: any[] }) => {
+  const columns: GridColDef[] = [
+    {
+      field: 'information',
+      headerName: 'Bài đăng',
+      minWidth: 150,
+      flex: 5,
+      renderCell: (params) => (
+        <FlexBox>
+          <Avatar src={params.value.split(' & ')[0]} alt="" />
+          <Text variant="h5" ml={5}>
+            {params.value.split(' & ')[1]}
+          </Text>
+        </FlexBox>
+      ),
+      renderHeader: (params) => <DataGridHeader mainTitle={params.colDef.headerName} />
+    },
+    {
+      field: 'cvShareRating',
+      headerName: 'Đánh giá',
+      minWidth: 150,
+      flex: 2,
+      renderCell: (params) => <Rating value={params.value} readOnly />,
+      renderHeader: (params) => <DataGridHeader mainTitle={params.colDef.headerName} />
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Ngày đăng',
+      minWidth: 150,
+      flex: 2,
+      valueFormatter: (params) => formatDate(params.value, 'dd/MM/yyyy'),
+      renderHeader: (params) => <DataGridHeader mainTitle={params.colDef.headerName} />
+    },
+    {
+      field: 'action',
+      headerName: 'Hành động',
+      minWidth: 140,
+      flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
+      disableExport: true,
+      type: 'action',
+      renderHeader: (params) => <DataGridHeader mainTitle={params.colDef.headerName} />,
+      renderCell: (params) => {
+        const shareCV = JSON.parse(params.value);
+        const selectAction = shareCV.status ? (
+          <Tooltip title="Hiện">
+            <IconButton size="small" color="primary">
+              <IconEye />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Ẩn">
+            <IconButton size="small">
+              <IconEyeCancel />
+            </IconButton>
+          </Tooltip>
+        );
+        return [
+          selectAction,
+          <Tooltip title="Chi tiét">
+            <StyledLink href={"/manage-share-cv/" + shareCV.id}>
+              <IconButton size="small" color="primary">
+                <IconEdit />
+              </IconButton>
+            </StyledLink>
+          </Tooltip>
+        ];
       }
-    ],
-    totalPage: 10
-  }
-};
-export const ShareCVTable = () => {
-  const headers = ['Ảnh cv', 'Mô tả', 'Danh mục', 'Ngày tạo', 'Hành động'];
+    }
+  ];
+
+  const { handleChangeEventText, text, findAllIndexByAnyField } = useGetFilter();
+
+  const filteredData = useMemo(() => {
+    let list = [...data];
+    if (text && text !== '') {
+      const filteredIndex = findAllIndexByAnyField(list, text);
+      list = list.filter((_, index) => filteredIndex.includes(index));
+    }
+    return list;
+  }, [text, data]);
+
+  const RenderClientFilter = (
+    <Grid container spacing={3}>
+      <Grid item xs={12} lg={4}>
+        <FlexBox>
+          <Button>Tìm kiếm</Button>
+          <Input size="small" onChange={handleChangeEventText} />
+        </FlexBox>
+      </Grid>
+    </Grid>
+  );
+
+  const props: DataGridTableProps = {
+    columns,
+    rows: filteredData.map((data, index) => ({
+      ...data,
+      id: index,
+      cvShareRating: calculateAverageRating(data.cvShareRating),
+      information: data.cvImage + ' & ' + data.caption,
+      action: JSON.stringify(data)
+    }))
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow sx={{ bgcolor: PRIMARYCOLOR }}>
-            {headers.map((value, index) => (
-              <TableCell sx={{ color: 'white !important' }} key={index}>
-                {value}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sampleData.data.list.map((share, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <Avatar src={share.cvImage} alt="" />
-              </TableCell>
-              <TableCell>
-                <Text>{share.caption}</Text>
-              </TableCell>
-              <TableCell>
-                <Text fontWeight={'bold'}> {share.category}</Text>
-              </TableCell>
-              <TableCell>
-                <Text>{formatDate(share.createdAt, 'dd-MM-yyyy')}</Text>
-              </TableCell>
-              <TableCell>
-                <Tooltip title={'Xóa'}>
-                  <IconButton size="small" color="error">
-                    <DeleteForeverIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={'Ẩn'}>
-                  <IconButton size="small">
-                    <HideImageIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={'Hiện'}>
-                  <IconButton size="small" color="success">
-                    <SlideshowIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={'Chi tiết'}>
-                  <StyledLink href={`/manage-share-cv/${share.id}`}>
-                    <IconButton size="small">
-                      <VisibilityIcon />
-                    </IconButton>
-                  </StyledLink>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <MainCard
+      title={
+        <Text variant="h4" align="center">
+          Quản lí chia sẻ CV
+        </Text>
+      }
+      border
+    >
+      <DataGridTable props={props} />
+    </MainCard>
   );
 };

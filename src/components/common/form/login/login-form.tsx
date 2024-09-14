@@ -87,7 +87,7 @@ export const LoginForm = () => {
               Đăng nhập
             </ContainedLoadingButton>
           </FlexCenter>
-          <Divider
+          {/* <Divider
             sx={{
               maxWidth: 380
             }}
@@ -105,7 +105,7 @@ export const LoginForm = () => {
                 </Text>
               </FlexBetween>
             </OutlinedButton>
-          </FlexCenter>
+          </FlexCenter> */}
         </Stack>
       </FlexCenter>
     </>

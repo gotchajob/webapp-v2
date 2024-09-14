@@ -21,7 +21,6 @@ const OrderComplete = ({ open, onClose, transactionClick, continueClick }: { ope
   return (
     <Dialog
       open={open !== -1}
-      onClose={onClose}
       maxWidth="lg"
       sx={{
         '& .MuiDialog-paper': {

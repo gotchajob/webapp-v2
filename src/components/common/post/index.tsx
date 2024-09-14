@@ -1,31 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { ReactElement } from 'react';
 
-// material-ui
-// The following imports are currently commented out as they are not in use
-// import Button from '@mui/material/Button';
-// import CardMedia from '@mui/material/CardMedia';
-// import Collapse from '@mui/material/Collapse';
-import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { yupResolver } from '@hookform/resolvers/yup';
-import uniqueId from 'lodash/uniqueId';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import * as yup from 'yup';
-import useConfig from 'hooks/useConfig';
 import Avatar from 'ui-component/extended/Avatar';
 
 import ImageList from 'ui-component/extended/ImageList';
-// Commented out as it's not being used
-// import Comment from './comment';
 
 // types
 import { FormInputProps } from 'types';
@@ -35,8 +19,7 @@ import { CommentData, CommentType, PostDataType } from './interface';
 // assets
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Box, Button, Collapse, IconButton, Stack } from '@mui/material';
-import { useGetCustomer } from 'hooks/use-get-current-user';
+import { Button, IconButton, Stack } from '@mui/material';
 import { useGetCVShareComment } from 'hooks/use-get-cv-share-comment';
 import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
@@ -47,62 +30,101 @@ import MainCard from 'ui-component/cards/MainCard';
 import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
 import { formatDate } from 'package/util';
-// These imports are not currently in use
-// import { CustomerToken } from 'hooks/use-login';
-// import { useGetCustomer } from 'hooks/use-get-current-user';
-import { FlexBox } from '../box/flex-box';
+import { useGetCustomer } from 'hooks/use-get-current-user';
+import { FlexBox, FlexCenter } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
-import { PostProps } from '../comment';
-
+import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
+import { CustomerReview, RatingParams } from 'components/review';
+import { Comment } from './comment-post';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
 
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
+export interface PostProps {
+  post: PostDataType;
+  showAddFeedback?: boolean;
+  showTotalFeedback?: boolean;
+  listComment: any[];
+}
 
-// The following commented out lines appear to be related to handling comments, post likes, and customer data
-// postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
-// handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
-// handlePostLikes: (postId: number) => Promise<void>;
-// post: PostDataType;
-// showAddFeedback?: boolean;
-// showTotalFeedback?: boolean;
-// }
-
-const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
+const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostProps) => {
   // The theme and media query hooks are not being used in the current code
-  // const theme = useTheme();
-  // const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  const theme = useTheme();
+  const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Access token and customer data fetching are currently commented out
-  // const accessToken = CustomerToken();
-  // const { customer } = useGetCustomer(accessToken.customerToken);
+  const accessToken = CustomerToken();
+  const { customer } = useGetCustomer(accessToken.customerToken);
 
-  // The code below is for rendering an add comment section, but it's commented out
-  // const RenderAddComment = (
-  //   <Stack spacing={2} sx={{pt: 5}}>
-  //     {customer && (
-  //       <FlexBox>
-  //         <Avatar src={customer?.avatar} alt="" size='sm'/>
-  //         <Text ml={2} variant='h4'>{customer.fullName}</Text>
-  //       </FlexBox>
-  //     )}
-  //     <Rating defaultValue={0} />
-  //     <TextField label="Thêm đánh giá" multiline minRows={3}/>
-  //     <DialogActions>
-  //       <Button variant='outlined'>Gửi</Button>
-  //     </DialogActions>
-  //   </Stack>
-  // );
+  const ratingParams = React.useMemo(() => {
+    const newRatingParams: RatingParams = {
+      feedbackList: listComment,
+      totalRatingList: [
+        { rating: 5, count: 0 },
+        { rating: 4, count: 0 },
+        { rating: 3, count: 0 },
+        { rating: 2, count: 0 },
+        { rating: 1, count: 0 }
+      ]
+    };
+
+    post.rating.forEach((value) => {
+      const index = newRatingParams.totalRatingList.findIndex((e) => e.rating === value.rating);
+      newRatingParams.totalRatingList[index].count = newRatingParams.totalRatingList[index].count + value.count;
+    });
+    return newRatingParams;
+  }, [post]);
+
+  const RenderAddComment = (
+    <Stack spacing={2} sx={{ pt: 5 }}>
+      {customer && (
+        <FlexBox>
+          <Avatar src={customer?.avatar} alt="" size="sm" />
+          <Text ml={2} variant="h4">
+            {customer.fullName}
+          </Text>
+        </FlexBox>
+      )}
+      <Rating defaultValue={0} />
+      <TextField label="Thêm đánh giá" multiline minRows={3} />
+      <DialogActions>
+        <Button variant="outlined">Gửi</Button>
+      </DialogActions>
+    </Stack>
+  );
+
+  const renderFeedback = (
+    <Grid
+      container
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={2}
+      sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
+    >
+      <Grid item>
+        <Stack direction="row" spacing={2}>
+          <Rating readOnly value={calculateTotalRating(post.rating).total} precision={0.5} />
+          <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
+            {post ? calculateTotalRating(post.rating).numberRating : 0} rating
+          </Button>
+        </Stack>
+      </Grid>
+      <Grid item>
+        <IconButton size="large" aria-label="more options">
+          <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
+        </IconButton>
+      </Grid>
+    </Grid>
+  );
+
+  const renderTotalFeedback = <CustomerReview ratingParams={ratingParams} />;
 
   return (
-    <Box>
-      <MainCard boxShadow hover>
-        <Grid container spacing={1}>
-          {/* The following section is commented out - it seems to be for rendering user information and the post content */}
-          {/* <Grid item xs={12}>
+    <MainCard boxShadow hover>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
             <Grid item>
               <Avatar alt="User 1" src={`${avatarImage}/${post.userInfo.avatar}`} />
@@ -110,7 +132,6 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: Pos
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1} justifyContent={'space-between'}>
                 <Grid item>
-
                   <Typography variant="h5">{post.userInfo.fullName}</Typography>
                 </Grid>
                 <Grid item>
@@ -119,56 +140,63 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: Pos
               </Grid>
             </Grid>
           </Grid>
-        </Grid> */}
+        </Grid>
 
-          {/* This section is for rendering the post content as markdown, currently commented out */}
-          {/* <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
+        {/* This section is for rendering the post content as markdown, currently commented out */}
+        {/* <Grid item xs={12} sx={{ '& > p': { ...theme.typography.body1, mb: 0 } }}>
           <Markdown remarkPlugins={[remarkGfm]}>{post.caption}</Markdown>
         </Grid> */}
 
-          {/* The photo grid section is also commented out */}
-          {/* {post && (
+        {/* The photo grid section is also commented out */}
+        {post && (
           <Grid item xs={12}>
-            <ImageCard src={post.cvImage} />
-          </Grid> */}
+            <FlexCenter>
+              <ImageCard src={post.cvImage} width={700 / 1.414} height={700} />
+            </FlexCenter>
+          </Grid>
+        )}
+        {/* {/* post - comment, likes and replay history */}
 
-          {/* Comment, likes, and replay history sections are commented out */}
-          {/* // <Grid item xs={12}>
-        //   <Grid
-        //     container
-        //     alignItems="center"
-        //     justifyContent="space-between"
-        //     spacing={2}
-        //     sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
-        //   >
-        //     <Grid item>
-        //       <Stack direction="row" spacing={2}>
-
-        //         <Rating readOnly value={post.rating[0].rating} precision={0.5} />
-        //         <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
-        //           {post ? post.rating[0].count : 0} comments
-        //         </Button>
-        //       </Stack>
-        //     </Grid>
-        //     <Grid item>
-        //       <IconButton size="large" aria-label="more options">
-        //         <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-        //       </IconButton>
-        //     </Grid>
-        //   </Grid>
-        // </Grid> */}
-
-          {/* // The code for rendering comments is also commented out
-        // {CommentData.data.list.map((comment, index) => (
-        //   <Comment comment={comment} key={index} />
-        // ))}
-        // <Grid item xs={12}>
-        //   {RenderAddComment}
-        // </Grid> */}
+        <Grid item xs={12}>
+          {showTotalFeedback ? (
+            renderTotalFeedback
+          ) : (
+            <>
+              {renderFeedback}
+              {CommentData.data.list.map((comment, index) => (
+                <Grid item xs={12} key={index}>
+                  <Comment comment={comment} />
+                </Grid>
+              ))}
+            </>
+          )}
         </Grid>
-      </MainCard>
-    </Box >
+        <Grid item xs={12}>
+          {showAddFeedback && RenderAddComment}
+        </Grid>
+      </Grid>
+    </MainCard>
   );
 };
 
 export default Post;
+
+const calculateTotalRating = (totalRatingList: any[]) => {
+  let total = 0;
+  let numberRating = 0;
+  let totalRatingPercentList: any[] = [];
+
+  totalRatingList.forEach((value) => {
+    total = total + value.rating * value.count;
+    numberRating = numberRating + value.count;
+  });
+
+  totalRatingList.forEach((value) => {
+    const newRatingPercent: any = {
+      ...value,
+      percent: (value.count / numberRating) * 100
+    };
+    totalRatingPercentList.push(newRatingPercent);
+  });
+  return { total: total / numberRating, numberRating, totalRatingPercentList };
+};

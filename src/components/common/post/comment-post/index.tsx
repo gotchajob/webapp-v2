@@ -54,49 +54,40 @@ interface CommentComponentProps {
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
 
-const Comment = ({ comment }: CommentComponentProps) => {
+export const Comment = ({ comment }: CommentComponentProps) => {
   const theme = useTheme();
-
+  console.log(comment);
   return (
-    <Grid item xs={12}>
-      <Card sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'grey.50', px: 2, pt: 2, pb: 1, mt: 1.25 }}>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <Grid container wrap="nowrap" alignItems="center" spacing={1}>
-              <Grid item>
-                <Avatar
-                  sx={{ width: 24, height: 24 }}
-                  size="sm"
-                  alt="User 1"
-                  src={
-                    comment.profile && comment.profile.avatar ? `${avatarImage}/${comment.profile.avatar}` : `${avatarImage}/avatar-1.png`
-                  }
-                />
-              </Grid>
-              <Grid item xs zeroMinWidth>
-                <Grid container alignItems="center" spacing={1}>
-                  <Grid item>
-                    <Typography variant="h5">{comment.profile.fullName}</Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="caption">
-                      <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} /> {comment.createdAt}
-                    </Typography>
-                  </Grid>
+    <Card sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'grey.50', px: 2, pt: 2, pb: 1, mt: 1.25 }}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Grid container wrap="nowrap" alignItems="center" spacing={1}>
+            <Grid item>
+              <Avatar
+                sx={{ width: 24, height: 24 }}
+                size="sm"
+                alt="User 1"
+                src={
+                  comment.useInfo && comment.useInfo.avatar ? `${avatarImage}/${comment.useInfo.avatar}` : `${avatarImage}/avatar-1.png`
+                }
+              />
+            </Grid>
+            <Grid item xs zeroMinWidth>
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item>
+                  <Typography variant="h5">{comment.useInfo.fullName}</Typography>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Rating precision={0.5} value={comment.rating} />
-          </Grid>
-          <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>
-            <Typography variant="body2">{comment.comment}</Typography>
-          </Grid>
         </Grid>
-      </Card>
-    </Grid>
+        <Grid item xs={12}>
+          <Rating precision={0.5} value={comment.rating} />
+        </Grid>
+        <Grid item xs={12} sx={{ '&.MuiGrid-root': { pt: 1.5 } }}>
+          <Typography variant="body2">{comment.comment}</Typography>
+        </Grid>
+      </Grid>
+    </Card>
   );
 };
-
-export default Comment;

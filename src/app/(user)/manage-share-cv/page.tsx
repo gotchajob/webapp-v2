@@ -1,17 +1,16 @@
-'use client';
 import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import { Text } from 'components/common/text/text';
-import MainCard from 'ui-component/cards/MainCard';
+import { apiServerFetch } from 'package/api/api-fetch';
+import { getUserToken } from 'package/cookies/token';
+import { cookies } from 'next/headers';
 import { ShareCVTable } from './_component/table';
-import SubCard from 'ui-component/cards/SubCard';
 
-export default function Page() {
+export default async function Page() {
+  const accessToken = await getUserToken(cookies());
+  const data = await apiServerFetch('/cv-share/current', 'GET', undefined, accessToken);
+  console.log(data.data.list);
   return (
-    <Container maxWidth={'lg'} sx={{my: 10}}>
-      <SubCard title={<Text variant="h3">Quản lí chia sẻ CV</Text>}>
-        <ShareCVTable />
-      </SubCard>
+    <Container maxWidth={'lg'} sx={{ my: 10 }}>
+      <ShareCVTable data={data.data.list} />
     </Container>
   );
 }

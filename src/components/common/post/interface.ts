@@ -1,5 +1,3 @@
-import { string } from 'yup';
-
 export const sampleData = {
   status: 'success',
   responseText: 'Data retrieved successfully',
@@ -32,40 +30,16 @@ export const CommentData = {
   data: {
     list: [
       {
-        id: 1,
-        cvShareId: 101,
-        rating: 4,
-        createdAt: '12-02-2024',
-        profile: {
-          fullName: 'Tran Minh H',
-          email: 'tranminhh@example.com',
-          avatar: 'https://example.com/avatars/avatar10.jpg'
-        },
-        comment: 'This CV is well-written and impressive!'
-      },
-      {
         id: 2,
         cvShareId: 102,
+        customerId: 22,
         rating: 5,
-        createdAt: '12-02-2024',
-        profile: {
+        useInfo: {
           fullName: 'Tran Minh H',
           email: 'tranminhh@example.com',
           avatar: 'https://example.com/avatars/avatar10.jpg'
         },
         comment: 'The design is clean and professional.'
-      },
-      {
-        id: 3,
-        cvShareId: 103,
-        rating: 4,
-        createdAt: '12-02-2024',
-        profile: {
-          fullName: 'Tran Minh H',
-          email: 'tranminhh@example.com',
-          avatar: 'https://example.com/avatars/avatar10.jpg'
-        },
-        comment: 'Great use of keywords relevant to the job.'
       }
     ],
     totalPage: 1

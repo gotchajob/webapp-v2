@@ -126,25 +126,25 @@ const Payment = () => {
                       <TableBody>
                         <TableRow>
                           <TableCell>
-                            <Typography variant="subtitle1">Order Summary</Typography>
+                            <Typography variant="subtitle1">Tổng cộng</Typography>
                           </TableCell>
                           <TableCell />
                         </TableRow>
                         <TableRow>
-                          <TableCell>Sub Total</TableCell>
+                          <TableCell>Tổng thanh toán</TableCell>
                           <TableCell align="right">
                             <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell>Coupon Discount</TableCell>
+                          <TableCell>Phiếu giảm giá</TableCell>
                           <TableCell align="right">
                             <Typography variant="subtitle1">0</Typography>
                           </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell sx={{ borderBottom: 'none' }}>
-                            <Typography variant="subtitle1">Total</Typography>
+                            <Typography variant="subtitle1">Tổng</Typography>
                           </TableCell>
                           <TableCell align="right" sx={{ borderBottom: 'none' }}>
                             <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>

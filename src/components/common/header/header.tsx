@@ -218,43 +218,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                   </Box>
                   <Box sx={{ p: 2, pt: 0 }}>
                     <WalletCard /> {/* Wallet Card */}
-                    {/* <Card sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.800' : 'primary.light', my: 2 }}>
-                      <CardContent>
-                        <Grid container spacing={3} direction="column">
-                          <Grid item>
-                            <Grid item container alignItems="center" justifyContent="space-between">
-                              <Grid item>
-                                <Typography variant="subtitle1">Start DND Mode</Typography>
-                              </Grid>
-                              <Grid item>
-                                <Switch
-                                  color="primary"
-                                  checked={sdm}
-                                  onChange={(e) => setSdm(e.target.checked)}
-                                  name="sdm"
-                                  size="small"
-                                />
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid item>
-                            <Grid item container alignItems="center" justifyContent="space-between">
-                              <Grid item>
-                                <Typography variant="subtitle1">Allow Notifications</Typography>
-                              </Grid>
-                              <Grid item>
-                                  <Switch
-                                    checked={notification}
-                                    onChange={(e) => setNotification(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
-                                </Grid>
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card> */}
+                
                     <List
                       component="nav"
                       sx={{
@@ -266,19 +230,18 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                         '& .MuiListItemButton-root': { mt: 0.5 }
                       }}
                     >
-                      <StyledLink href={`/quan-ly-cv`} >
-
-
-                        <ListItemButton component={Link} href='/booking-report'>
+                      <StyledLink href={`/quan-ly-cv`}>
+                        <ListItemButton component={Link} href="/booking-report">
                           <ListItemIcon>
-                            < ReportProblemIcon />
+                            <ReportProblemIcon />
                           </ListItemIcon>
-                          <ListItemText primary={
-                            <Typography variant='body2'>
-                              <FormattedMessage id="Quản lý báo cáo" />
-                            </Typography>
-                          }>
-                          </ListItemText>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2">
+                                <FormattedMessage id="Quản lý báo cáo" />
+                              </Typography>
+                            }
+                          ></ListItemText>
                         </ListItemButton>
                       </StyledLink>
                       <StyledLink href={`/manage-share-cv`}>
