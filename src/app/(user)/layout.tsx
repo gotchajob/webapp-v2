@@ -10,7 +10,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <>
       <Header alreadyLogin={userToken !== ''} />
-      <Box pt={'96px'}>{children}</Box>
+      <Box pt={'96px'} minHeight={1000}>{children}</Box>
       <Footer />
     </>
   );
