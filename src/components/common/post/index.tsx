@@ -31,11 +31,12 @@ import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
 import { formatDate } from 'package/util';
 import { useGetCustomer } from 'hooks/use-get-current-user';
-import { FlexBox } from '../box/flex-box';
+import { FlexBox, FlexCenter } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import Comment from './comment';
+import { CustomerReview, RatingParams } from 'components/review';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
@@ -43,15 +44,12 @@ const avatarImage = '/assets/images/users';
 // ==============================|| SOCIAL PROFILE - POST ||============================== //
 
 export interface PostProps {
-  postCommentAdd: (postId: number, comment: CommentType) => Promise<void>;
-  handleCommentLikes: (postId: number, comment: CommentType) => Promise<void>;
-  handlePostLikes: (postId: number) => Promise<void>;
   post: PostDataType;
   showAddFeedback?: boolean;
   showTotalFeedback?: boolean;
 }
 
-const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: PostProps) => {
+const Post = ({ post, showAddFeedback, showTotalFeedback }: PostProps) => {
   // The theme and media query hooks are not being used in the current code
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
@@ -59,22 +57,68 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: Pos
   const accessToken = CustomerToken();
   const { customer } = useGetCustomer(accessToken.customerToken);
 
+  const ratingParams = React.useMemo(() => {
+    const newRatingParams: RatingParams = {
+      feedbackList: [],
+      totalRatingList: [
+        { rating: 5, count: 0 },
+        { rating: 4, count: 0 },
+        { rating: 3, count: 0 },
+        { rating: 2, count: 0 },
+        { rating: 1, count: 0 }
+      ]
+    };
+
+    post.rating.forEach((value) => {
+      const index = newRatingParams.totalRatingList.findIndex((e) => e.rating === value.rating);
+      newRatingParams.totalRatingList[index].count = newRatingParams.totalRatingList[index].count + value.count;
+    });
+    return newRatingParams;
+  }, [post]);
+
   const RenderAddComment = (
-    <Stack spacing={2} sx={{pt: 5}}>
+    <Stack spacing={2} sx={{ pt: 5 }}>
       {customer && (
         <FlexBox>
-          <Avatar src={customer?.avatar} alt="" size='sm'/>
-          <Text ml={2} variant='h4'>{customer.fullName}</Text>
+          <Avatar src={customer?.avatar} alt="" size="sm" />
+          <Text ml={2} variant="h4">
+            {customer.fullName}
+          </Text>
         </FlexBox>
       )}
       <Rating defaultValue={0} />
-      <TextField label="Thêm đánh giá" multiline minRows={3}/>
+      <TextField label="Thêm đánh giá" multiline minRows={3} />
       <DialogActions>
-        <Button variant='outlined'>Gửi</Button>
+        <Button variant="outlined">Gửi</Button>
       </DialogActions>
     </Stack>
   );
 
+  const renderFeedback = (
+    <Grid
+      container
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={2}
+      sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
+    >
+      <Grid item>
+        <Stack direction="row" spacing={2}>
+          <Rating readOnly value={post.rating[0].rating} precision={0.5} />
+          <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
+            {post ? post.rating[0].count : 0} comments
+          </Button>
+        </Stack>
+      </Grid>
+      <Grid item>
+        <IconButton size="large" aria-label="more options">
+          <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
+        </IconButton>
+      </Grid>
+    </Grid>
+  );
+
+  const renderTotalFeedback = <CustomerReview ratingParams={ratingParams} />;
   return (
     <MainCard boxShadow hover>
       <Grid container spacing={1}>
@@ -102,41 +146,22 @@ const Post = ({ handleCommentLikes, handlePostLikes, post, postCommentAdd }: Pos
         </Grid> */}
 
         {/* The photo grid section is also commented out */}
-        {/* {post && (
+        {post && (
           <Grid item xs={12}>
-            <ImageCard src={post.cvImage} />
+            <FlexCenter>
+              <ImageCard src={post.cvImage} width={700 / 1.414} height={700} />
+            </FlexCenter>
           </Grid>
-
         )}
-        {/* post - comment, likes and replay history */}
+        {/* {/* post - comment, likes and replay history */}
         <Grid item xs={12}>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={2}
-            sx={{ mt: 0, color: theme.palette.mode === ThemeMode.DARK ? 'grey.700' : 'grey.800' }}
-          >
-            <Grid item>
-              <Stack direction="row" spacing={2}>
-                <Rating readOnly value={post.rating[0].rating} precision={0.5} />
-                <Button size="small" variant="text" color="inherit" startIcon={<ChatBubbleTwoToneIcon color="secondary" />}>
-                  {post ? post.rating[0].count : 0} comments
-                </Button>
-              </Stack>
-            </Grid>
-            <Grid item>
-              <IconButton size="large" aria-label="more options">
-                <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
-              </IconButton>
-            </Grid>
-          </Grid>
+          {showTotalFeedback ? renderTotalFeedback : renderFeedback}
         </Grid>
         {CommentData.data.list.map((comment, index) => (
           <Comment comment={comment} key={index} />
         ))}
         <Grid item xs={12}>
-          {RenderAddComment}
+          {showAddFeedback && RenderAddComment}
         </Grid>
       </Grid>
     </MainCard>

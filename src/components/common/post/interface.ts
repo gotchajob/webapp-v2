@@ -1,5 +1,3 @@
-import { string } from 'yup';
-
 export const sampleData = {
   status: 'success',
   responseText: 'Data retrieved successfully',
