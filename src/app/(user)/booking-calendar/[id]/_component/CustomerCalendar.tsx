@@ -35,6 +35,7 @@ import Loader from 'ui-component/Loader';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useGetReportSuggest } from 'hooks/use-get-report-suggest';
 import { ReportPopup } from './report-popup';
+import { RenderCustomerCalendarTable } from './CustomerCalenderTable';
 
 const getStatusLabel = (status: any) => {
   switch (status) {
@@ -119,114 +120,19 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
 
   return (
     <Box sx={{ paddingX: 5, paddingY: 1 }}>
-      <Typography variant="body1" color="primary" sx={{ fontStyle: 'italic', mt: 2 }}>
+      <Typography variant="body1" color="primary" sx={{ fontStyle: 'italic' }}>
         Bạn chỉ có thể hủy đặt lịch những buổi phỏng vấn cách 3 ngày hiện tại.
       </Typography>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ pl: 3 }}>Mã chuyên gia</TableCell>
-              <TableCell>Thời điểm đặt lịch</TableCell>
-              <TableCell>Thời điểm bắt đầu</TableCell>
-              <TableCell>Thời điểm kết thúc</TableCell>
-              <TableCell align="center">Trạng thái</TableCell>
-              <TableCell align="center" sx={{ pr: 3 }}>
-                Hành động
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {bookings && bookings.length > 0
-              ? bookings.map((row) => (
-                  <TableRow hover key={row.id}>
-                    <TableCell sx={{ pl: 3 }}>{row.expertId}</TableCell>
-                    <TableCell>
-                      <Typography variant="subtitle2" noWrap>
-                        {formatDate(row.createdAt, 'dd/MM/yyyy')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="subtitle2"
-                        noWrap
-                        sx={{
-                          color: isToday(row.startInterviewDate) ? 'success.main' : 'black'
-                        }}
-                      >
-                        {formatDate(row.startInterviewDate, 'dd/MM/yyyy - hh:mm')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        variant="subtitle2"
-                        noWrap
-                        sx={{
-                          color: isToday(row.endInterviewDate) ? 'success.main' : 'black'
-                        }}
-                      >
-                        {formatDate(row.endInterviewDate, 'dd/MM/yyyy - hh:mm')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip label={getStatusLabel(row.status).label} color={getStatusLabel(row.status).color as any} />
-                    </TableCell>
-                    <TableCell align="center" sx={{ pr: 3 }}>
-                      <Tooltip title="Xem chi tiết">
-                        <IconButton
-                          color="default"
-                          size="large"
-                          onClick={() => {
-                            if (onSelectEvent) {
-                              onSelectEvent(row);
-                              onNext();
-                            }
-                          }}
-                        >
-                          <VisibilityIcon sx={{ fontSize: '1.1rem' }} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Hủy đặt lịch">
-                        <IconButton
-                          color="secondary"
-                          size="large"
-                          disabled={!row.canCancel}
-                          onClick={() => setSelectedBooking({ id: row.id, type: 'reject' })}
-                        >
-                          <CloseIcon sx={{ fontSize: '1.1rem' }} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Báo cáo">
-                        <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: row.id, type: 'report' })}>
-                          <ReportProblemIcon sx={{ fontSize: '1.1rem' }} />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : !loading && (
-                  <TableRow>
-                    <TableCell colSpan={7}>
-                      <Typography variant="h5" align="center" sx={{ pb: 20 }}>
-                        Hiện chưa có buổi đặt lịch nào
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-            {loading && (
-              <TableRow>
-                <TableCell colSpan={7}>
-                  <CircularLoader />
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Box sx={{ display: 'flex', justifyContent: 'center', paddingY: 3 }}>
-        <Pagination count={10} page={page} onChange={(event, value) => setPage(value)} shape="rounded" variant="outlined" color="primary" />
-      </Box>
+      {bookings && (
+        <RenderCustomerCalendarTable
+          bookings={bookings}
+          onSelectEvent={(id) => {
+            onSelectEvent(id);
+          }}
+          onNext={onNext}
+          setSelectedBooking={setSelectedBooking}
+        />
+      )}
 
       {/* Dialogs for actions */}
       <Dialog open={selectedBooking?.type === 'reject'} onClose={handleCloseDialog} maxWidth="sm" fullWidth sx={{ borderRadius: '10px' }}>
@@ -261,3 +167,105 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
 };
 
 export default BookingCalendar;
+
+{/* <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ pl: 3 }}>Mã chuyên gia</TableCell>
+              <TableCell>Thời điểm đặt lịch</TableCell>
+              <TableCell>Thời điểm bắt đầu</TableCell>
+              <TableCell>Thời điểm kết thúc</TableCell>
+              <TableCell align="center">Trạng thái</TableCell>
+              <TableCell align="center" sx={{ pr: 3 }}>
+                Hành động
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {bookings && bookings.length > 0
+              ? bookings.map((row) => (
+                <TableRow hover key={row.id}>
+                  <TableCell sx={{ pl: 3 }}>{row.expertId}</TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" noWrap>
+                      {formatDate(row.createdAt, 'dd/MM/yyyy')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="subtitle2"
+                      noWrap
+                      sx={{
+                        color: isToday(row.startInterviewDate) ? 'success.main' : 'black'
+                      }}
+                    >
+                      {formatDate(row.startInterviewDate, 'dd/MM/yyyy - hh:mm')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="subtitle2"
+                      noWrap
+                      sx={{
+                        color: isToday(row.endInterviewDate) ? 'success.main' : 'black'
+                      }}
+                    >
+                      {formatDate(row.endInterviewDate, 'dd/MM/yyyy - hh:mm')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip label={getStatusLabel(row.status).label} color={getStatusLabel(row.status).color as any} />
+                  </TableCell>
+                  <TableCell align="center" sx={{ pr: 3 }}>
+                    <Tooltip title="Xem chi tiết">
+                      <IconButton
+                        color="default"
+                        size="large"
+                        onClick={() => {
+                          if (onSelectEvent) {
+                            onSelectEvent(row);
+                            onNext();
+                          }
+                        }}
+                      >
+                        <VisibilityIcon sx={{ fontSize: '1.1rem' }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Hủy đặt lịch">
+                      <IconButton
+                        color="secondary"
+                        size="large"
+                        disabled={!row.canCancel}
+                        onClick={() => setSelectedBooking({ id: row.id, type: 'reject' })}
+                      >
+                        <CloseIcon sx={{ fontSize: '1.1rem' }} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Báo cáo">
+                      <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: row.id, type: 'report' })}>
+                        <ReportProblemIcon sx={{ fontSize: '1.1rem' }} />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+              : !loading && (
+                <TableRow>
+                  <TableCell colSpan={7}>
+                    <Typography variant="h5" align="center" sx={{ pb: 20 }}>
+                      Hiện chưa có buổi đặt lịch nào
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            {loading && (
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <CircularLoader />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer> */}

@@ -23,6 +23,7 @@ import CircularLoader from "ui-component/CircularLoader";
 import StartIcon from '@mui/icons-material/Start';
 import Link from "next/link";
 import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
+import { RenderBookingReportTable } from "./BookingReportTable";
 
 const fakeBookingReports = {
     list: [
@@ -86,23 +87,6 @@ const fakeBookingReports = {
     totalPage: 1
 };
 
-const renderStatusChip = (status: number) => {
-    switch (status) {
-        case 1:
-            return <Chip label="Processing" color="primary" />;
-        case 2:
-            return <Chip label="Expert Processing" color="warning" />;
-        case 3:
-            return <Chip label="Staff Processing" color="info" />;
-        case 4:
-            return <Chip label="Approved" color="success" />;
-        case 5:
-            return <Chip label="Rejected" color="error" />;
-        default:
-            return <Chip label="Unknown" color="default" />;
-    }
-};
-
 export default function BookingReport({ onSelectEvent, onNext }: { onSelectEvent: (id: number) => void, onNext: () => void }) {
     const { refresh, refreshTime } = useRefresh();
     const { customerToken } = CustomerToken();
@@ -111,8 +95,13 @@ export default function BookingReport({ onSelectEvent, onNext }: { onSelectEvent
     const { bookingReportForCustomer, loading } = UseGetBookingReportForCustomer({ pageNumber: page, pageSize: rowPage }, refreshTime, customerToken);
 
     return (
-        <Box sx={{ paddingX: 5, paddingY: 1 }}>
-            <TableContainer>
+        <Box sx={{ paddingX: 1 }}>
+            {fakeBookingReports &&
+                (<RenderBookingReportTable bookingReportForCustomer={fakeBookingReports.list}
+                    onSelectEvent={(id) => { if (onSelectEvent) { onSelectEvent(id); } }}
+                    onNext={() => { if (onNext) { onNext() } }} />)
+            }
+            {/* <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -177,18 +166,7 @@ export default function BookingReport({ onSelectEvent, onNext }: { onSelectEvent
                             )}
                     </TableBody>
                 </Table>
-            </TableContainer>
-
-            <Box sx={{ display: 'flex', justifyContent: 'center', paddingY: 3 }}>
-                <Pagination
-                    count={bookingReportForCustomer.totalPage}
-                    page={page}
-                    onChange={(event, value) => setPage(value)}
-                    shape="rounded"
-                    variant="outlined"
-                    color="primary"
-                />
-            </Box>
+            </TableContainer> */}
         </Box>
     )
 }

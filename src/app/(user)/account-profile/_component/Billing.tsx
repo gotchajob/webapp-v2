@@ -9,6 +9,7 @@ import { useRefresh } from 'hooks/use-refresh';
 import { TransactionCurrent } from 'package/api/transaction/current';
 import { formatDate } from 'package/util';
 import { useEffect, useState } from 'react';
+import { RenderBillingTable } from './BillingTable';
 
 export default function TransactionTable() {
   const { refresh, refreshTime } = useRefresh();
@@ -45,7 +46,14 @@ export default function TransactionTable() {
 
   return (
     <Box>
-      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+      {transactionCurrent && (
+        <RenderBillingTable transactionCurrent={transactionCurrent.list} />
+      )}
+    </Box>
+  );
+}
+
+{/* <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
         <Table>
           <TableHead sx={{ bgcolor: '#2196F3', '& .MuiTableCell-root': { color: 'white', fontWeight: 'bold' } }}>
             <TableRow>
@@ -108,7 +116,4 @@ export default function TransactionTable() {
             bgcolor: '#E3F2FD', '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': { color: '#2196F3' }
           }}
         />
-      </TableContainer>
-    </Box>
-  );
-}
+      </TableContainer> */}

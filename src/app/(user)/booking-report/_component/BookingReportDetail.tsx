@@ -66,7 +66,7 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                     Booking report được tạo vào :
                                 </Typography>
                                 <Typography variant="body2">
-                                    {formatDate(bookingReportById.createdAt, "dd/MM/yyyy - hh:mm")}
+                                    {formatDate(bookingReportById?.createdAt, "dd/MM/yyyy - hh:mm")}
                                 </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1}>
@@ -74,7 +74,7 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                     Booking report được cập nhật vào :
                                 </Typography>
                                 <Typography variant="body2">
-                                    {formatDate(bookingReportById.updatedAt, "dd/MM/yyyy - hh:mm")}
+                                    {formatDate(bookingReportById?.updatedAt, "dd/MM/yyyy - hh:mm")}
                                 </Typography>
                             </Stack>
                         </Grid>
@@ -95,7 +95,7 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                                 Report Suggest:
                                             </Typography>
                                             <Stack spacing={1} direction="row" flexWrap="wrap" gap={1}>
-                                                {bookingReportById.bookingReportSuggest.map((suggest) => (
+                                                {bookingReportById?.bookingReportSuggest.map((suggest) => (
                                                     <Chip
                                                         key={suggest.id}
                                                         label={suggest.reportSuggest}
@@ -116,7 +116,7 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                                 Trạng thái booking report:
                                             </Typography>
                                             <Stack spacing={1} direction="row" flexWrap="wrap" gap={1}>
-                                                {renderStatusChip(bookingReportById.status)}
+                                                {renderStatusChip(bookingReportById?.status)}
                                             </Stack>
                                         </Stack>
                                     </Stack>
@@ -131,14 +131,14 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                                     Lý do báo cáo:
                                                 </Typography>
                                                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                                    {bookingReportById.customerContent}
+                                                    {bookingReportById?.customerContent}
                                                 </Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="subtitle1" fontWeight="medium">Bằng chứng:</Typography>
                                                 <Typography variant="body2" sx={{ color: 'primary.main' }}>
-                                                    <a href={bookingReportById.customerEvidence} target="_blank" rel="noopener noreferrer">
-                                                        {bookingReportById.customerEvidence}
+                                                    <a href={bookingReportById?.customerEvidence} target="_blank" rel="noopener noreferrer">
+                                                        {bookingReportById?.customerEvidence}
                                                     </a>
                                                 </Typography>
                                             </Stack>
@@ -155,14 +155,14 @@ export default function BookingReportDetail({ reportId, onPrev }: { reportId: nu
                                                     Lý do báo cáo:
                                                 </Typography>
                                                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                                    {bookingReportById.expertContent}
+                                                    {bookingReportById?.expertContent}
                                                 </Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="subtitle1" fontWeight="medium">Bằng chứng:</Typography>
                                                 <Typography variant="body2" sx={{ color: 'primary.main' }}>
-                                                    <a href={bookingReportById.expertEvidence} target="_blank" rel="noopener noreferrer">
-                                                        {bookingReportById.expertEvidence}
+                                                    <a href={bookingReportById?.expertEvidence} target="_blank" rel="noopener noreferrer">
+                                                        {bookingReportById?.expertEvidence}
                                                     </a>
                                                 </Typography>
                                             </Stack>

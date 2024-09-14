@@ -25,6 +25,22 @@ import { useEffect } from 'react';
 import { useGetCurrentBalance } from 'hooks/use-get-balance';
 import { StyledLink } from 'components/common/link/styled-link';
 import { useGetCustomer } from 'hooks/use-get-current-user';
+import { Skeleton } from '@mui/material';
+
+const formatCurrency = (value: number) => {
+  try {
+    if (isNaN(value) || value === null || value === undefined) {
+      return '0 đ';
+    }
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(value);
+  } catch (error) {
+    console.error('Lỗi khi format currency:', error);
+    return '0 đ';
+  }
+};
 
 // ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
 
@@ -55,14 +71,14 @@ const WalletCard = () => {
         '&:after': {
           border: '19px solid ',
           borderRadius: '50%',
-          top: '65px',
-          right: '-150px',
+          top: '-30px',
+          right: '-90px',
           ...cardSX
         },
         '&:before': {
           border: '3px solid ',
           borderRadius: '50%',
-          top: '145px',
+          top: '5px',
           right: '-70px',
           ...cardSX
         }
@@ -76,7 +92,7 @@ const WalletCard = () => {
               <Tooltip title="Lịch sử giao dịch" placement="top">
                 <IconButton
                   size="small"
-                  onClick={() => {}}
+                  onClick={() => { }}
                   sx={{
                     border: '2px solid #0782C6',
                     borderRadius: '10%',
@@ -91,7 +107,11 @@ const WalletCard = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              {loading ? <CircularProgress size={14} sx={{ mr: 1 }} /> : `${balance?.balance ?? 0} vnd`}
+              {balance ? (
+                `${formatCurrency(balance?.balance)}`
+              ) : (
+                <Skeleton width={88} height={24} />
+              )}
             </Typography>
           </Grid>
           <Grid item></Grid>
