@@ -35,8 +35,8 @@ import { FlexBox, FlexCenter } from '../box/flex-box';
 import { Text } from '../text/text';
 import { DialogActions } from '@mui/material';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
-import Comment from './comment';
 import { CustomerReview, RatingParams } from 'components/review';
+import { Comment } from './comment';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
