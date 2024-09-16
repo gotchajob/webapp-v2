@@ -206,7 +206,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
 
     const [note, setNote] = useState(bookingInfo ? bookingInfo.note : "");
 
-    const [selectedCV, setSelectedCV] = useState<number | null>(bookingInfo ? bookingInfo.customerCvId : "");
+    const [selectedCV, setSelectedCV] = useState<string | number | null>(bookingInfo ? bookingInfo.customerCvId : "");
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
 
@@ -261,7 +261,7 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
             message = 'Bạn cần phải chọn kỹ năng phỏng vấn.';
             valid = false;
             setActiveButton("skills");
-        } else if (selectedCV === null) {
+        } else if (!selectedCV || selectedCV === null || selectedCV === "") {
             message = 'Bạn cần phải chọn CV để phỏng vấn.';
             valid = false;
             setActiveButton("cvs");
@@ -488,16 +488,3 @@ const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { 
 
 export default ExpertCalendarPage;
 
-{/* Dialog thêm sự kiện */ }
-{/* <Dialog maxWidth="sm" fullWidth onClose={handleModalClose} open={isModalOpen} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
-                {isModalOpen && (
-                    <AddEventOnExpertCalendar
-                        event={selectedEvent}
-                        range={selectedRange}
-                        onCancel={handleModalClose}
-                        handleDelete={handleEventDelete}
-                        handleCreate={handleEventCreate}
-                        handleUpdate={handleUpdateEvent}
-                    />
-                )}
-            </Dialog> */}
