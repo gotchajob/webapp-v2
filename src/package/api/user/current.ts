@@ -9,7 +9,7 @@ export interface UserCurrentResponse {
 }
 
 export interface UserProfile {
-  id: string;
+  id: number;
   fullName: string;
   avatar: string;
 }

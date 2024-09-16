@@ -1,7 +1,5 @@
 'use client';
 
-import * as React from 'react';
-
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -37,6 +35,11 @@ import { DialogActions } from '@mui/material';
 import ShareTwoToneIcon from '@mui/icons-material/ShareTwoTone';
 import { CustomerReview, RatingParams } from 'components/review';
 import { Comment } from './comment-post';
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { apiServerFetch } from 'package/api/api-fetch';
+import { useSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
 const avatarImage = '/assets/images/users';
 
 // ==============================|| COMMENT TEXTFIELD ||============================== //
@@ -54,11 +57,15 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
   // The theme and media query hooks are not being used in the current code
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
-
+  const router = useRouter();
   const accessToken = CustomerToken();
   const { customer } = useGetCustomer(accessToken.customerToken);
 
-  const ratingParams = React.useMemo(() => {
+  const [comment, setComment] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const ratingParams = useMemo(() => {
     const newRatingParams: RatingParams = {
       feedbackList: listComment,
       totalRatingList: [
@@ -77,6 +84,34 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
     return newRatingParams;
   }, [post]);
 
+  const handleSubmitComment = async () => {
+    try {
+      setIsLoading(true);
+      const res = await apiServerFetch(
+        '/cv-comment',
+        'POST',
+        {
+          cvShareId: post.id,
+          ...comment
+        },
+        accessToken.customerToken
+      );
+      
+      if (res.status === 'error') {
+        throw new Error(res.responseText);
+      }
+      enqueueSnackbar(res.message, {
+        variant: 'success'
+      });
+      router.refresh();
+    } catch (error: any) {
+      enqueueSnackbar(error.message, {
+        variant: 'error'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const RenderAddComment = (
     <Stack spacing={2} sx={{ pt: 5 }}>
       {customer && (
@@ -87,10 +122,30 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
           </Text>
         </FlexBox>
       )}
-      <Rating defaultValue={0} />
-      <TextField label="Thêm đánh giá" multiline minRows={3} />
+      <Rating
+        defaultValue={0}
+        onChange={(e, value) => {
+          setComment({
+            ...comment,
+            rating: value
+          });
+        }}
+      />
+      <TextField
+        label="Thêm đánh giá"
+        multiline
+        minRows={3}
+        onChange={(e) => {
+          setComment({
+            ...comment,
+            comment: e.target.value
+          });
+        }}
+      />
       <DialogActions>
-        <Button variant="outlined">Gửi</Button>
+        <LoadingButton loading={isLoading} variant="outlined" onClick={handleSubmitComment}>
+          Gửi
+        </LoadingButton>
       </DialogActions>
     </Stack>
   );
@@ -163,7 +218,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
           ) : (
             <>
               {renderFeedback}
-              {CommentData.data.list.map((comment, index) => (
+              {listComment.map((comment, index) => (
                 <Grid item xs={12} key={index}>
                   <Comment comment={comment} />
                 </Grid>
@@ -172,7 +227,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
           )}
         </Grid>
         <Grid item xs={12}>
-          {showAddFeedback && RenderAddComment}
+          {showAddFeedback && customer && customer?.id !== post.userInfo.userId && RenderAddComment}
         </Grid>
       </Grid>
     </MainCard>

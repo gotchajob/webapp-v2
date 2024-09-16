@@ -17,8 +17,15 @@ import Tooltip from '@mui/material/Tooltip';
 import { Avatar, Rating } from '@mui/material';
 import { Text } from 'components/common/text/text';
 import { StyledLink } from 'components/common/link/styled-link';
+import { apiServerFetch } from 'package/api/api-fetch';
+import { CustomerToken } from 'hooks/use-login';
+import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/navigation';
 
 export const ShareCVTable = ({ data }: { data: any[] }) => {
+  const { customerToken: accessToken } = CustomerToken();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
   const columns: GridColDef[] = [
     {
       field: 'information',
@@ -63,24 +70,36 @@ export const ShareCVTable = ({ data }: { data: any[] }) => {
       renderHeader: (params) => <DataGridHeader mainTitle={params.colDef.headerName} />,
       renderCell: (params) => {
         const shareCV = JSON.parse(params.value);
-        const selectAction = shareCV.status ? (
-          <Tooltip title="Hiện">
-            <IconButton size="small" color="primary">
-              <IconEye />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Ẩn">
-            <IconButton size="small">
-              <IconEyeCancel />
-            </IconButton>
-          </Tooltip>
-        );
+        const selectAction =
+          shareCV.status === 1 ? (
+            <Tooltip title="Hiện">
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => {
+                  handleChangeStatus(shareCV.id, false);
+                }}
+              >
+                <IconEye />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Ẩn">
+              <IconButton
+                size="small"
+                onClick={() => {
+                  handleChangeStatus(shareCV.id, true);
+                }}
+              >
+                <IconEyeCancel />
+              </IconButton>
+            </Tooltip>
+          );
         return [
           selectAction,
           <Tooltip title="Chi tiét">
-            <StyledLink href={"/manage-share-cv/" + shareCV.id}>
-              <IconButton size="small" color="primary">
+            <StyledLink href={'/manage-share-cv/' + shareCV.id}>
+              <IconButton size="small" color="secondary">
                 <IconEdit />
               </IconButton>
             </StyledLink>
@@ -101,16 +120,24 @@ export const ShareCVTable = ({ data }: { data: any[] }) => {
     return list;
   }, [text, data]);
 
-  const RenderClientFilter = (
-    <Grid container spacing={3}>
-      <Grid item xs={12} lg={4}>
-        <FlexBox>
-          <Button>Tìm kiếm</Button>
-          <Input size="small" onChange={handleChangeEventText} />
-        </FlexBox>
-      </Grid>
-    </Grid>
-  );
+  const handleChangeStatus = async (id: number, hide: boolean) => {
+    try {
+      let data: any = null;
+      if (hide) {
+        data = await apiServerFetch(`/cv-share/${id}/cancel-hidden`, 'PATCH', undefined, accessToken);
+      } else {
+        data = await apiServerFetch(`/cv-share/${id}/hidden`, 'PATCH', undefined, accessToken);
+      }
+      if (data.status !== 'success') {
+        throw new Error(data.responseText);
+      }
+      enqueueSnackbar(data.responseText, { variant: 'success' });
+    } catch (error: any) {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    } finally {
+      router.refresh();
+    }
+  };
 
   const props: DataGridTableProps = {
     columns,
