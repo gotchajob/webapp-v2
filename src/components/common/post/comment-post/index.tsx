@@ -68,14 +68,14 @@ export const Comment = ({ comment }: CommentComponentProps) => {
                 size="sm"
                 alt="User 1"
                 src={
-                  comment.useInfo && comment.useInfo.avatar ? `${avatarImage}/${comment.useInfo.avatar}` : `${avatarImage}/avatar-1.png`
+                  comment.user && comment.user.avatar ? `${avatarImage}/${comment.user.avatar}` : `${avatarImage}/avatar-1.png`
                 }
               />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>
-                  <Typography variant="h5">{comment.useInfo.fullName}</Typography>
+                  <Typography variant="h5">{comment.user.fullName}</Typography>
                 </Grid>
               </Grid>
             </Grid>

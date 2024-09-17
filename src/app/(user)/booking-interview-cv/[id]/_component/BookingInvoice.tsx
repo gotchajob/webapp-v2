@@ -53,7 +53,7 @@ const BookInvoicePage = ({ onBack, bookingInfo, params }: { onBack: () => void; 
       setIsLoading(true);
       const res = await PostBooking(
         {
-          availabilityId: bookingInfo.availabilityId,
+          availabilityId: +bookingInfo.availabilityId,
           bookingSkill: bookingInfo.bookingSkill,
           customerCvId: bookingInfo.customerCvId,
           expertId: bookingInfo.expertId,
