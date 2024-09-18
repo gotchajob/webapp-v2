@@ -412,11 +412,6 @@ export default function Page() {
             <ExpertDetailCard expert={expert} />
           </Grid>
         ))}
-        <Grid container item justifyContent="center" alignItems="center" py={4}>
-          <Box>
-            <Pagination count={10} color="primary" size="large" />
-          </Box>
-        </Grid>
       </Grid>
     </>
   );
