@@ -150,9 +150,6 @@ export default function Page() {
                 </StyledLink>
               </Grid>
             ))}
-          <Grid container item xs={12} justifyContent="center" alignItems="center" my={4}>
-            <Pagination count={10} variant="text" shape="rounded" color="primary" />
-          </Grid>
         </Grid>
       </Container>
     </>
