@@ -1,27 +1,43 @@
 import { apiServerFetch, errorSystem } from 'package/api/api-fetch';
 
-export interface UserCurrentRequest { }
-
-export interface UserCurrentResponse {
+export interface GetUserCurrentResponse {
   status: string;
   responseText: string;
-  data: UserProfile;
+  data: userCurrent;
 }
 
-export interface UserProfile {
+export interface userCurrent {
   id: number;
-  fullName: string;
   avatar: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  roleId: number;
 }
 
-export const GetUserCurrent = async (accessToken: string): Promise<UserCurrentResponse> => {
+export async function GetUserCurrent(accessToken: string): Promise<GetUserCurrentResponse> {
   try {
-    const res = await apiServerFetch('/user/current', 'GET', undefined, accessToken);
+    const res = await apiServerFetch(`/user/current`, 'GET', undefined, accessToken);
     if (res.status === 'error') {
-      throw new Error('');
+      throw new Error(res.responseText || 'Error fetching user data');
     }
     return res;
   } catch (error: any) {
-    return errorSystem('Đăng nhập thất bại', { token: '' });
+    return errorSystem(error, {
+      status: 'error',
+      responseText: error.message,
+      data: {
+        id: 0,
+        avatar: '',
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        address: '',
+        roleId: 0,
+      },
+    });
   }
-};
+}

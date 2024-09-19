@@ -61,7 +61,7 @@ const ChangePassword = () => {
           enqueueSnackbar('Mật khẩu đã được thay đổi thành công!', { variant: 'success' });
           formik.resetForm();
         } else {
-          enqueueSnackbar('Có lỗi xảy ra khi đổi mật khẩu.', { variant: 'error' });
+          enqueueSnackbar('Sai mặt khẩu hiện tại.', { variant: 'error' });
         }
       } catch (error) {
         enqueueSnackbar('Lỗi hệ thống xảy ra khi đổi mật khẩu.', { variant: 'error' });

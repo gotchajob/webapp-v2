@@ -4,6 +4,7 @@ export interface CheckCodeForgetPasswordRequest {
   email: string;
   code: string;
 }
+
 export interface CheckCodeForgetPasswordReponse {
   status: string;
   responseText: string;
