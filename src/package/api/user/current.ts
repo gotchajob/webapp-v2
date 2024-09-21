@@ -15,6 +15,7 @@ export interface userCurrent {
   phone: string;
   address: string;
   roleId: number;
+  fullName: string,
 }
 
 export async function GetUserCurrent(accessToken: string): Promise<GetUserCurrentResponse> {

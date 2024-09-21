@@ -23,7 +23,7 @@ import { CustomerToken } from 'hooks/use-login';
 import { useRefresh } from 'hooks/use-refresh';
 import Image from 'next/image';
 import { CVs } from 'package/api/cv-share';
-import { UserProfile } from 'package/api/user/current';
+import { userCurrent } from 'package/api/user/current';
 import MainCard from 'ui-component/cards/MainCard';
 import Rating from '@mui/material/Rating';
 import { ImageCard } from '../image/image-card';
@@ -60,11 +60,10 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
   const router = useRouter();
   const accessToken = CustomerToken();
   const { customer } = useGetCustomer(accessToken.customerToken);
-
   const [comment, setComment] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const { enqueueSnackbar } = useSnackbar();
+
   const ratingParams = useMemo(() => {
     const newRatingParams: RatingParams = {
       feedbackList: listComment,
@@ -96,7 +95,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
         },
         accessToken.customerToken
       );
-      
+
       if (res.status === 'error') {
         throw new Error(res.responseText);
       }
@@ -118,7 +117,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
         <FlexBox>
           <Avatar src={customer?.avatar} alt="" size="sm" />
           <Text ml={2} variant="h4">
-            {customer.fullName}
+            {customer.firstName} {customer.lastName}
           </Text>
         </FlexBox>
       )}
@@ -182,12 +181,12 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
         <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
             <Grid item>
-              <Avatar alt="User 1" src={`${avatarImage}/${post.userInfo.avatar}`} />
+              <Avatar alt="User 1" src={`${avatarImage}/${post.user.avatar}`} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1} justifyContent={'space-between'}>
                 <Grid item>
-                  <Typography variant="h5">{post.userInfo.fullName}</Typography>
+                  <Typography variant="h5">{post.user.fullName}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="caption">{formatDate(post.createdAt, 'dd/MM/yyyy')}</Typography>
@@ -227,7 +226,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
           )}
         </Grid>
         <Grid item xs={12}>
-          {showAddFeedback && customer && customer?.id !== post.userInfo.userId && RenderAddComment}
+          {showAddFeedback && customer && customer?.id !== post.user.userId && RenderAddComment}
         </Grid>
       </Grid>
     </MainCard>
