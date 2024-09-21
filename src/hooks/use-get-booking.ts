@@ -7,6 +7,9 @@ export const useGetBookingCurrent = (accessToken: string, refreshTime: any) => {
     const [loading, setLoading] = useState<boolean>();
 
     const fetchBookingsCurrent = async () => {
+        // if (!accessToken) {
+        //     return;
+        // }
         try {
             setLoading(true);
             const data = await GetBookingCurrent(accessToken);

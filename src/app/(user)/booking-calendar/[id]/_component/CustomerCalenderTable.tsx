@@ -51,9 +51,14 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
 
     const columns: GridColDef[] = [
         {
-            field: 'expertId',
-            headerName: 'Mã chuyên gia',
-            flex: 1
+            field: 'expertInfo',
+            headerName: 'Tên chuyên gia',
+            flex: 1,
+            renderCell: (params) => (
+                <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                    {params.value.fullName}
+                </Box>
+            )
         },
 
         {
@@ -89,7 +94,7 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
         {
             field: 'status',
             headerName: 'Trạng Thái',
-            flex: 1,
+            flex: 1.5,
             renderCell: (params) => getStatusLabel(params.value),
         },
         {
@@ -140,6 +145,7 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
             const lowerCaseText = text.toLowerCase();
             data = data.filter((row) => {
                 return (
+                    row.id.toString().includes(lowerCaseText) ||
                     formatDate(row.createdAt, 'dd/MM/yyyy hh:mm').includes(lowerCaseText) ||
                     formatDate(row.startInterviewDate, 'dd/MM/yyyy hh:mm').includes(lowerCaseText) ||
                     formatDate(row.endInterviewDate, 'dd/MM/yyyy hh:mm').includes(lowerCaseText) ||

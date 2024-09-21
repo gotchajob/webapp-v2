@@ -5,16 +5,19 @@ export interface BookingCurrent {
     id: number,
     expertId: number,
     customerId: number,
-    availabilityId: number,
     startInterviewDate: string,
     endInterviewDate: string,
-    customerCvId: number,
-    canCancel: string,
-    note: string,
-    rejectReason: string,
-    status: 1,
+    status: number,
     createdAt: string,
-    expertSkillOptionId: []
+    canCancel: true,
+    expertInfo: expertInfo
+}
+
+export interface expertInfo {
+    userId: 0,
+    fullName: string,
+    email: string,
+    avatar: string
 }
 
 export interface GetBookingCurrentRes {
