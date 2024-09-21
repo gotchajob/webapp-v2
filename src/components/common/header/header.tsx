@@ -218,7 +218,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                   </Box>
                   <Box sx={{ p: 2, pt: 0 }}>
                     <WalletCard /> {/* Wallet Card */}
-                
+
                     <List
                       component="nav"
                       sx={{

@@ -6,6 +6,7 @@ export function UseGetUserCurrent(accessToken: string, refresh: number) {
         id: 0,
         avatar: "",
         email: "",
+        fullName: '',
         firstName: '',
         lastName: '',
         phone: "",
