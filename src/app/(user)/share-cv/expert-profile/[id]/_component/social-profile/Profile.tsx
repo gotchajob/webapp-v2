@@ -130,13 +130,8 @@ const Profile = ({ expert }: { expert: Expert }) => {
             </Grid>
           </Grid>
         </MainCard>
-      </Grid>
-      <Grid item xs={8}>
-        <MainCard>
+        <MainCard sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h5">Giới thiệu</Typography>
-            </Grid>
             <Grid item xs={12}>
               <Typography variant="body2">{expert.bio}</Typography>
             </Grid>
@@ -192,6 +187,12 @@ const Profile = ({ expert }: { expert: Expert }) => {
               </Link>
             </Grid>
           </Grid>
+        </MainCard>
+      </Grid>
+      <Grid item xs={8}>
+        <MainCard>
+          <Typography variant='h4'>Giới thiệu về dịch vụ</Typography>
+          <div dangerouslySetInnerHTML={{ __html: expert.shortDescription }}></div>
         </MainCard>
       </Grid>
 

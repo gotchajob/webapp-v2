@@ -31,6 +31,7 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { Category } from 'package/api/category';
 import { formatDate } from 'package/util';
 import { CustomerToken } from 'hooks/use-login';
+import { ServiceDetail } from './_component/service-details';
 
 const defaultShadow = '0 2px 14px 0 rgb(32 40 45 / 8%)';
 
@@ -161,90 +162,7 @@ export default function Page() {
 
   return (
     <>
-      <Box
-        sx={{
-          width: '100%',
-          height: '500px',
-          backgroundImage: 'url(https://s30876.pcdn.co/wp-content/uploads/Enhance-your-CV-1170x630.jpg.optimal.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'start',
-          backgroundRepeat: 'no-repeat',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          position: 'relative',
-          filter: 'brightness(1.1) contrast(1.05)'
-        }}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            top: 0,
-            left: 0,
-            zIndex: 0
-          }}
-        />
-
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="flex-start"
-          sx={{
-            backgroundColor: '#AAD4EB',
-            opacity: 0.8,
-            maxWidth: '40%',
-            padding: '40px',
-            borderTopRightRadius: '35px',
-            borderBottomRightRadius: '35px',
-            boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.2)',
-            height: '100%',
-            position: 'relative',
-            zIndex: 1
-          }}
-        >
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{
-              color: '#333',
-              fontWeight: 700,
-              marginBottom: '16px',
-              fontSize: '60px'
-            }}
-          >
-            Khám phá chuyên gia hàng đầu
-          </Typography>
-          <Typography
-            variant="h6"
-            component="p"
-            sx={{
-              color: '#555',
-              marginBottom: '24px',
-              fontSize: '20px',
-              fontWeight: 500
-            }}
-          >
-            Kết nối với những chuyên gia có tầm cỡ, người sẽ đưa sự nghiệp của bạn lên tầm cao mới. Đừng bỏ lỡ cơ hội vàng để mở rộng mạng
-            lưới chuyên môn và học hỏi từ những người dẫn đầu trong ngành.
-          </Typography>
-        </Grid>
-      </Box>
-
-      {/* <Container sx={{ my: 2 }}>
-        <SubCard title="Hướng dẫn sử dụng">
-          <Typography variant="body1" color="textSecondary">
-            Sử dụng các trường tìm kiếm bên dưới để tìm kiếm các chuyên gia phù hợp theo quốc gia, kỹ năng, và số năm kinh nghiệm. Hệ thống sẽ tìm kiếm và hiển thị các chuyên gia có thông tin phù hợp với các tiêu chí bạn nhập vào để phỏng vấn và đánh giá CV.
-          </Typography>
-        </SubCard>
-      </Container> */}
-
-      {/* Filter section */}
+      <ServiceDetail />
       <Container>
         <Grid container spacing={3} mt={1}>
           <Grid item xs={6}>
@@ -288,6 +206,7 @@ export default function Page() {
                 Chọn ngành nghề cần tư vấn
               </Typography>
               <Autocomplete
+                id="movingID"
                 options={categories}
                 getOptionLabel={(option) => option.name}
                 filterSelectedOptions
@@ -406,7 +325,7 @@ export default function Page() {
       </Container>
 
       {/* Expert List */}
-      <Grid container spacing={3} minHeight={300} mt={15} px={30}>
+      <Grid container spacing={3} minHeight={300} mt={15} px={20}>
         {expertMatchingList.map((expert, index) => (
           <Grid key={index} item xs={3}>
             <ExpertDetailCard expert={expert} />

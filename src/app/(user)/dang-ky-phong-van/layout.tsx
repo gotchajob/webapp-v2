@@ -7,15 +7,15 @@ import { ReactNode } from "react";
 
 export default async function Layout({ children }: { children: ReactNode }) {
 
-    const customerToken = getUserToken(cookies());
+    // const customerToken = getUserToken(cookies());
 
-    const data = await GetCheckBuyService(customerToken);
+    // const data = await GetCheckBuyService(customerToken);
 
-    console.log("layout", data);
+    // console.log("layout", data);
 
-    if (data.status == "success") {
-        redirect("/share-cv");
-    }
+    // if (data.status == "success") {
+    //     redirect("/share-cv");
+    // }
 
     return <>{children}</>
 }

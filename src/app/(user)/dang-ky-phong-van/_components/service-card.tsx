@@ -24,7 +24,6 @@ import { GetBookingPrice } from 'package/api/booking/price';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useGetCurrentBalance } from 'hooks/use-get-balance';
 
-
 const StyledText = ({ children }: { children: ReactNode }) => {
   return (
     <Text
@@ -65,14 +64,14 @@ export const ServiceCard = () => {
   const fecthBookingPrice = async () => {
     try {
       const res = await GetBookingPrice();
-      if (res.status !== "success") {
+      if (res.status !== 'success') {
         throw new Error();
       }
       setBookingPrice(res.data.price);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleRegisterClick = () => {
     if (!customerToken) {
@@ -88,14 +87,14 @@ export const ServiceCard = () => {
         return;
       }
       const res = await PatchBuyService(customerToken);
-      if (res.status !== "success") {
+      if (res.status !== 'success') {
         throw new Error();
       }
-      route.push("/share-cv");
+      route.push('/share-cv');
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const params = {
     id: 'MockInterviewService',
@@ -113,12 +112,12 @@ export const ServiceCard = () => {
   }, []);
 
   useEffect(() => {
-    console.log("balance:", balance);
+    console.log('balance:', balance);
   }, [balance, customerToken]);
 
   return (
     <>
-      <SubCard >
+      <SubCard>
         <Grid container spacing={4} mt={5} mb={10}>
           <Grid item xs={4}>
             <FlexCenter position={'relative'} left={-21} height={'100'}>
@@ -188,9 +187,7 @@ export const ServiceCard = () => {
                     </>
                   ) : (
                     <>
-                      <span style={{ fontSize: 25 }}>
-                        {`${formatNumber(params?.price)} VND/`}
-                      </span>
+                      <span style={{ fontSize: 25 }}>{`${formatNumber(params?.price)} VND/`}</span>
                       {params.priceDes}
                     </>
                   )}
@@ -258,11 +255,7 @@ export const ServiceCard = () => {
             </DialogContent>
             <DialogActions sx={{ justifyContent: 'space-between', paddingX: 2, paddingY: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Checkbox
-                  onChange={(e, checked) => setIsAgree(checked)}
-                  checked={isAgree}
-                  sx={{ padding: 0, marginRight: 1 }}
-                />
+                <Checkbox onChange={(e, checked) => setIsAgree(checked)} checked={isAgree} sx={{ padding: 0, marginRight: 1 }} />
                 <Typography variant="body2" color="primary.main">
                   Tôi đồng ý với các điều khoản sử dụng
                 </Typography>
@@ -271,12 +264,7 @@ export const ServiceCard = () => {
                 <Button onClick={() => setOpenPaymentDialog(false)} color="primary" sx={{ marginRight: 2 }}>
                   Đóng
                 </Button>
-                <Button
-                  color="primary"
-                  disabled={!isAgree}
-                  onClick={HandleBuyService}
-
-                >
+                <Button color="primary" disabled={!isAgree} onClick={HandleBuyService}>
                   Đăng ký
                 </Button>
               </Box>
@@ -284,7 +272,6 @@ export const ServiceCard = () => {
           </>
         )}
       </Dialog>
-
 
       {/* Dialog Điều khoản */}
       <Dialog open={openRequire} maxWidth="sm" fullWidth onClose={() => setOpenRequire(false)}>
@@ -301,8 +288,7 @@ export const ServiceCard = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <FlexBox sx={{ alignItems: 'center', flex: '1 1 auto' }}>
-          </FlexBox>
+          <FlexBox sx={{ alignItems: 'center', flex: '1 1 auto' }}></FlexBox>
           <FlexBox sx={{ flex: '0 0 auto' }}>
             <Button onClick={() => setOpenRequire(false)} color="primary">
               Đóng

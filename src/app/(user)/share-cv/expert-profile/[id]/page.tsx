@@ -116,7 +116,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
                 <CardMedia
                   component="img"
                   image={!expert.backgroundImage || expert.backgroundImage === '' ? Cover : expert.backgroundImage}
-                  sx={{ borderRadius: `10px`, overflow: 'hidden', mb: 3 }}
+                  sx={{ borderRadius: `10px`, overflow: 'hidden', mb: 3, height: { xs: 85, sm: 150, md: 260 } }}
                   alt="profile-background"
                 />
               )}
@@ -160,7 +160,6 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
                   <Grid container spacing={gridSpacing}>
                     <Grid item xs={12} md={4}>
                       <Typography variant="h5">{expert.lastName + ' ' + expert.firstName}</Typography>
-                      <Typography variant="subtitle2">{expert.shortDescription}</Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
                       <Grid
@@ -184,6 +183,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
                       </Grid>
                     </Grid>
                   </Grid>
+                  {/* <div dangerouslySetInnerHTML={{ __html: expert.shortDescription }}></div> */}
                   <Grid container justifyContent="flex-end">
                     <Tabs
                       value={value}
@@ -461,7 +461,6 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   //       ) : (
   //         <Typography variant="h6">Loading...</Typography>
   //       )}
-
 
   // </Grid>
   //   </Box>
