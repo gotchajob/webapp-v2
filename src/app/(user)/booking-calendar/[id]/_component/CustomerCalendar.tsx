@@ -68,6 +68,7 @@ const isToday = (date: string) => {
 };
 
 const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSelectEvent: (event: any) => void }) => {
+  
   const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
   const router = useRouter();
