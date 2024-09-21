@@ -9,7 +9,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const params = await req.json();
   const customerToken = await getUserToken(cookies());
-  console.log(customerToken)
   const path = searchParams.get('path') as string;
   const data = await response(params, customerToken, path);
   return NextResponse.json(data);
@@ -21,10 +20,11 @@ const response = async (params: any, customerToken: string, path: string) => {
     switch (path) {
       case 'login':
         res = await UserLogin({ email: params.email, password: params.password });
+        console.log(res)
         if (res.data.roleId && res.data.roleId === 4) {
           setUserToken(res.data.token, cookies());
         } else {
-          throw new Error('Sai tài khoản hoặc mật khẩu');
+          throw new Error(res.data.message);
         }
         break;
       case 'customer-token':

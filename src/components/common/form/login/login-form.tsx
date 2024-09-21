@@ -31,8 +31,10 @@ export const LoginForm = () => {
       if (window) {
         window.location.href = '/';
       }
+      
     } catch (error: any) {
-      if (error.message === 'User is not verify') {
+      console.log(error)
+      if (error.message === 'user is not verify') {
         router.push('/register/verify?email=' + email);
         enqueueSnackbar('Bạn phải xác thực email trước khi đăng nhập', {
           variant: 'error'
