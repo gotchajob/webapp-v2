@@ -302,7 +302,7 @@ const UserProfile = ({ user }: { user: User }) => {
                   helperText={errors.lastName}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   label="Địa chỉ Email"
@@ -312,7 +312,7 @@ const UserProfile = ({ user }: { user: User }) => {
                   error={!!errors.email}
                   helperText={errors.email}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
