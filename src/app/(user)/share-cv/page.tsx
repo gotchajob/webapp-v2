@@ -81,13 +81,13 @@ export default function Page() {
 
   const getCheckedStateIndex = () => {
     if (checkedState.country) {
-      return 1;
-    }
-    if (checkedState.skills) {
       return 2;
     }
-    if (checkedState.experience) {
+    if (checkedState.skills) {
       return 3;
+    }
+    if (checkedState.experience) {
+      return 1;
     }
     return 0;
   };
