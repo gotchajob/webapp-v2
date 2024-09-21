@@ -11,23 +11,23 @@ import { UseGetBookingReportById } from "hooks/use-get-booking-report";
 import { useRefresh } from "hooks/use-refresh";
 import { CustomerToken } from "hooks/use-login";
 
-const fakeBookingReportById: BookingReportById = {
-    id: 1,
-    customerContent: "Khách hàng báo cáo vì chuyên gia không có đủ kỹ năng cần thiết.",
-    customerEvidence: "https://drive.google.com/customer-recording",
-    expertContent: "Chuyên gia báo cáo vì khách hàng không chuẩn bị tốt.",
-    expertEvidence: "https://drive.google.com/expert-recording",
-    staffNote: "Lưu ý: Cần kiểm tra lại kỹ năng của chuyên gia.",
-    processingBy: 2,
-    status: 1,
-    bookingId: 101,
-    createdAt: "2023-08-09T08:00:00Z",
-    updatedAt: "2023-08-10T08:00:00Z",
-    bookingReportSuggest: [
-        { id: 1, reportSuggestId: 101, reportSuggest: "Khuyến nghị thay đổi chuyên gia" },
-        { id: 2, reportSuggestId: 102, reportSuggest: "Khuyến nghị hoàn tiền cho khách hàng" },
-    ],
-};
+// const fakeBookingReportById: BookingReportById = {
+//     id: 1,
+//     customerContent: "Khách hàng báo cáo vì chuyên gia không có đủ kỹ năng cần thiết.",
+//     customerEvidence: "https://drive.google.com/customer-recording",
+//     expertContent: "Chuyên gia báo cáo vì khách hàng không chuẩn bị tốt.",
+//     expertEvidence: "https://drive.google.com/expert-recording",
+//     staffNote: "Lưu ý: Cần kiểm tra lại kỹ năng của chuyên gia.",
+//     processingBy: 2,
+//     status: 1,
+//     bookingId: 101,
+//     createdAt: "2023-08-09T08:00:00Z",
+//     updatedAt: "2023-08-10T08:00:00Z",
+//     bookingReportSuggest: [
+//         { id: 1, reportSuggestId: 101, reportSuggest: "Khuyến nghị thay đổi chuyên gia" },
+//         { id: 2, reportSuggestId: 102, reportSuggest: "Khuyến nghị hoàn tiền cho khách hàng" },
+//     ],
+// };
 
 const renderStatusChip = (status: number) => {
     switch (status) {
