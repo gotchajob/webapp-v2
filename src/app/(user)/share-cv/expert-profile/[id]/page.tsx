@@ -51,6 +51,7 @@ import { useGetCurrentBalance } from 'hooks/use-get-balance';
 import { reauthenticateWithRedirect } from '@firebase/auth';
 import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
 import { useRouter } from 'next/navigation';
+import { useGetCustomer } from 'hooks/use-get-current-user';
 
 export interface EducationData {
   time: string;
@@ -94,6 +95,8 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { customerToken } = CustomerToken();
 
+  const { customer } = useGetCustomer(customerToken);
+
   const { balance, loading } = useGetCurrentBalance(customerToken);
 
   const theme = useTheme();
@@ -115,7 +118,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   };
 
   const handleAgree = () => {
-    router.push("http://localhost:3001/account-profile/81");
+    router.push(`/account-profile/${customer?.id}`);
   };
 
   useEffect(() => {
@@ -287,11 +290,11 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Đóng
           </Button>
-          {/* <StyledLink href={`/booking-interview-cv/${params.id}`}>
-          </StyledLink> */}
-          <Button color="primary" autoFocus onClick={checkWallet}>
-            Đồng ý
-          </Button>
+          <StyledLink href={`/booking-interview-cv/${params.id}`}>
+            <Button color="primary" autoFocus onClick={checkWallet}>
+              Đồng ý
+            </Button>
+          </StyledLink>
         </DialogActions>
       </Dialog>
 
