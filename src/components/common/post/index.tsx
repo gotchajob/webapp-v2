@@ -182,12 +182,12 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
         <Grid item xs={12}>
           <Grid container wrap="nowrap" alignItems="center" spacing={1}>
             <Grid item>
-              <Avatar alt="User 1" src={`${avatarImage}/${post.userInfo.avatar}`} />
+              <Avatar alt="User 1" src={`${avatarImage}/${post.user.avatar}`} />
             </Grid>
             <Grid item xs zeroMinWidth>
               <Grid container alignItems="center" spacing={1} justifyContent={'space-between'}>
                 <Grid item>
-                  <Typography variant="h5">{post.userInfo.fullName}</Typography>
+                  <Typography variant="h5">{post.user.fullName}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="caption">{formatDate(post.createdAt, 'dd/MM/yyyy')}</Typography>
@@ -227,7 +227,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
           )}
         </Grid>
         <Grid item xs={12}>
-          {showAddFeedback && customer && customer?.id !== post.userInfo.userId && RenderAddComment}
+          {showAddFeedback && customer && customer?.id !== post.user.userId && RenderAddComment}
         </Grid>
       </Grid>
     </MainCard>
