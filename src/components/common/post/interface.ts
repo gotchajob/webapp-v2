@@ -11,7 +11,7 @@ export const sampleData = {
     status: 1,
     createdAt: '2024-09-13T07:43:18.000+00:00',
     rating: [{ rating: 5, count: 1 }],
-    user: {
+    userInfo: {
       userId: 81,
       fullName: 'string string',
       email: 'user@gmail.com',
@@ -32,7 +32,7 @@ export const CommentData = {
         cvShareId: 102,
         customerId: 22,
         rating: 5,
-        user: {
+        userInfo: {
           fullName: 'Tran Minh H',
           email: 'tranminhh@example.com',
           avatar: 'https://example.com/avatars/avatar10.jpg'
