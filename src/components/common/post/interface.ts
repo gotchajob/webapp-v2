@@ -34,7 +34,7 @@ export const CommentData = {
         cvShareId: 102,
         customerId: 22,
         rating: 5,
-        userInfo: {
+        useInfo: {
           fullName: 'Tran Minh H',
           email: 'tranminhh@example.com',
           avatar: 'https://example.com/avatars/avatar10.jpg'
