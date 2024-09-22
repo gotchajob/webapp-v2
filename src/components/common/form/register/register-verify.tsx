@@ -5,7 +5,6 @@ import Stack from '@mui/material/Stack';
 import { useRouter } from 'next/navigation';
 import { enqueueSnackbar } from 'notistack';
 import { useState } from 'react';
-import { CreateVerifyResponse } from 'package/api/user/create-verify-email';
 import { FlexCenter } from 'components/common/box/flex-box';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { UserVerify, UserVerifyRequest, UserVerifyResponse } from 'package/api/user/verify-email';
@@ -21,20 +20,21 @@ export const RegisterVerify = ({ email }: { email: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const theme = useTheme();
-  const [otp, setOtp] = useState<string>();
+  const [otp, setOtp] = useState<string>('');
   const borderColor = theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[200] : theme.palette.grey[300];
   const handleClick = async () => {
     try {
       const value: UserVerifyRequest = {
-        code: '',
+        code: otp,
         email
       };
       setIsLoading(true);
       const data: UserVerifyResponse = await UserVerify(value);
+      console.log(data);
       if (data.status === 'error') {
         throw new Error(data.responseText);
       }
-      router.push('/register/success?name=' + data.data.fullName);
+      router.push('/register/success?name=' + 'bạn');
     } catch (error: any) {
       enqueueSnackbar(error.message, {
         variant: 'error'
@@ -47,12 +47,12 @@ export const RegisterVerify = ({ email }: { email: string }) => {
     <FlexCenter>
       <Stack spacing={2.5} mb={15}>
         <Text style={{ maxWidth: '380px' }} textAlign={'center'} fontWeight={'300'} fontSize={14}>
-          Nhập mã 4 chữ số được gửi tới email của bạn để xác thực.
+          Nhập mã 6 chữ số được gửi tới email của bạn để xác thực.
         </Text>
         <OtpInput
           value={otp}
           onChange={(otpNumber: string) => setOtp(otpNumber)}
-          numInputs={4}
+          numInputs={6}
           containerStyle={{ justifyContent: 'space-between' }}
           inputStyle={{
             width: '50px',

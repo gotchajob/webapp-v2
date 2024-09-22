@@ -205,7 +205,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
         {post && (
           <Grid item xs={12}>
             <FlexCenter>
-              <ImageCard src={post.cvImage} width={700 / 1.414} height={700} />
+              <ImageCard src={post.cvImage} width={700} />
             </FlexCenter>
           </Grid>
         )}

@@ -19,7 +19,7 @@ export const EnchantInput = ({ initValue, onChange, onBlur }: { initValue: strin
       inline={true}
       onEditorChange={handleEditorChange}
       onBlur={handleEditorBlur}
-      apiKey="atsnk5k74f1mqjagfaa22635gdyelbzbw6qqbw3f6b1vhtwj"
+      apiKey="zfphfurbpyxwxhxa19ktnrh20ls5h2l3wk1tcx5upmv14pht"
       initialValue={initValue}
       init={{
         width: 500,

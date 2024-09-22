@@ -8,9 +8,8 @@ export const Login = async (email: string, password: string) => {
       email,
       password
     });
-    console.log(data);
     if (data.status === 'error') {
-      throw new Error('Đăng nhập thất bại');
+      throw new Error(data.responseText);
     }
   } catch (error: any) {
     throw new Error(error.message);

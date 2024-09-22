@@ -76,6 +76,7 @@ export const Comment = ({ comment }: CommentComponentProps) => {
               <Grid container alignItems="center" spacing={1}>
                 <Grid item>
                   <Typography variant="h5">{comment.userInfo?.fullName}</Typography>
+
                 </Grid>
               </Grid>
             </Grid>

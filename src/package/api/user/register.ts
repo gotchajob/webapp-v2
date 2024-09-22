@@ -19,7 +19,6 @@ export const UserRegister = async (
 ): Promise<UserRegisterResponse> => {
   try {
     const userRegister = await apiServerFetch("/user/signup", "POST", params);
-
     return userRegister;
   } catch (error: any) {
     return errorSystem("Đăng kí thất bại", "");

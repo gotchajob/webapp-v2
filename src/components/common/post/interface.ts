@@ -1,3 +1,5 @@
+import { userInfo } from "os";
+
 export const sampleData = {
   status: 'success',
   responseText: 'Data retrieved successfully',
@@ -33,6 +35,7 @@ export const CommentData = {
         customerId: 22,
         rating: 5,
         userInfo: {
+
           fullName: 'Tran Minh H',
           email: 'tranminhh@example.com',
           avatar: 'https://example.com/avatars/avatar10.jpg'

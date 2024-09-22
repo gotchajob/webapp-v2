@@ -46,6 +46,7 @@ import { BlogDetailData, getBlogDetail } from 'package/api/blog/id';
 import { GetBlogComment, PostBlogComment } from 'package/api/blog/id/comment';
 import { formatDate } from 'package/util';
 import useSnackbarDialog from '../snackbar-dialog/snackbar-dialog';
+import { useRouter } from 'next/navigation';
 
 const avatarImage = '/assets/images/users';
 
@@ -106,16 +107,16 @@ export interface BlogProps {
   handleBlogLikes: (id: number) => Promise<void>;
   blog: BlogDetailData;
   commentAdd: (id: number, comment: CommentType, reply: CommentType) => Promise<void>;
+  refreshBlog: any;
 }
 
-const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blogCommentAdd }: BlogProps) => {
-
+const BlogDetail = ({ commentAdd, handleCommentLikes, refreshBlog, handleBlogLikes, blog, blogCommentAdd }: BlogProps) => {
   const theme = useTheme();
 
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   //hook refresh
-  const { refreshTime, refresh } = useRefresh();
+  const { refreshTime, refresh: refreshComment } = useRefresh();
 
   //get customer token
   const { customerToken } = CustomerToken();
@@ -125,9 +126,6 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
 
   //set state comments
   const [commentsResult, setCommentsResult] = React.useState<ReactElement[]>([]);
-
-  //like state
-  const [liked, setLiked] = React.useState<number | undefined>(blog.likes.value);
 
   //rating state
   const [rated, setRated] = React.useState<number | undefined>(blog.rated);
@@ -141,31 +139,15 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
   //check length comment > 0s
   const [openComment, setOpenComment] = React.useState(!(blog && 5 > 0));
 
-  //route hook
-  const { push } = useSearchParamsNavigation();
-
-  //get params
-  const { isRefresh } = useGetSearchParams(["isRefresh"]);
-
-  //Handle push isRefresh
-  const handlePushRefresh = () => {
-    const currentParam = isRefresh;
-    let randomNumber;
-    do {
-      randomNumber = Math.floor(Math.random() * 100) + 1;
-    } while (randomNumber === currentParam);
-    push([{ name: 'isRefresh', value: randomNumber + "" }], true);
-  }
-
   //Open chat & show comment
   const handleChangeComment = async () => {
-    refresh();
+    refreshComment();
     setOpenComment((prev) => !prev);
   };
 
   //handle refresh after comment
   React.useEffect(() => {
-    const refreshComment = async () => {
+    const refreshBlogComment = async () => {
       const blogComments = await GetBlogComment({ id: blog.id, pageNumber: 1, pageSize: 10 }, customerToken);
       if (blogComments.data.list.length > 0) {
         const comments = blogComments.data.list.map((comment, index) => (
@@ -174,6 +156,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
             blogId={blog.id}
             comment={comment}
             key={index}
+            refreshComment={refreshComment}
             user={comment.profile}
             commentAdd={commentAdd}
             handleCommentLikes={handleCommentLikes}
@@ -183,65 +166,61 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
       } else {
         setCommentsResult([]);
       }
-    }
-    refreshComment();
-  }, [refreshTime])
-
-  //refresh data after like or rating
-  // const getClientBlog = async () => {
-  //   const data = await getBlogDetail({ id: blog.id }, customerToken);
-  //   setLiked(data.data.likes.value);
-  //   setRated(data.data.rated);
-  //   setAvgRate(data.data.averageRating);
-  //   setQuantityRate(data.data.ratingQuantity);
-  // };
+    };
+    refreshBlogComment();
+  }, [refreshTime]);
 
   //handle like change
   const handleLike = async () => {
     try {
       if (customerToken === null) {
-        throw new Error("Phải đăng nhập");
+        throw new Error('Phải đăng nhập');
       }
-      const like = await PatchBlogReaction({
-        blogId: blog.id,
-        reactionId: liked ? undefined : 1,
-        rating: null,
-      }, customerToken);
-      if (like.status == "error") {
+      const like = await PatchBlogReaction(
+        {
+          blogId: blog.id,
+          reactionId: blog.likes.liked ? undefined : 1,
+          rating: null
+        },
+        customerToken
+      );
+      if (like.status == 'error') {
         throw new Error(like.responseText);
       }
-      handlePushRefresh();
+      refreshBlog();
     } catch (error: any) {
       enqueueSnackbar(error.message, {
         variant: 'error'
       });
     }
-  }
+  };
 
   //handle rating change
   const handleRating = async (event: any, value: number | null) => {
     try {
       if (customerToken === null) {
-        throw new Error("Phải đăng nhập");
+        throw new Error('Phải đăng nhập');
       }
-      const rating = await PatchBlogReaction({
-        blogId: blog.id,
-        rating: value ? value : 0,
-        reactionId: null
-      }, customerToken);
-      if (rating.status == "error") {
+      const rating = await PatchBlogReaction(
+        {
+          blogId: blog.id,
+          rating: value ? value : 0,
+          reactionId: null
+        },
+        customerToken
+      );
+      if (rating.status == 'error') {
         throw new Error(rating.responseText);
       }
-      handlePushRefresh();
-      enqueueSnackbar("Đánh giá bài viết thành công", {
-        variant: 'success',
+      enqueueSnackbar('Đánh giá bài viết thành công', {
+        variant: 'success'
       });
     } catch (error: any) {
-      enqueueSnackbar("Có lỗi xảy ra khi đánh giá bài viết", {
-        variant: 'error',
+      enqueueSnackbar('Có lỗi xảy ra khi đánh giá bài viết', {
+        variant: 'error'
       });
     }
-  }
+  };
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -260,12 +239,12 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
     try {
       const comment_content = content.name;
       const data = await PostBlogComment({ id: blog.id }, { content: comment_content }, customerToken);
-      refresh();
-      enqueueSnackbar("Bình luận của bạn đã được đăng", {
-        variant: 'success',
+      refreshComment();
+      enqueueSnackbar('Bình luận của bạn đã được đăng', {
+        variant: 'success'
       });
     } catch (error: any) {
-      enqueueSnackbar(error.message, { variant: "error" });
+      enqueueSnackbar(error.message, { variant: 'error' });
     } finally {
       reset({ name: '' });
     }
@@ -336,9 +315,9 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 onClick={handleLike}
                 color="inherit"
                 size="small"
-                startIcon={<ThumbUpAltTwoToneIcon color={blog && liked ? 'primary' : 'inherit'} />}
+                startIcon={<ThumbUpAltTwoToneIcon color={blog && blog.likes.liked ? 'primary' : 'inherit'} />}
               >
-                {blog && liked ? liked : 0} likes
+                {blog ? blog.likes.value : 0} likes
               </Button>
               <Button
                 onClick={handleChangeComment}
@@ -364,14 +343,13 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
                 </>
               )}
               <Grid item>
-                <IconButton onClick={() => { }} size="large" aria-label="more options">
+                <IconButton onClick={() => {}} size="large" aria-label="more options">
                   <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
                 </IconButton>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-
       </Grid>
 
       {/* add new comment */}
@@ -381,12 +359,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2} alignItems="flex-start">
                 <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                  <Avatar
-                    sx={{ mt: 0.75 }}
-                    alt="User 1"
-                    src={customer && customer.avatar ? `${customer.avatar}` : ``}
-                    size="xs"
-                  />
+                  <Avatar sx={{ mt: 0.75 }} alt="User 1" src={customer && customer.avatar ? `${customer.avatar}` : ``} size="xs" />
                 </Grid>
                 <Grid item xs zeroMinWidth>
                   <FormProvider {...methods}>
@@ -403,12 +376,11 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, handleBlogLikes, blog, blo
               </Grid>
             </form>
           </Grid>
-        )
-        }
-      </Collapse >
+        )}
+      </Collapse>
 
       {commentsResult && commentsResult}
-    </Grid >
+    </Grid>
   );
 };
 

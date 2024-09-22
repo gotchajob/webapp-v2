@@ -20,9 +20,11 @@ import { PRIMARYCOLOR } from 'components/common/config';
 
 import { LoginForm } from 'components/common/form/login/login-form';
 import { RegisterVerify } from 'components/common/form/register/register-verify';
+import { useGetSearchParams } from 'hooks/use-get-params';
 // ===========================|| AUTH1 - CODE VERIFICATION ||=========================== //
 
 const CodeVerification = () => {
+  const { email } = useGetSearchParams(['email']);
   return (
     <AuthWrapper1>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
@@ -39,7 +41,7 @@ const CodeVerification = () => {
                 Xác nhận để thiết lập tài khoản
               </Text>
             </Box>
-            <RegisterVerify email=""/>
+            <RegisterVerify email={email} />
           </FlexCenter>
         </Grid>
         <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
