@@ -187,11 +187,12 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, refreshBlog, handleBlogLik
       if (like.status == 'error') {
         throw new Error(like.responseText);
       }
-      refreshBlog();
     } catch (error: any) {
       enqueueSnackbar(error.message, {
         variant: 'error'
       });
+    } finally {
+      refreshBlog();
     }
   };
 
@@ -219,6 +220,8 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, refreshBlog, handleBlogLik
       enqueueSnackbar('Có lỗi xảy ra khi đánh giá bài viết', {
         variant: 'error'
       });
+    } finally {
+      refreshBlog();
     }
   };
 
@@ -343,7 +346,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, refreshBlog, handleBlogLik
                 </>
               )}
               <Grid item>
-                <IconButton onClick={() => {}} size="large" aria-label="more options">
+                <IconButton onClick={() => { }} size="large" aria-label="more options">
                   <ShareTwoToneIcon sx={{ width: '16px', height: '16px' }} />
                 </IconButton>
               </Grid>

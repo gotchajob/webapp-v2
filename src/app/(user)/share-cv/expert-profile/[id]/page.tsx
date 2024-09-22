@@ -107,7 +107,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
     if (!balance || !expert) {
       return;
     }
-    if (balance.balance > expert?.cost) {
+    if (balance.balance > expert.cost) {
       setOpenDialog(true);
     } else {
       setOpenDialogCheckWallet(true);
@@ -259,7 +259,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
 
       {/* Dialog xác nhận chọn chuyên gia */}
       <Dialog open={openDialogCheckWallet} onClose={() => setOpenDialogCheckWallet(false)}>
-        <DialogTitle>Bạn không đủ tiền</DialogTitle>
+        <DialogTitle>Không đủ số dứ</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Số dư của bạn không đủ để thực hiện giao dịch này. Vui lòng nạp thêm tiền vào tài khoản.
