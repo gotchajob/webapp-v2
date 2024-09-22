@@ -20,13 +20,10 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const { refreshTime, refresh } = useRefresh();
 
-  //get params
-  const { isRefresh } = useGetSearchParams(["isRefresh"]);
-
   const getClientBlog = async () => {
     const data = await getBlogDetail({ id: +params.id.split('-')[1] }, customerToken);
+    console.log(data)
     setBlog(data.data);
-    console.log("Refresh");
   };
 
   const blogCommentAdd = async (id: number, comment: any) => {
@@ -42,8 +39,9 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   useEffect(() => {
+    console.log("refresh")
     getClientBlog();
-  }, [customerToken, isRefresh]);
+  }, [customerToken, refreshTime]);
 
   if (blog) {
     return (
@@ -55,6 +53,7 @@ export default function Page({ params }: { params: { id: string } }) {
             handleCommentLikes={handleCommentLikes}
             handleBlogLikes={handlePostLikes}
             blog={blog}
+            refreshBlog={refresh}
           />
         </Grid>
         <Grid item xs={4}>

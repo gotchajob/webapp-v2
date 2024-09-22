@@ -4,7 +4,7 @@ import { apiServerFetch, errorSystem } from '../api-fetch';
 
 export interface commentReactionRq {
   commentId: number;
-  reactionId: number | null;
+  reactionId: number | undefined;
 }
 
 export interface commentReactionResponse {

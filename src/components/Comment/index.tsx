@@ -99,11 +99,12 @@ interface CommentComponentProps {
   level: number;
   commentAdd: any;
   user: Profile;
+  refreshComment: any;
 }
 
 // ==============================|| SOCIAL PROFILE - COMMENT ||============================== //
 
-const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level }: CommentComponentProps) => {
+const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level, refreshComment }: CommentComponentProps) => {
   const theme = useTheme();
 
   const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
@@ -122,30 +123,14 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
   //get profile customer
   const { customer } = useGetCustomer(customerToken);
 
-  //route hook
-  const { push } = useSearchParamsNavigation();
-
-  //get params
-  const { isRefresh } = useGetSearchParams(["isRefresh"]);
-
   //refresh page
-  const { refreshTime, refresh } = useRefresh();
+  const { refreshTime, refresh: refreshChildComment } = useRefresh();
 
   //Open chat & show reply
   const handleChangeReply = () => {
-    refresh();
+    refreshChildComment();
     setOpenReply((prev) => !prev);
   };
-
-  //Handle push isRefresh
-  const handlePushRefresh = () => {
-    const currentParam = isRefresh;
-    let randomNumber;
-    do {
-      randomNumber = Math.floor(Math.random() * 100) + 1;
-    } while (randomNumber === currentParam);
-    push([{ name: 'isRefresh', value: randomNumber + "" }], true);
-  }
 
   //handle refresh after reply
   useEffect(() => {
@@ -159,6 +144,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
             comment={reply}
             key={reply.id}
             user={user}
+            refreshComment={refreshChildComment}
             commentAdd={commentAdd}
             handleCommentLikes={handleCommentLikes}
           />
@@ -167,9 +153,9 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
       } else {
         setRepliesResult([]);
       }
-    }
+    };
     refreshReplies();
-  }, [refreshTime])
+  }, [refreshTime]);
 
   //hanlde like change
   const handleLike = async () => {
@@ -177,15 +163,15 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
       throw new Error();
     }
     try {
-      const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? null : 1 }, customerToken);
-      refresh();
-      console.log("like comment status: ", like.status);
+      const like = await PatchCommentReaction({ commentId: comment.id, reactionId: comment.likes.liked ? undefined : 1 }, customerToken);
+      refreshComment();
+      console.log('like comment status: ', like.status);
     } catch (error: any) {
       enqueueSnackbar(error.message, {
-        variant: "error",
-      })
+        variant: 'error'
+      });
     }
-  }
+  };
 
   const methods = useForm({
     resolver: yupResolver(validationSchema)
@@ -204,14 +190,14 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
     try {
       const comment_content = reply.name;
       const data = await PostBlogComment({ id: blogId }, { commentId: comment.id, content: comment_content }, customerToken);
-      refresh();
-      enqueueSnackbar("Bình luận của bạn đã được đăng", {
-        variant: 'success',
+      refreshComment();
+      enqueueSnackbar('Bình luận của bạn đã được đăng', {
+        variant: 'success'
       });
     } catch (error: any) {
       enqueueSnackbar(error.message, {
-        variant: "error",
-      })
+        variant: 'error'
+      });
     } finally {
       reset({ name: '' });
     }
@@ -234,11 +220,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                       sx={{ width: 24, height: 24 }}
                       size="sm"
                       alt="User 1"
-                      src={
-                        comment?.profile.avatar
-                          ? `${comment.profile.avatar}`
-                          : `${avatarImage}/avatar-1.png`
-                      }
+                      src={comment?.profile.avatar ? `${comment.profile.avatar}` : `${avatarImage}/avatar-1.png`}
                     />
                   </Grid>
                   <Grid item xs zeroMinWidth>
@@ -248,7 +230,8 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
                       </Grid>
                       <Grid item>
                         <Typography variant="caption">
-                          <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} /> {formatDate(comment?.createdAt, "dd/MM/yyyy")}
+                          <FiberManualRecordIcon sx={{ width: '10px', height: '10px', opacity: 0.5, m: '0 5px' }} />{' '}
+                          {formatDate(comment?.createdAt, 'dd/MM/yyyy')}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -295,11 +278,7 @@ const Comment = ({ comment, handleCommentLikes, blogId, commentAdd, user, level 
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2} alignItems="flex-start">
                   <Grid item sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    <Avatar
-                      sx={{ mt: 1.5 }}
-                      alt="User 1"
-                      src={customer?.avatar && customer?.avatar && `${customer.avatar}`}
-                    />
+                    <Avatar sx={{ mt: 1.5 }} alt="User 1" src={customer?.avatar && customer?.avatar && `${customer.avatar}`} />
                   </Grid>
                   <Grid item xs zeroMinWidth sx={{ mt: 1 }}>
                     <FormProvider {...methods}>
