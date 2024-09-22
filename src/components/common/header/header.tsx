@@ -217,8 +217,8 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                     </Stack>
                   </Box>
                   <Box sx={{ p: 2, pt: 0 }}>
-                    <WalletCard /> {/* Wallet Card */}
-
+                    {/* Wallet Card */}
+                    <WalletCard />
                     <List
                       component="nav"
                       sx={{
