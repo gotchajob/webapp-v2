@@ -46,6 +46,11 @@ import ImagePlaceholder from 'ui-component/cards/Skeleton/ImagePlaceholder';
 import { IconInbox, IconUsers } from '@tabler/icons-react';
 import Profile from './_component/social-profile/Profile';
 import Followers from './_component/social-profile/Followers';
+import { CustomerToken } from 'hooks/use-login';
+import { useGetCurrentBalance } from 'hooks/use-get-balance';
+import { reauthenticateWithRedirect } from '@firebase/auth';
+import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { useRouter } from 'next/navigation';
 
 export interface EducationData {
   time: string;
@@ -73,6 +78,12 @@ const tabOptions = [
 ];
 
 const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
+  const [openDialogCheckWallet, setOpenDialogCheckWallet] = useState(false);
+
+  const router = useRouter();
+
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+
   const [openDialog, setOpenDialog] = useState(false);
 
   const { refresh, refreshTime } = useRefresh();
@@ -81,11 +92,30 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params.id });
 
+  const { customerToken } = CustomerToken();
+
+  const { balance, loading } = useGetCurrentBalance(customerToken);
+
   const theme = useTheme();
 
   const [value, setValue] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const checkWallet = () => {
+    if (!balance || !expert) {
+      return;
+    }
+    if (balance.balance > expert?.cost) {
+      setOpenDialog(true);
+    } else {
+      setOpenDialogCheckWallet(true);
+    }
+  };
+
+  const handleAgree = () => {
+    router.push("http://localhost:3001/account-profile/81");
   };
 
   useEffect(() => {
@@ -176,7 +206,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
                           </Button>
                         </Grid>
                         <Grid item>
-                          <Button variant="contained" onClick={() => setOpenDialog(true)}>
+                          <Button variant="contained" onClick={checkWallet}>
                             Đặt lịch
                           </Button>
                         </Grid>
@@ -228,6 +258,24 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
       )}
 
       {/* Dialog xác nhận chọn chuyên gia */}
+      <Dialog open={openDialogCheckWallet} onClose={() => setOpenDialogCheckWallet(false)}>
+        <DialogTitle>Bạn không đủ tiền</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Số dư của bạn không đủ để thực hiện giao dịch này. Vui lòng nạp thêm tiền vào tài khoản.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialogCheckWallet(false)} color="secondary">
+            Đóng
+          </Button>
+          <Button onClick={handleAgree} color="primary" autoFocus>
+            Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog xác nhận chọn chuyên gia */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Xác nhận chọn chuyên gia</DialogTitle>
         <DialogContent>
@@ -239,13 +287,15 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Đóng
           </Button>
-          <StyledLink href={`/booking-interview-cv/${params.id}`}>
-            <Button color="primary" autoFocus>
-              Đồng ý
-            </Button>
-          </StyledLink>
+          {/* <StyledLink href={`/booking-interview-cv/${params.id}`}>
+          </StyledLink> */}
+          <Button color="primary" autoFocus onClick={checkWallet}>
+            Đồng ý
+          </Button>
         </DialogActions>
       </Dialog>
+
+      <SnackbarDialog />
     </Container>
   );
   // return (

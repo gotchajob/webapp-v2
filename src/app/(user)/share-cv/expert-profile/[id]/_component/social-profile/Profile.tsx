@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // material-ui
 import { alpha, useTheme } from '@mui/material/styles';
@@ -67,10 +67,14 @@ const Profile = ({ expert }: { expert: Expert }) => {
     }
   };
 
+  useEffect(() => {
+    console.log(expert);
+  }, [expert])
+
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={4}>
-        <MainCard>
+        {/* <MainCard>
           <Grid container alignItems="center" spacing={gridSpacing}>
             <Grid item>
               <Box
@@ -129,8 +133,8 @@ const Profile = ({ expert }: { expert: Expert }) => {
               </IconButton>
             </Grid>
           </Grid>
-        </MainCard>
-        <MainCard sx={{ mt: 3 }}>
+        </MainCard> */}
+        <MainCard>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body2">{expert.bio}</Typography>

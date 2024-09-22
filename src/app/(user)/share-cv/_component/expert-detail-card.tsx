@@ -97,7 +97,7 @@ const ExpertDetailCard = ({ expert }: { expert: ExpertMatching }) => {
             <Grid item xs={12}>
               <StyledLink href={`/share-cv/expert-profile/${expert.expertId}`}>
                 <Button variant="outlined" fullWidth startIcon={<ChatBubbleTwoToneIcon />}>
-                  Book
+                  Đặt lịch phỏng vấn
                 </Button>
               </StyledLink>
             </Grid>

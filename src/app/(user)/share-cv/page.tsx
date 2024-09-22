@@ -325,7 +325,7 @@ export default function Page() {
       </Container>
 
       {/* Expert List */}
-      <Grid container spacing={3} minHeight={300} mt={15} px={20}>
+      <Grid container spacing={3} minHeight={300} mt={10} px={20} mb={10}>
         {expertMatchingList.map((expert, index) => (
           <Grid key={index} item xs={3}>
             <ExpertDetailCard expert={expert} />

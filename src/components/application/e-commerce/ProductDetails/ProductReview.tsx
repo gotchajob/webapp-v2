@@ -72,7 +72,7 @@ const ProductReviews = ({ product }: { product: Products }) => {
           <CardContent sx={{ height: '100%' }}>
             {product && (
               <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ height: '100%' }}>
-                <Typography variant="subtitle1">Average Rating</Typography>
+                <Typography variant="subtitle1">Trung bình đánh giá</Typography>
                 <Typography variant="h1" color="primary">
                   {Number(product.rating)}/5
                 </Typography>
@@ -120,7 +120,7 @@ const ProductReviews = ({ product }: { product: Products }) => {
           <CardContent sx={{ height: '100%' }}>
             <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ height: '100%' }}>
               <Button variant="outlined" size="large" startIcon={<RateReviewTwoToneIcon fontSize="inherit" />}>
-                Write an Review
+                Viết đánh giá
               </Button>
             </Stack>
           </CardContent>
@@ -142,7 +142,7 @@ const ProductReviews = ({ product }: { product: Products }) => {
         ))}
       <Grid item xs={12}>
         <Stack direction="row" justifyContent="center">
-          <Button variant="text"> Load more Comments </Button>
+          <Button variant="text"> Tải thêm bình luận </Button>
         </Stack>
       </Grid>
     </Grid>
