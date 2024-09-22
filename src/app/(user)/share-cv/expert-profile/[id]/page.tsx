@@ -291,7 +291,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
             Đóng
           </Button>
           <StyledLink href={`/booking-interview-cv/${params.id}`}>
-            <Button color="primary" autoFocus onClick={checkWallet}>
+            <Button color="primary" autoFocus>
               Đồng ý
             </Button>
           </StyledLink>
