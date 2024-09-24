@@ -156,7 +156,7 @@ const InterViewPage = ({ params }: { params: { id: string } }) => {
                         <TabPanel value={value} index={0}>
                             <CustomerProfilePage />
                         </TabPanel>
-                        <TabPanel  value={value} index={1}>
+                        <TabPanel value={value} index={1}>
                             <QuestionListPage />
                         </TabPanel>
                     </Grid>

@@ -99,7 +99,7 @@ const Post = ({ post, showAddFeedback, showTotalFeedback, listComment }: PostPro
       if (res.status === 'error') {
         throw new Error(res.responseText);
       }
-      enqueueSnackbar(res.message, {
+      enqueueSnackbar(res.responseText, {
         variant: 'success'
       });
       router.refresh();
