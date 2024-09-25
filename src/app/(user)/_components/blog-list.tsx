@@ -17,6 +17,7 @@ export const BlogList = () => {
       setNumberOfBlog(Math.floor(clientWidth / 308))
     }
   }, [clientWidth]);
+
   const blogList: BlogCardProps[] = [
     {
       author: "Tuấn Trần",
@@ -50,6 +51,7 @@ export const BlogList = () => {
       title: "Những sơ yếu lí lịch chuẩn cập nhật mới nhất 2023",
     },
   ];
+  
   return (
     <>
       <MainTitle py={10} pt={25} id={"blogDiv"}>

@@ -11,6 +11,13 @@ export interface BookingCurrent {
     createdAt: string,
     canCancel: true,
     expertInfo: expertInfo
+    customerInfo: customerInfo
+}
+
+export interface customerInfo {
+    fullName: string,
+    email: string,
+    avatar: string
 }
 
 export interface expertInfo {
