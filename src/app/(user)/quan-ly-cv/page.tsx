@@ -31,13 +31,13 @@ import { StyledLink } from 'components/common/link/styled-link';
 import { useGetCVCurrent } from 'hooks/use-get-cv-current';
 import { CustomerToken } from 'hooks/use-login';
 
-const data = [
-  { name: 'Lê Khải Phú', createdAt: '27-08-2023 21:46 PM' },
-  { name: 'Lý Anh Kiệt', createdAt: '15-09-2023 10:30 AM' },
-  { name: 'Vi Chí', createdAt: '08-10-2023 14:15 PM' },
-  { name: 'Nguyễn Văn Hiệp', createdAt: '23-11-2023 08:45 AM' },
-  { name: 'Nguyễn Văn A', createdAt: '10-12-2023 19:20 PM' }
-];
+// const data = [
+//   { name: 'Lê Khải Phú', createdAt: '27-08-2023 21:46 PM' },
+//   { name: 'Lý Anh Kiệt', createdAt: '15-09-2023 10:30 AM' },
+//   { name: 'Vi Chí', createdAt: '08-10-2023 14:15 PM' },
+//   { name: 'Nguyễn Văn Hiệp', createdAt: '23-11-2023 08:45 AM' },
+//   { name: 'Nguyễn Văn A', createdAt: '10-12-2023 19:20 PM' }
+// ];
 
 const sortOptions = [{ title: 'CV tạo mới nhất' }, { title: 'CV tạo cũ nhất' }];
 

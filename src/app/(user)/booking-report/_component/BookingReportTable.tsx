@@ -18,20 +18,37 @@ import KeyboardTabIcon from '@mui/icons-material/KeyboardTab';
 import { useGetFilter } from "components/common/filter-table/hook-filter";
 import { DataGridHeader, DataGridTable, DataGridTableProps } from 'components/common/filter-table/data-grid';
 
+// const renderStatusChip = (status: number) => {
+//     switch (status) {
+//         case 1:
+//             return <Chip label="Processing" color="primary" />;
+//         case 2:
+//             return <Chip label="Expert Processing" color="warning" />;
+//         case 3:
+//             return <Chip label="Staff Processing" color="info" />;
+//         case 4:
+//             return <Chip label="Approved" color="success" />;
+//         case 5:
+//             return <Chip label="Rejected" color="error" />;
+//         default:
+//             return <Chip label="Unknown" color="default" />;
+//     }
+// };
+
 const renderStatusChip = (status: number) => {
     switch (status) {
         case 1:
-            return <Chip label="Processing" color="primary" />;
+            return <Chip label="Đang xử lí" color="primary" sx={{ fontWeight: 'bold', color: 'white' }} />;
         case 2:
-            return <Chip label="Expert Processing" color="warning" />;
+            return <Chip label="Chờ chuyên gia phản hồi" color="warning" sx={{ fontWeight: 'bold', color: 'white' }} />;
         case 3:
-            return <Chip label="Staff Processing" color="info" />;
+            return <Chip label="Chờ nhân viên phản hồi" color="info" sx={{ fontWeight: 'bold', color: 'white' }} />;
         case 4:
-            return <Chip label="Approved" color="success" />;
+            return <Chip label="Duyệt" color="success" sx={{ fontWeight: 'bold', color: 'white' }} />;
         case 5:
-            return <Chip label="Rejected" color="error" />;
+            return <Chip label="Không duyệt" color="error" sx={{ fontWeight: 'bold', color: 'white' }} />;
         default:
-            return <Chip label="Unknown" color="default" />;
+            return <Chip label="Unknown" color="default" sx={{ fontWeight: 'bold', color: 'white' }} />;
     }
 };
 
