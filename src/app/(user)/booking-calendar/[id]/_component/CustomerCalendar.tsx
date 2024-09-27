@@ -6,12 +6,14 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   Pagination,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -36,6 +38,8 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { useGetReportSuggest } from 'hooks/use-get-report-suggest';
 import { ReportPopup } from './report-popup';
 import { RenderCustomerCalendarTable } from './CustomerCalenderTable';
+import { useGetPolicyById } from 'hooks/use-get-policy';
+import { PostBookingReport } from 'package/api/booking-report';
 
 const getStatusLabel = (status: any) => {
   switch (status) {
@@ -54,7 +58,7 @@ const getStatusLabel = (status: any) => {
     case 7:
       return { label: 'Hủy bởi chuyên gia', color: 'error' };
     case 8:
-      return { label: 'Từ chối', color: 'error' };
+      return { label: 'Đã bị report', color: 'error' };
     default:
       return { label: 'Trạng thái không xác định', color: 'default' };
   }
@@ -81,12 +85,14 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
 
   const { customerToken } = CustomerToken();
 
-  const { bookings } = useGetBookingCurrent(customerToken, refreshTime);
+  const { bookings, loading: bookingsLoading } = useGetBookingCurrent(customerToken, refreshTime);
 
   const [selectedBooking, setSelectedBooking] = useState<{
     id: number;
     type: 'accept' | 'reject' | 'report';
   } | null>(null);
+
+  const { policyById } = useGetPolicyById({ id: 6 }, refreshTime);
 
   const [cancelReason, setCancelReason] = useState<string>('');
 
@@ -110,6 +116,21 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
     }
   };
 
+  // const handleReport = async () => {
+  //   handleCloseDialog();
+  //   try {
+  //     const res = await PostBookingReport({ id: selectedBooking ? selectedBooking.id : 0, reason: cancelReason }, customerToken);
+  //     if (res.status !== 'success') {
+  //       throw new Error(res.responseText);
+  //     }
+  //     showSnackbarDialog('Hủy đặt lịch thành công', 'success');
+  //     refresh();
+  //   } catch (error: any) {
+  //     console.log(error);
+  //     showSnackbarDialog(error, 'error');
+  //   }
+  // };
+
   useEffect(() => {
     console.log('bookings:', bookings);
     if (bookings) {
@@ -119,12 +140,55 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
 
   if (loading) return <Loader />;
 
+  const SkeletonTable = () => {
+    return (
+      <TableContainer>
+        <Skeleton variant="rectangular" width="15%" sx={{ margin: 3 }} />
+        <Table sx={{ borderCollapse: 'collapse' }}>
+          <TableHead>
+            <TableRow>
+              {Array.from(new Array(5)).map((_, index) => (
+                <TableCell key={index} sx={{ padding: 2, border: 0 }} width="30%">
+                  <Skeleton variant="rectangular" />
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.from(new Array(5)).map((_, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {Array.from(new Array(5)).map((_, cellIndex) => (
+                  <TableCell key={cellIndex} width="30%" sx={{ padding: 2, border: 0 }}>
+                    <Skeleton variant="rectangular" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
   return (
+
     <Box sx={{ paddingX: 5, paddingY: 1 }}>
       <Typography variant="body1" color="primary" sx={{ fontStyle: 'italic' }}>
-        Bạn chỉ có thể hủy đặt lịch những buổi phỏng vấn cách 3 ngày hiện tại.
+        Bạn chỉ có thể hủy đặt lịch những buổi phỏng vấn cách {`${policyById.value}`} phút hiện tại.
       </Typography>
-      {bookings && (
+
+      {bookingsLoading ? (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
+          <CircularProgress size={50} />
+        </Box>
+      ) : bookings && bookings.length > 0 ? (
         <RenderCustomerCalendarTable
           bookings={bookings}
           onSelectEvent={(id) => {
@@ -133,6 +197,10 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
           onNext={onNext}
           setSelectedBooking={setSelectedBooking}
         />
+      ) : (
+        <Typography variant="h5" align="center" sx={{ paddingTop: 5 }}>
+          Hiện chưa có buổi đặt lịch nào
+        </Typography>
       )}
 
       {/* Dialogs for actions */}

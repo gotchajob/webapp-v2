@@ -73,12 +73,12 @@ const BookingCalendarPage = () => {
     <Box
       sx={{
         height: '100%',
-        backgroundImage: 'linear-gradient(to bottom right, #DAECF6, #90C7E5, #59ABD9)',
+        // backgroundImage: 'linear-gradient(to bottom right, #DAECF6, #90C7E5, #59ABD9)',
         paddingX: 20,
         paddingY: 5
       }}
     >
-      <MainCard>
+      <MainCard sx={{ boxShadow: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Tabs
@@ -156,7 +156,7 @@ const BookingCalendarPage = () => {
               <BookingCalendar onNext={handleNextStep} onSelectEvent={handleSelectEvent} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              <BookingDetailPage event={selectEvent} onBack={handlePrevStep} />
+              {selectEvent && (<BookingDetailPage event={selectEvent} onBack={handlePrevStep} />)}
             </TabPanel>
           </Grid>
         </Grid>

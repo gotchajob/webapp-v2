@@ -45,7 +45,7 @@ export const RenderBookingReportTable = ({ bookingReportForCustomer, onSelectEve
             flex: 2,
             renderCell: (params) => (
                 <Box sx={{ maxWidth: 300, wordWrap: "break-word", whiteSpace: 'normal' }}>
-                    {params.value.map((suggest: any) => (
+                    {params.value?.map((suggest: any) => (
                         <div key={suggest.id}>{suggest.reportSuggest}</div>
                     ))}
                 </Box>
@@ -133,7 +133,15 @@ export const RenderBookingReportTable = ({ bookingReportForCustomer, onSelectEve
         let data = [...bookingReportForCustomer];
         if (text.trim() !== '') {
             const lowerCaseText = text.toLowerCase();
-            data = data.filter((row) => {
+            data = data.sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                if (dateA < dateB) {
+                    return 1
+                } else {
+                    return -1;
+                }
+            }).filter((row) => {
                 return (
                     row.reportSuggest.some((suggest: any) => suggest.reportSuggest.toLowerCase().includes(lowerCaseText)) ||
                     formatDate(row.createdAt, 'dd/MM/yyyy hh:mm').includes(lowerCaseText) ||

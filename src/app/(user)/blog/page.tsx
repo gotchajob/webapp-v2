@@ -31,7 +31,7 @@ export default function Page() {
   const { category, pageNumber } = useGetSearchParams(["category", "pageNumber"]);
 
   //hook get blogs
-  const { blogs, totalPage, loading } = useGetBlogs({ pageNumber, pageSize: 10, categoryId: category?.split("-")[1] });
+  const { blogs, totalPage, loading } = useGetBlogs({ pageNumber, pageSize: 1000, categoryId: category?.split("-")[1] });
 
   const handleChangePage = (event: any, newPage: number) => {
     push([{

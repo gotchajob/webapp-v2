@@ -34,7 +34,7 @@ const getStatusLabel = (status: any) => {
         case 7:
             return <Chip label="Hủy bởi chuyên gia" color="error" />;
         case 8:
-            return <Chip label="Từ chối" color="error" />;
+            return <Chip label="Đã bị report" color="error" />;
         default:
             return <Chip label="Trạng thái không xác định" color="default" />;
     }
@@ -51,16 +51,15 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
 
     const columns: GridColDef[] = [
         {
-            field: 'customerInfo',
+            field: 'expertInfo',
             headerName: 'Tên chuyên gia',
             flex: 1,
             renderCell: (params) => (
                 <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                    {params.row.customerInfo.fullName}
+                    {params.row.expertInfo.fullName}
                 </Box>
             )
         },
-
         {
             field: 'createdAt',
             headerName: 'Thời điểm đặt lịch',
@@ -76,8 +75,8 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
             headerName: 'Thời điểm bắt đầu',
             flex: 1,
             renderCell: (params) => (
-                <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-                    {formatDate(params.value, 'dd/MM/yyyy hh:mm')}
+                <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word', color: isToday(params.row.startInterviewDate) ? 'success.main' : 'black' }}>
+                    {formatDate((params.value), 'dd/MM/yyyy hh:mm')}
                 </Box>
             ),
         },
@@ -86,7 +85,7 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
             headerName: 'Thời điểm kết thúc',
             flex: 1,
             renderCell: (params) => (
-                <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                <Box sx={{ whiteSpace: 'normal', wordWrap: 'break-word', color: isToday(params.row.endInterviewDate) ? 'success.main' : 'black' }}>
                     {formatDate(params.value, 'dd/MM/yyyy hh:mm')}
                 </Box>
             ),
@@ -127,11 +126,13 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
                             <CloseIcon sx={{ fontSize: '1.1rem' }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Báo cáo">
-                        <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: params.row.id, type: 'report' })}>
-                            <ReportProblemIcon sx={{ fontSize: '1.1rem' }} />
-                        </IconButton>
-                    </Tooltip>
+                    {[4].includes(params.row.status) && (
+                        <Tooltip title="Báo cáo">
+                            <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: params.row.id, type: 'report' })}>
+                                <ReportProblemIcon sx={{ fontSize: '1.1rem' }} />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                 </>
         },
 
@@ -180,7 +181,7 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
         rows: filteredData.map((data, index) => ({
             ...data,
             object: JSON.stringify(data),
-            customerInfo: JSON.stringify(data),
+            // expertInfo: JSON.stringify(data),
         })),
     };
 

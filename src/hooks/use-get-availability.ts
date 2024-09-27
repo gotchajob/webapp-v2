@@ -22,19 +22,19 @@ export const useGetAvailability = (params: GetAvailabilityRequest) => {
     };
 };
 
-export const useGetAvailabilityById = (params: GetAvailabilityByIdRequest) => {
+export const useGetAvailabilityById = (params: GetAvailabilityByIdRequest, accessToken: string) => {
     const [availability, setAvailability] = useState<AvailabilityById>();
 
     const fetchAvailability = async () => {
         try {
-            const data = await GetAvailabilityById(params);
+            const data = await GetAvailabilityById(params, accessToken);
             setAvailability(data.data);
         } catch (error) { }
     };
 
     useEffect(() => {
         fetchAvailability();
-    }, [params.id]);
+    }, [params.id, accessToken]);
 
     return {
         availability

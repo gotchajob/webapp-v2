@@ -27,7 +27,7 @@ import NotInterestedTwoToneIcon from '@mui/icons-material/NotInterestedTwoTone';
 import ChatBubbleTwoToneIcon from '@mui/icons-material/ChatBubbleTwoTone';
 import Avatar from 'ui-component/extended/Avatar';
 import { ExpertMatching } from 'package/api/expert/match';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { StyledLink } from 'components/common/link/styled-link';
 import { CustomerToken } from 'hooks/use-login';
 import { useGetCVById } from 'hooks/use-get-cv';
@@ -44,7 +44,7 @@ const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
 
   const { customerToken } = CustomerToken();
 
-  const { cv } = useGetCVById({ id: bookingInfo?.customerCvId }, customerToken);
+  const { cv, loading } = useGetCVById({ id: bookingInfo?.customerCvId }, customerToken);
 
   useEffect(() => {
     console.log('bookingInfo?.customerCvId :', bookingInfo?.customerCvId);
@@ -65,7 +65,7 @@ const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
       }}
     >
       <Grid container spacing={gridSpacing}>
-        {cv && (
+        {cv && cv.image.length > 0 ? (
           <Grid item xs={12}>
             <Typography variant="body2" gutterBottom>
               Bạn đã chọn CV {cv.name}
@@ -77,9 +77,18 @@ const ExpertBookCard = ({ bookingInfo }: { bookingInfo: any }) => {
                 width={400}
                 height={600}
                 objectFit="cover"
-                objectPosition='center'
+                objectPosition="center"
                 style={{ borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
               />
+            </Box>
+          </Grid>
+        ) : (
+          <Grid item xs={12}>
+            <Typography variant="body2" gutterBottom>
+              <Skeleton width={200} />
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Skeleton variant="rectangular" width={400} height={600} sx={{ borderRadius: '8px' }} />
             </Box>
           </Grid>
         )}

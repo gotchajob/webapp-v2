@@ -29,15 +29,16 @@ export const useGetCVCurrent = (accessToken: string, refreshTime: any) => {
 export const useGetCVById = (params: GetCVByIdRequest, accessToken: string) => {
     const [cv, setCV] = useState<GetCVByIdData>();
 
-    const [loading, setLoading] = useState<boolean>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchCVById = async () => {
         try {
             setLoading(true);
             const data = await GetCVById(params, accessToken);
             setCV(data.data);
-            setLoading(false);
         } catch (error) {
+        } finally {
+            setLoading(false);
         }
     }
 

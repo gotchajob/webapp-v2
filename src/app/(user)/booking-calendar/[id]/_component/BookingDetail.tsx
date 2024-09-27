@@ -43,7 +43,7 @@ const getStatusLabel = (status: number) => {
     case 7:
       return { label: 'Hủy bởi chuyên gia', color: 'error' };
     case 8:
-      return { label: 'Từ chối', color: 'error' };
+      return { label: 'Đã bị report', color: 'error' };
     default:
       return { label: 'Trạng thái không xác định', color: 'default' };
   }
@@ -178,164 +178,174 @@ export default function BookingDetailPage({ event, onBack }: { event: any; onBac
   };
 
   return (
-    <SubCard>
-      {expertById && (
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Stack spacing={2}>
-                  <Typography variant="h4">Thông tin chuyên gia</Typography>
-                  <Stack spacing={1}>
-                    <Box display="flex" alignItems="center">
-                      <Avatar alt="User 1" src={expertById.avatar} />
-                      <Typography variant="body2" ml={1}>
-                        {expertById.firstName} {expertById.lastName}
-                      </Typography>
-                    </Box>
-                    <Stack direction="row" spacing={1}>
-                      <Typography variant="subtitle1">Email :</Typography>
-                      <Typography variant="body2">{expertById.email}</Typography>
-                    </Stack>
-                  </Stack>
-                </Stack>
-              </Grid>
-              {bookingById && (
-                <Grid item xs={12} sm={6} md={4}>
+    <>
+      {
+        expertById && loading ? (
+          <Box display="flex" alignItems="center" justifyContent="center" height="100vh">
+            <CircularProgress size={50} />
+          </Box >
+        ) : (
+          <SubCard>
+            {expertById && (
+              <Grid container spacing={3} justifyContent="center">
+                <Grid item xs={12}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Stack spacing={2}>
+                        <Typography variant="h4">Thông tin chuyên gia</Typography>
+                        <Stack spacing={1}>
+                          <Box display="flex" alignItems="center">
+                            <Avatar alt="User 1" src={expertById.avatar} />
+                            <Typography variant="body2" ml={1}>
+                              {expertById.firstName} {expertById.lastName}
+                            </Typography>
+                          </Box>
+                          <Stack direction="row" spacing={1}>
+                            <Typography variant="subtitle1">Email :</Typography>
+                            <Typography variant="body2">{expertById.email}</Typography>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Grid>
+                    {bookingById && (
+                      <Grid item xs={12} sm={6} md={4}>
+                        <Stack spacing={2}>
+                          <Typography variant="h4">Thông tin đặt lịch</Typography>
+                          <Stack spacing={1}>
+                            <Stack direction="row" spacing={1}>
+                              <Typography variant="subtitle1">Thời gian bắt đầu:</Typography>
+                              <Typography variant="body2">{formatDate(bookingById.startInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
+                            </Stack>
+                            <Stack direction="row" spacing={1}>
+                              <Typography variant="subtitle1">Thời gian kết thúc:</Typography>
+                              <Typography variant="body2">{formatDate(bookingById.endInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                      </Grid>
+                    )}
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+                <Grid item xs={12}>
                   <Stack spacing={2}>
-                    <Typography variant="h4">Thông tin đặt lịch</Typography>
-                    <Stack spacing={1}>
-                      <Stack direction="row" spacing={1}>
-                        <Typography variant="subtitle1">Thời gian bắt đầu:</Typography>
-                        <Typography variant="body2">{formatDate(bookingById.startInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1}>
-                        <Typography variant="subtitle1">Thời gian kết thúc:</Typography>
-                        <Typography variant="body2">{formatDate(bookingById.endInterviewDate, 'yyyy-MM-dd hh:mm')}</Typography>
-                      </Stack>
-                    </Stack>
+                    <Typography variant="h4">CV khách hàng</Typography>
+                    <Box onClick={handleClickOpen} sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center' }} width={'100%'}>
+                      {bookingById?.customerCv?.image && (
+                        <Image
+                          src={bookingById.customerCv.image}
+                          alt="Customer CV"
+                          width={700}
+                          height={1000}
+                          style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
+                        />
+                      )}
+                    </Box>
                   </Stack>
                 </Grid>
-              )}
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
-          <Grid item xs={12}>
-            <Stack spacing={2}>
-              <Typography variant="h4">CV khách hàng</Typography>
-              <Box onClick={handleClickOpen} sx={{ cursor: 'pointer', display: 'flex', justifyContent: 'center' }} width={'100%'}>
-                {bookingById?.customerCv?.image && (
-                  <Image
-                    src={bookingById.customerCv.image}
-                    alt="Customer CV"
-                    width={700}
-                    height={1000}
-                    style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-                  />
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+                {bookingById && (
+                  <Grid item xs={12}>
+                    <Stack spacing={2} minHeight={100}>
+                      <Typography variant="h4">Thông tin tư vấn</Typography>
+                      {mappedExpertSkillOption()}
+                      <SubCard title="Chú thích của khách hàng" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
+                        <TextField multiline minRows={3} value={bookingById.note} fullWidth disabled />
+                      </SubCard>
+                    </Stack>
+                  </Grid>
                 )}
-              </Box>
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider />
-          </Grid>
-          {bookingById && (
-            <Grid item xs={12}>
-              <Stack spacing={2} minHeight={100}>
-                <Typography variant="h4">Thông tin tư vấn</Typography>
-                {mappedExpertSkillOption()}
-                <SubCard title="Chú thích của khách hàng" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
-                  <TextField multiline minRows={3} value={bookingById.note} fullWidth disabled />
-                </SubCard>
-              </Stack>
-            </Grid>
-          )}
-          {bookingById && (bookingById.status === 4 || bookingById.status === 5) && (
-            <>
-              <Grid item xs={12}>
-                <Divider />
+                {bookingById && (bookingById.status === 4 || bookingById.status === 5) && (
+                  <>
+                    <Grid item xs={12}>
+                      <Divider />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Stack spacing={3} minHeight={100}>
+                        <Typography variant="h4">Câu hỏi phỏng vấn</Typography>
+                        <ReadOnlyAnswer answerList={bookingExpertFeedbackByBooking.answer} />
+                      </Stack>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <SubCard title="Đánh giá chung về ứng viên" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
+                        <TextField multiline rows={3} value={bookingExpertFeedbackByBooking.comment} fullWidth disabled />
+                      </SubCard>
+                    </Grid>
+                  </>
+                )}
+                {bookingById && bookingById.status === 7 && (
+                  <Grid item xs={12}>
+                    <SubCard title="Lý do từ chối của chuyên gia" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
+                      <TextField multiline rows={3} value={bookingById.rejectReason} fullWidth disabled></TextField>
+                    </SubCard>
+                  </Grid>
+                )}
+                {bookingById && bookingById.status === 6 && (
+                  <Grid item xs={12}>
+                    <SubCard title="Lý do từ chối của bạn" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
+                      <TextField multiline rows={3} value={bookingById.rejectReason} fullWidth disabled></TextField>
+                    </SubCard>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Stack direction="row" spacing={2} justifyContent="space-between" mt={4}>
+                    <Button variant="outlined" onClick={onBack}>
+                      Quay lại
+                    </Button>
+                    {bookingById && bookingById.canCancel && (
+                      <Button variant="contained" color="primary" onClick={() => setIsCanceling(!isCanceling)}>
+                        Hủy đặt lịch
+                      </Button>
+                    )}
+                  </Stack>
+                </Grid>
+                {isCanceling && (
+                  <Grid item xs={12} mt={3}>
+                    <TextField
+                      label="Lý do"
+                      multiline
+                      rows={3}
+                      value={cancelReason}
+                      onChange={(e) => setCancelReason(e.target.value)}
+                      fullWidth
+                    />
+                    <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
+                      <Button variant="outlined" onClick={() => setIsCanceling(false)}>
+                        Đóng
+                      </Button>
+                      <Button variant="contained" color="primary" onClick={handleCancelBooking}>
+                        Xác nhận
+                      </Button>
+                    </Stack>
+                  </Grid>
+                )}
               </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={3} minHeight={100}>
-                  <Typography variant="h4">Câu hỏi phỏng vấn</Typography>
-                  <ReadOnlyAnswer answerList={bookingExpertFeedbackByBooking.answer} />
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <SubCard title="Đánh giá chung về ứng viên" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
-                  <TextField multiline rows={3} value={bookingExpertFeedbackByBooking.comment} fullWidth disabled />
-                </SubCard>
-              </Grid>
-            </>
-          )}
-          {bookingById && bookingById.status === 7 && (
-            <Grid item xs={12}>
-              <SubCard title="Lý do từ chối của chuyên gia" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
-                <TextField multiline rows={3} value={bookingById.rejectReason} fullWidth disabled></TextField>
-              </SubCard>
-            </Grid>
-          )}
-          {bookingById && bookingById.status === 6 && (
-            <Grid item xs={12}>
-              <SubCard title="Lý do từ chối của bạn" sx={{ boxShadow: '0 3px 5px rgba(0, 0, 0, 0.2)' }}>
-                <TextField multiline rows={3} value={bookingById.rejectReason} fullWidth disabled></TextField>
-              </SubCard>
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            <Stack direction="row" spacing={2} justifyContent="space-between" mt={4}>
-              <Button variant="outlined" onClick={onBack}>
-                Quay lại
-              </Button>
-              {bookingById && bookingById.canCancel && (
-                <Button variant="contained" color="primary" onClick={() => setIsCanceling(!isCanceling)}>
-                  Hủy đặt lịch
-                </Button>
-              )}
-            </Stack>
-          </Grid>
-          {isCanceling && (
-            <Grid item xs={12} mt={3}>
-              <TextField
-                label="Lý do"
-                multiline
-                rows={3}
-                value={cancelReason}
-                onChange={(e) => setCancelReason(e.target.value)}
-                fullWidth
-              />
-              <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
-                <Button variant="outlined" onClick={() => setIsCanceling(false)}>
-                  Đóng
-                </Button>
-                <Button variant="contained" color="primary" onClick={handleCancelBooking}>
-                  Xác nhận
-                </Button>
-              </Stack>
-            </Grid>
-          )}
-        </Grid>
-      )}
+            )}
 
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogContent>
-          <Image
-            src={bookingById?.customerCv.image || ''}
-            alt="Customer CV"
-            layout="intrinsic"
-            width={700}
-            height={1000}
-            objectFit="cover"
-            objectPosition="top"
-            style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-          />
-        </DialogContent>
-      </Dialog>
-    </SubCard>
+            <Dialog open={open} onClose={handleClose} fullWidth>
+              <DialogContent>
+                <Image
+                  src={bookingById?.customerCv.image || ''}
+                  alt="Customer CV"
+                  layout="intrinsic"
+                  width={700}
+                  height={1000}
+                  objectFit="cover"
+                  objectPosition="top"
+                  style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
+                />
+              </DialogContent>
+            </Dialog>
+          </SubCard>
+        )
+      }
+    </>
   );
 }

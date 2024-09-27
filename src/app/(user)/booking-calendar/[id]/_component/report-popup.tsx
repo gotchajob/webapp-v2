@@ -37,14 +37,18 @@ export const ReportPopup = ({ open, bookingId, handleClose }: { open?: boolean; 
           },
           customerToken
         );
+        if (res.status !== "success") {
+          throw new Error(res.responseText);
+        }
       }
       showSnackbarDialog('Gửi yêu cầu thành công', 'success');
     } catch (error: any) {
-      showSnackbarDialog('Gửi yêu cầu thất bại', 'error');
+      showSnackbarDialog(error.message, 'error');
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <Dialog open={open || false} maxWidth="sm" fullWidth sx={{ borderRadius: '10px' }}>
       <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.25rem' }} align="center">

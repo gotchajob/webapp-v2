@@ -16,17 +16,22 @@ const BookingInformationCard = ({ bookingInfo, params }: { bookingInfo: any, par
 
   const { customerToken } = CustomerToken();
 
-  const { availability } = useGetAvailabilityById({ id: bookingInfo?.availabilityId });
-
   const { expert, loading: expertLoading } = useGetExpertProfile({ id: +params?.id }, refreshTime);
 
   const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id })
+
+  const { availability } = useGetAvailabilityById({ id: bookingInfo ? bookingInfo.availabilityId : 0 }, customerToken);
 
   const selectedSkills = useMemo(() => {
     return expertSkillOptions?.filter(skill =>
       bookingInfo?.bookingSkill?.includes(skill.id)
     );
   }, [expertSkillOptions, bookingInfo, params.id]);
+
+  useEffect(() => {
+    console.log("bookingInfo", bookingInfo)
+    console.log("availability", availability)
+  }, [availability, bookingInfo])
 
   return (
     <>

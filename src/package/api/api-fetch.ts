@@ -24,8 +24,12 @@ export const apiServerFetch = async (url: string, method: 'GET' | 'PUT' | 'POST'
     cache: 'no-store',
     ...newBody
   });
-  if (!(res.status === 200 || res.status === 400)) {
-    throw new Error('Backend error');
+  // if (!(res.status === 200 || res.status === 400)) {
+  //   throw new Error('Backend error');
+  // }
+  if (res.status !== 200) {
+    const data = await res.json()
+    throw new Error(data.responseText);
   }
   return await res.json();
 };

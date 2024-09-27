@@ -123,11 +123,21 @@ export const RenderBillingTable = ({ transactionCurrent }: { transactionCurrent:
         let data = [...transactionCurrent];
         if (text.trim() !== '') {
             const lowerCaseText = text.toLowerCase();
-            data = data.filter((row) => {
+            data = data.sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                if (dateA < dateB) {
+                    return 1
+                } else {
+                    return -1;
+                }
+            }).filter((row) => {
                 return (
-
-                    formatDate(row.createdAt, 'dd/MM/yyyy hh:mm').includes(lowerCaseText)
-
+                    formatDate(row.createdAt, 'dd/MM/yyyy hh:mm').includes(lowerCaseText) ||
+                    row.id.toString().toLowerCase().includes(lowerCaseText) ||
+                    row.amount.toString().toLowerCase().includes(lowerCaseText) ||
+                    getTransactionTypeName(row.typeId).toLowerCase().includes(lowerCaseText) ||
+                    row.description.toLowerCase().includes(lowerCaseText)
                 );
             });
         }

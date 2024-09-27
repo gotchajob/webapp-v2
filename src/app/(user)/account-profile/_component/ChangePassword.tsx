@@ -155,10 +155,10 @@ const ChangePassword = () => {
                 </Button>
               </AnimateButton>
               <Button
-                sx={{ color: 'error.main' }}
+                sx={{ color: 'info' }}
                 onClick={() => formik.resetForm()}
               >
-                Clear
+                bỏ thay đổi
               </Button>
             </Stack>
           </Grid>

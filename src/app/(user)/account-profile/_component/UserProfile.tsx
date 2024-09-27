@@ -247,12 +247,20 @@ const UserProfile = ({ user }: { user: User }) => {
                       ) : (
                         <Box
                           sx={{
-                            borderRadius: 50,
+                            borderRadius: '50%',
                             width: 80,
                             height: 80,
-                            backgroundColor: '#FFFFFF',
+                            backgroundColor: '#f0f0f0',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            border: '2px dashed #ccc',
                           }}
-                        />
+                        >
+                          <Typography variant="caption" color="textSecondary">
+                            Ảnh đại diện
+                          </Typography>
+                        </Box>
                       )}
                       <input
                         type="file"
@@ -275,6 +283,14 @@ const UserProfile = ({ user }: { user: User }) => {
                           <ErrorTwoToneIcon sx={{ height: 16, width: 16, mr: 1, verticalAlign: 'text-bottom' }} />
                           Hình đại diện của bạn.
                         </Typography>
+                        {/* <Box
+                          sx={{
+                            borderRadius: '50%',
+                            width: 80,
+                            height: 80,
+                            backgroundColor: '#f0f0f0'
+                          }}
+                        /> */}
                       </Grid>
                     </Grid>
                   </Grid>

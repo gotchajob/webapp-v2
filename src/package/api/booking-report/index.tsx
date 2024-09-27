@@ -13,10 +13,10 @@ export interface PostBookingReportResponse {
 }
 
 export const PostBookingReport = async (params: PostBookingReportRequest, accessToken: string): Promise<PostBookingReportResponse> => {
-    try {
-        const res = await apiServerFetch("/booking-report", "POST", params, accessToken)
-        return res
-    } catch (error) {
-        return errorSystem("Lỗi không thể gửi yêu cầu", "")
-    }
+  try {
+    const res = await apiServerFetch("/booking-report", "POST", params, accessToken)
+    return res
+  } catch (error: any) {
+    return errorSystem(error, "");
+  }
 };

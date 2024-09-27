@@ -23,7 +23,7 @@ import Avatar from 'ui-component/extended/Avatar';
 
 // assets
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, Stack } from '@mui/material';
+import { Box, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Rating, Skeleton, Stack } from '@mui/material';
 import Link from "@mui/material/Link";
 import { FlexBetween } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
@@ -283,7 +283,15 @@ const ExpertProfilePage = ({ onNext, params }: { onNext: () => void, params: { i
                     </Grid></>))}
                 </>
             ) : (
-                <Typography variant="h6">Loading...</Typography>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="100vh"
+                    width="100vw"
+                >
+                    <CircularProgress size={80} />
+                </Box>
             )}
 
             <Grid item xs={12} mt={1}>

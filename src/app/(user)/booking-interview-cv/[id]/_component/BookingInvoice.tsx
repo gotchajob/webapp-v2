@@ -106,7 +106,7 @@ const BookInvoicePage = ({ onBack, bookingInfo, params }: { onBack: () => void; 
               <LoadingButton variant="contained" onClick={handleBooking} loading={isLoading}>
                 Hoàn thành đặt lịch
               </LoadingButton>
-              <OrderComplete open={complete} close={handleClose} continueClick={() => {}} />
+              <OrderComplete open={complete} close={handleClose} continueClick={() => { }} />
             </Grid>
           </Grid>
         </Grid>

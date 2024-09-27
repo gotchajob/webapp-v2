@@ -25,7 +25,7 @@ import { useEffect } from 'react';
 import { useGetCurrentBalance } from 'hooks/use-get-balance';
 import { StyledLink } from 'components/common/link/styled-link';
 import { useGetCustomer } from 'hooks/use-get-current-user';
-import { Skeleton } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 
 const formatCurrency = (value: number) => {
   try {
@@ -89,7 +89,7 @@ const WalletCard = () => {
           <Grid item>
             <Stack direction={'row'} spacing={20} alignItems="center">
               <Typography variant="h4">Số dư khả dụng</Typography>
-              <Tooltip title="Lịch sử giao dịch" placement="top">
+              {/* <Tooltip title="Lịch sử giao dịch" placement="top">
                 <IconButton
                   size="small"
                   onClick={() => { }}
@@ -102,13 +102,14 @@ const WalletCard = () => {
                 >
                   <ArrowOutwardIcon color="primary" sx={{ fontSize: '1.1rem' }} />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
+              <Box></Box>
             </Stack>
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              {balance ? (
-                `${formatCurrency(balance?.balance)}`
+              {balance && balance.balance ? (
+                `${formatCurrency(balance.balance)}`
               ) : (
                 <Skeleton width={88} height={24} />
               )}

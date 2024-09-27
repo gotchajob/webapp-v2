@@ -96,7 +96,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const { refreshTime, refresh } = useRefresh();
 
-  const { user, loading } = useGetUser({ pageNumber: 1, pageSize: 10, search: [`id:${params.id}`] }, refreshTime); //doi thanh GetCurrent
+  const { user, loading } = useGetUser({ pageNumber: 1, pageSize: 1000, search: [`id:${params.id}`] }, refreshTime); //doi thanh GetCurrent
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

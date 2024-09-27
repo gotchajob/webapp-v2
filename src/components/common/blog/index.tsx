@@ -148,7 +148,7 @@ const BlogDetail = ({ commentAdd, handleCommentLikes, refreshBlog, handleBlogLik
   //handle refresh after comment
   React.useEffect(() => {
     const refreshBlogComment = async () => {
-      const blogComments = await GetBlogComment({ id: blog.id, pageNumber: 1, pageSize: 10 }, customerToken);
+      const blogComments = await GetBlogComment({ id: blog.id, pageNumber: 1, pageSize: 100 }, customerToken);
       if (blogComments.data.list.length > 0) {
         const comments = blogComments.data.list.map((comment, index) => (
           <Comment

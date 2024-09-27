@@ -19,7 +19,9 @@ export const useGetCurrentBalance = (accessToken: string) => {
   };
 
   useEffect(() => {
-    fetchCurrentBalance();
+    if (accessToken) {
+      fetchCurrentBalance();
+    }
   }, [accessToken]);
 
   return {

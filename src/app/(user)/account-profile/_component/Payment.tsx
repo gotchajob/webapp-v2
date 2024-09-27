@@ -126,28 +126,28 @@ const Payment = () => {
                       <TableBody>
                         <TableRow>
                           <TableCell>
-                            <Typography variant="subtitle1">Tổng cộng</Typography>
+                            <Typography variant="subtitle1">Tổng số tiền cần nạp</Typography>
                           </TableCell>
                           <TableCell />
                         </TableRow>
                         <TableRow>
-                          <TableCell>Tổng thanh toán</TableCell>
+                          <TableCell>Số tiền thanh toán</TableCell>
                           <TableCell align="right">
-                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>
+                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0} VNĐ</Typography>
                           </TableCell>
                         </TableRow>
-                        <TableRow>
+                        {/* <TableRow>
                           <TableCell>Phiếu giảm giá</TableCell>
                           <TableCell align="right">
                             <Typography variant="subtitle1">0</Typography>
                           </TableCell>
-                        </TableRow>
+                        </TableRow> */}
                         <TableRow>
                           <TableCell sx={{ borderBottom: 'none' }}>
                             <Typography variant="subtitle1">Tổng</Typography>
                           </TableCell>
                           <TableCell align="right" sx={{ borderBottom: 'none' }}>
-                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0}vnd</Typography>
+                            <Typography variant="subtitle1">{amount ? formatNumber(amount) : 0} VNĐ</Typography>
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -206,15 +206,15 @@ const PaymentOptions: PaymentOptionsProps[] = [
       height: 36
     }
   },
-  {
-    id: 2,
-    value: 'MoMo',
-    title: 'MoMo',
-    caption: 'Bạn sẽ nạp tiền vào ví Gotchajob bằng MoMo để hoàn tất giao dịch mua hàng một cách an toàn.',
-    image: momo,
-    size: {
-      width: 36,
-      height: 36
-    }
-  }
+  // {
+  //   id: 2,
+  //   value: 'MoMo',
+  //   title: 'MoMo',
+  //   caption: 'Bạn sẽ nạp tiền vào ví Gotchajob bằng MoMo để hoàn tất giao dịch mua hàng một cách an toàn.',
+  //   image: momo,
+  //   size: {
+  //     width: 36,
+  //     height: 36
+  //   }
+  // }
 ];

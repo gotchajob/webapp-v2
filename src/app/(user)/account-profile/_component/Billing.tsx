@@ -1,7 +1,7 @@
 'use client';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Paper, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
 import { useGetTransactionCurrent } from 'hooks/use-get-transaction';
 import { useGetTransactionType } from 'hooks/use-get-transaction-type';
 import { CustomerToken } from 'hooks/use-login';
@@ -15,7 +15,7 @@ export default function TransactionTable() {
   const { refresh, refreshTime } = useRefresh();
   const { customerToken } = CustomerToken();
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(1000);
 
   const { transactionCurrent, loading: transactionCurrentLoading } = useGetTransactionCurrent(
     { pageNumber: page, pageSize: rowsPerPage },
@@ -44,11 +44,42 @@ export default function TransactionTable() {
     console.log("transactionType", transactionType);
   }, [transactionCurrent, transactionType]);
 
+  const SkeletonTable = () => {
+    return (
+      <TableContainer>
+        <Skeleton variant="rectangular" width="15%" sx={{ margin: 3 }} />
+        <Table sx={{ borderCollapse: 'collapse' }}>
+          <TableHead>
+            <TableRow>
+              {Array.from(new Array(5)).map((_, index) => (
+                <TableCell key={index} sx={{ padding: 2, border: 0 }} width="30%">
+                  <Skeleton variant="rectangular" />
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Array.from(new Array(5)).map((_, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {Array.from(new Array(5)).map((_, cellIndex) => (
+                  <TableCell key={cellIndex} width="30%" sx={{ padding: 2, border: 0 }}>
+                    <Skeleton variant="rectangular" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
+
   return (
     <Box>
-      {transactionCurrent && (
+      {transactionCurrent && transactionCurrent.list.length > 0 ? (
         <RenderBillingTable transactionCurrent={transactionCurrent.list} />
-      )}
+      ) : (SkeletonTable())}
     </Box>
   );
 }
