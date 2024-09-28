@@ -28,7 +28,7 @@ export const ReadOnlyAnswer = ({ answerList }: { answerList: BookingExpertFeedba
 
     switch (props.questionType) {
       case 'text':
-        input = <TextField fullWidth minRows={5} multiline disabled />;
+        input = <TextField fullWidth minRows={5} multiline disabled value={props.answer}/>;
         break;
       case 'attitude':
         input = (
