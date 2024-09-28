@@ -1,5 +1,5 @@
 'use client';
-import { FlexCenter } from 'components/common/box/flex-box';
+import { FlexBox, FlexCenter } from 'components/common/box/flex-box';
 import { Input } from 'components/common/input/input';
 import Grid from '@mui/material/Grid';
 import { useFormik } from 'formik';
@@ -11,11 +11,16 @@ import { useRouter } from 'next/navigation';
 import { ContainedLoadingButton } from 'components/common/button/loading-button';
 import { VerifyPassword } from '../verify-password';
 import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
+import { Checkbox, Stack, Typography } from '@mui/material';
+import { StyledLink } from 'components/common/link/styled-link';
+import Link from 'next/link';
 
 export const RegisterForm = () => {
   const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const [checked, setChecked] = useState(false);
   const initialValues: UserRegisterRequest = {
     email: '',
     firstName: '',
@@ -119,8 +124,19 @@ export const RegisterForm = () => {
           </Grid>
         </Grid>
       </FlexCenter>
+      <FlexBox>
+        <Checkbox
+          checked={checked}
+          onChange={(e, checked) => {
+            setChecked(checked);
+          }}
+        />
+        <Link href="/policy/dang-ki-nguoi-dung" target="_blank">
+          <Typography variant="h5">Điều khoản đăng kí người dùng</Typography>
+        </Link>
+      </FlexBox>
       <FlexCenter>
-        <ContainedLoadingButton loading={isLoading} type="submit">
+        <ContainedLoadingButton disabled={!checked} loading={isLoading} type="submit">
           Đăng kí
         </ContainedLoadingButton>
       </FlexCenter>

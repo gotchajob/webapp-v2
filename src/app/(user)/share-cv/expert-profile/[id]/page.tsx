@@ -8,6 +8,7 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import {
   Box,
   CardMedia,
+  Checkbox,
   Container,
   Dialog,
   DialogActions,
@@ -30,7 +31,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { FlexBetween, FlexCenter } from 'components/common/box/flex-box';
+import { FlexBetween, FlexBox, FlexCenter } from 'components/common/box/flex-box';
 import { StyledLink } from 'components/common/link/styled-link';
 import { Text } from 'components/common/text/text';
 import { formatDate, formatNumber } from 'package/util';
@@ -100,6 +101,8 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
   const { balance, loading } = useGetCurrentBalance(customerToken);
 
   const theme = useTheme();
+
+  const [checked, setChecked] = useState(false);
 
   const [value, setValue] = useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -264,9 +267,7 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
       <Dialog open={openDialogCheckWallet} onClose={() => setOpenDialogCheckWallet(false)}>
         <DialogTitle>Không đủ số dư</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Số dư của bạn không đủ để thực hiện giao dịch này. Vui lòng nạp thêm tiền vào tài khoản.
-          </DialogContentText>
+          <DialogContentText>Số dư của bạn không đủ để thực hiện giao dịch này. Vui lòng nạp thêm tiền vào tài khoản.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialogCheckWallet(false)} color="secondary">
@@ -285,16 +286,32 @@ const ExpertProfilePage = ({ params }: { params: { id: string } }) => {
           <DialogContentText>
             Bạn muốn đặt lịch phỏng vấn CV với chuyên gia {expert?.firstName} {expert?.lastName}?
           </DialogContentText>
+          <FlexBox>
+            <Checkbox
+              checked={checked}
+              onChange={(e, checked) => {
+                setChecked(checked);
+              }}
+            />
+            <Link href="/policy/thu-tien-tu-khach-hang" target={"_blank"}>
+              <Typography variant="h5">Điều khoản đăng kí dịch vụ</Typography>
+            </Link>
+          </FlexBox>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">
             Đóng
           </Button>
-          <StyledLink href={`/booking-interview-cv/${params.id}`}>
-            <Button color="primary" autoFocus>
-              Đồng ý
-            </Button>
-          </StyledLink>
+          <Button
+            color="primary"
+            autoFocus
+            disabled={!checked}
+            onClick={() => {
+              router.push(`/booking-interview-cv/${params.id}`);
+            }}
+          >
+            Đồng ý
+          </Button>
         </DialogActions>
       </Dialog>
 

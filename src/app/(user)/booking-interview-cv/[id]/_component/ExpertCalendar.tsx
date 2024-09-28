@@ -13,7 +13,18 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import timelinePlugin from '@fullcalendar/timeline';
 import { FormikValues } from 'formik';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Box, Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Rating, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Rating,
+  TextField,
+  Typography
+} from '@mui/material';
 import CalendarStyled from 'components/application/calendar/CalendarStyled';
 import { FlexBetween } from 'components/common/box/flex-box';
 import useSnackbarDialog from 'components/common/snackbar-dialog/snackbar-dialog';
@@ -36,455 +47,470 @@ import ExpertToolbar from '../../_component/Toolbar';
 // ==============================|| APPLICATION CALENDAR ||============================== //
 
 const convertEvents = (data: any) => {
-    return data.map((event: any) => ({
-        id: event.id.toString(),
-        title: `Đã đặt lịch ${event.id}`,
-        color: "#00E676",
-        start: event.startTime,
-        end: event.endTime
-    }));
+  return data.map((event: any) => ({
+    id: event.id.toString(),
+    title: `Lịch rảnh ${event.id}`,
+    color: '#00E676',
+    start: event.startTime,
+    end: event.endTime
+  }));
 };
 
 const reverseConvertEvents = (event: any) => {
-    return {
-        id: event.id.toString(),
-        date: event.start.slice(0, 10),
-        start: event.start.slice(11, 19),
-        end: event.end.slice(11, 19),
-    };
+  return {
+    id: event.id.toString(),
+    date: event.start.slice(0, 10),
+    start: event.start.slice(11, 19),
+    end: event.end.slice(11, 19)
+  };
 };
 
-const ExpertCalendarPage = ({ onNext, onBack, params, booking, bookingInfo }: { onNext: () => void, onBack: () => void, params: { id: string }, bookingInfo: any, booking: (info: any) => void }) => {
+const ExpertCalendarPage = ({
+  onNext,
+  onBack,
+  params,
+  booking,
+  bookingInfo
+}: {
+  onNext: () => void;
+  onBack: () => void;
+  params: { id: string };
+  bookingInfo: any;
+  booking: (info: any) => void;
+}) => {
+  const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
 
-    const { showSnackbarDialog, SnackbarDialog } = useSnackbarDialog();
+  const calendarRef = useRef<FullCalendar>(null);
 
-    const calendarRef = useRef<FullCalendar>(null);
+  const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
-    const matchSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const [loading, setLoading] = useState<boolean>(true);
 
-    const [loading, setLoading] = useState<boolean>(true);
+  // fetch events data
+  const [events, setEvents] = useState<FormikValues[]>([]);
 
-    // fetch events data
-    const [events, setEvents] = useState<FormikValues[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
 
-    const [selectedRange, setSelectedRange] = useState<DateRange | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<FormikValues | null>(null);
 
-    const [selectedEvent, setSelectedEvent] = useState<FormikValues | null>(null);
+  const calendarState = useSelector((state) => state.calendar);
 
-    const calendarState = useSelector((state) => state.calendar);
+  const [date, setDate] = useState(new Date());
 
-    const [date, setDate] = useState(new Date());
+  const [view, setView] = useState(matchSm ? 'listWeek' : 'dayGridMonth');
 
-    const [view, setView] = useState(matchSm ? 'listWeek' : 'dayGridMonth');
+  // calendar toolbar events
+  const handleDateToday = () => {
+    const calendarEl = calendarRef.current;
 
-    // calendar toolbar events
-    const handleDateToday = () => {
-        const calendarEl = calendarRef.current;
+    if (calendarEl) {
+      const calendarApi = calendarEl.getApi();
 
-        if (calendarEl) {
-            const calendarApi = calendarEl.getApi();
+      calendarApi.today();
+      setDate(calendarApi.getDate());
+    }
+  };
 
-            calendarApi.today();
-            setDate(calendarApi.getDate());
-        }
-    };
+  const handleViewChange = (newView: string) => {
+    const calendarEl = calendarRef.current;
 
-    const handleViewChange = (newView: string) => {
-        const calendarEl = calendarRef.current;
+    if (calendarEl) {
+      const calendarApi = calendarEl.getApi();
 
-        if (calendarEl) {
-            const calendarApi = calendarEl.getApi();
+      calendarApi.changeView(newView);
+      setView(newView);
+    }
+  };
 
-            calendarApi.changeView(newView);
-            setView(newView);
-        }
-    };
+  // set calendar view
+  useEffect(() => {
+    handleViewChange(matchSm ? 'listWeek' : 'dayGridMonth');
+  }, [matchSm]);
 
-    // set calendar view
-    useEffect(() => {
-        handleViewChange(matchSm ? 'listWeek' : 'dayGridMonth');
-    }, [matchSm]);
+  const handleDatePrev = () => {
+    const calendarEl = calendarRef.current;
 
-    const handleDatePrev = () => {
-        const calendarEl = calendarRef.current;
+    if (calendarEl) {
+      const calendarApi = calendarEl.getApi();
 
-        if (calendarEl) {
-            const calendarApi = calendarEl.getApi();
+      calendarApi.prev();
+      setDate(calendarApi.getDate());
+    }
+  };
 
-            calendarApi.prev();
-            setDate(calendarApi.getDate());
-        }
-    };
+  const handleDateNext = () => {
+    const calendarEl = calendarRef.current;
 
-    const handleDateNext = () => {
-        const calendarEl = calendarRef.current;
+    if (calendarEl) {
+      const calendarApi = calendarEl.getApi();
 
-        if (calendarEl) {
-            const calendarApi = calendarEl.getApi();
+      calendarApi.next();
+      setDate(calendarApi.getDate());
+    }
+  };
 
-            calendarApi.next();
-            setDate(calendarApi.getDate());
-        }
-    };
+  // calendar event select/add/edit/delete
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+    setSelectedRange(null);
+  };
 
-    // calendar event select/add/edit/delete
-    const handleModalClose = () => {
-        setIsModalOpen(false);
-        setSelectedEvent(null);
-        setSelectedRange(null);
-    };
+  const handleRangeSelect = (arg: DateSelectArg) => {
+    const calendarEl = calendarRef.current;
+    if (calendarEl) {
+      const calendarApi = calendarEl.getApi();
+      calendarApi.unselect();
+    }
+    setSelectedRange({
+      start: arg.start,
+      end: arg.end
+    });
+  };
 
-    const handleRangeSelect = (arg: DateSelectArg) => {
-        const calendarEl = calendarRef.current;
-        if (calendarEl) {
-            const calendarApi = calendarEl.getApi();
-            calendarApi.unselect();
-        }
-        setSelectedRange({
-            start: arg.start,
-            end: arg.end
-        });
-    };
+  const handleEventUpdate = async ({ event }: EventResizeDoneArg | EventDropArg) => {
+    try {
+      dispatch(
+        updateEvent({
+          eventId: event.id,
+          update: {
+            allDay: event.allDay,
+            start: event.start,
+            end: event.end
+          }
+        })
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    const handleEventUpdate = async ({ event }: EventResizeDoneArg | EventDropArg) => {
-        try {
-            dispatch(
-                updateEvent({
-                    eventId: event.id,
-                    update: {
-                        allDay: event.allDay,
-                        start: event.start,
-                        end: event.end
+  const handleEventCreate = async (data: FormikValues) => {
+    dispatch(addEvent(data));
+    handleModalClose();
+  };
+
+  const handleUpdateEvent = async (eventId: string, update: FormikValues) => {
+    dispatch(updateEvent({ eventId, update }));
+    handleModalClose();
+  };
+
+  const handleEventDelete = async (id: string) => {
+    try {
+      dispatch(removeEvent(id));
+      handleModalClose();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(getEvents()).then(() => setLoading(false));
+  }, []);
+
+  // useEffect(() => {
+  //     setEvents(calendarState.events);
+  // }, [calendarState]);
+
+  // ==============================|| My Code Start here ||============================== //
+
+  const { refresh, refreshTime } = useRefresh();
+
+  const { customerToken } = CustomerToken();
+
+  const { loading: cvCurrentLoading, cvs } = useGetCVCurrent(customerToken, refreshTime);
+
+  const { expert, loading: expertLoading } = useGetExpertProfile({ id: +params?.id }, refreshTime);
+
+  const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id });
+
+  const [note, setNote] = useState(bookingInfo ? bookingInfo.note : '');
+
+  const [selectedCV, setSelectedCV] = useState<string | number | null>(bookingInfo ? bookingInfo.customerCvId : '');
+
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+
+  const [selectedSkills, setSelectedSkills] = useState<any>(bookingInfo ? bookingInfo.bookingSkill : []);
+
+  // const { availabilities } = useGetAvailability({ expertId: +params?.id });
+
+  const { availabilities: validDateToBooking } = useGetValidDateToBooking({ expertId: +params?.id });
+
+  // const [selectAvailabilitie, setSelectAvailabilitie] = useState<any>();
+
+  const handleEventSelect = (arg: EventClickArg) => {
+    if (arg.event.id) {
+      const selectEvent = events.find((_event: FormikValues) => _event.id === arg.event.id);
+      if (selectEvent) {
+        setSelectedEvent(selectEvent);
+        setIsModalOpen(true);
+      }
+    } else {
+      setSelectedEvent(null);
+    }
+  };
+
+  const handleSkillClick = (skill: any) => {
+    setSelectedSkills((prev: number[]) => {
+      const index = prev.indexOf(skill.id);
+      if (index !== -1) {
+        return prev.filter((id) => id !== skill.id);
+      } else {
+        return [...prev, skill.id];
+      }
+    });
+  };
+
+  const handleCVSelect = (cvId: number) => {
+    setSelectedCV(cvId === selectedCV ? null : cvId);
+  };
+
+  const handleButtonClick = (button: string) => {
+    setActiveButton((prev) => (prev === button ? null : button));
+  };
+
+  const handleBooking = async () => {
+    let message = '';
+    let valid = true;
+
+    if (Object.keys(selectedSkills).length === 0 && selectedCV === null) {
+      message = 'Bạn cần phải chọn kỹ năng phỏng vấn và CV phỏng vấn.';
+      valid = false;
+      setActiveButton('skills');
+    } else if (Object.keys(selectedSkills).length === 0) {
+      message = 'Bạn cần phải chọn kỹ năng phỏng vấn.';
+      valid = false;
+      setActiveButton('skills');
+    } else if (!selectedCV || selectedCV === null || selectedCV === '') {
+      message = 'Bạn cần phải chọn CV để phỏng vấn.';
+      valid = false;
+      setActiveButton('cvs');
+    }
+
+    if (valid) {
+      if (onNext) {
+        onNext();
+      }
+      if (booking) {
+        const bookingInfo = {
+          availabilityId: selectedEvent?.id,
+          bookingSkill: selectedSkills,
+          customerCvId: selectedCV,
+          expertId: +params.id,
+          note: note
+        };
+        booking(bookingInfo);
+      }
+    } else {
+      showSnackbarDialog(message, 'warning');
+    }
+  };
+
+  useEffect(() => {
+    console.log('cvs:', cvs);
+  }, [cvs]);
+
+  useEffect(() => {
+    const convertedEvents = convertEvents(validDateToBooking);
+    setEvents(convertedEvents);
+    console.log('validDateToBooking:', validDateToBooking);
+  }, [validDateToBooking, params]);
+
+  if (loading) return <Loader />;
+
+  return (
+    <Box px={2} py={1}>
+      <Grid container pb={2} spacing={2}>
+        <Grid item xs={12}>
+          <Button variant="outlined" onClick={() => handleButtonClick('skills')} sx={{ flex: 1, marginRight: 1 }}>
+            {activeButton === 'skills' ? 'Ẩn chọn kĩ năng phỏng vấn' : 'Chọn kĩ năng phỏng vấn'}
+          </Button>
+          <Button variant="outlined" onClick={() => handleButtonClick('cvs')} sx={{ flex: 1, marginRight: 1 }}>
+            {activeButton === 'cvs' ? 'Ẩn chọn CV phỏng vấn' : 'Chọn CV phỏng vấn'}
+          </Button>
+          <Button variant="outlined" onClick={() => handleButtonClick('comment')} sx={{ flex: 1 }}>
+            {activeButton === 'comment' ? 'Ẩn chú thích phỏng vấn' : 'Thêm chú thích phỏng vấn'}
+          </Button>
+        </Grid>
+      </Grid>
+
+      {activeButton === 'skills' && (
+        <Grid container spacing={2}>
+          {expertSkillOptions?.map((skill) => (
+            <Grid item xs={12} sm={4} md={4} key={skill.id}>
+              <div onClick={() => handleSkillClick(skill)} style={{ cursor: 'pointer' }}>
+                <SubCard
+                  sx={{
+                    backgroundColor: selectedSkills.includes(skill.id) ? '#2196F3' : '#fff',
+                    color: selectedSkills.includes(skill.id) ? '#fff' : '#000',
+                    borderRadius: '12px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    transition: '0.3s',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                     }
-                })
-            );
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleEventCreate = async (data: FormikValues) => {
-        dispatch(addEvent(data));
-        handleModalClose();
-    };
-
-    const handleUpdateEvent = async (eventId: string, update: FormikValues) => {
-        dispatch(updateEvent({ eventId, update }));
-        handleModalClose();
-    };
-
-    const handleEventDelete = async (id: string) => {
-        try {
-            dispatch(removeEvent(id));
-            handleModalClose();
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    useEffect(() => {
-        dispatch(getEvents()).then(() => setLoading(false));
-    }, []);
-
-    // useEffect(() => {
-    //     setEvents(calendarState.events);
-    // }, [calendarState]);
-
-    // ==============================|| My Code Start here ||============================== //
-
-    const { refresh, refreshTime } = useRefresh();
-
-    const { customerToken } = CustomerToken();
-
-    const { loading: cvCurrentLoading, cvs } = useGetCVCurrent(customerToken, refreshTime);
-
-    const { expert, loading: expertLoading } = useGetExpertProfile({ id: +params?.id }, refreshTime);
-
-    const { expertSkillOptions } = useGetExpertSkillOptions({ expertId: +params?.id })
-
-    const [note, setNote] = useState(bookingInfo ? bookingInfo.note : "");
-
-    const [selectedCV, setSelectedCV] = useState<string | number | null>(bookingInfo ? bookingInfo.customerCvId : "");
-
-    const [activeButton, setActiveButton] = useState<string | null>(null);
-
-    const [selectedSkills, setSelectedSkills] = useState<any>(bookingInfo ? bookingInfo.bookingSkill : []);
-
-    // const { availabilities } = useGetAvailability({ expertId: +params?.id });
-
-    const { availabilities: validDateToBooking } = useGetValidDateToBooking({ expertId: +params?.id });
-
-    // const [selectAvailabilitie, setSelectAvailabilitie] = useState<any>();
-
-    const handleEventSelect = (arg: EventClickArg) => {
-        if (arg.event.id) {
-            const selectEvent = events.find((_event: FormikValues) => _event.id === arg.event.id);
-            if (selectEvent) {
-                setSelectedEvent(selectEvent);
-                setIsModalOpen(true);
-            }
-        } else {
-            setSelectedEvent(null);
-        }
-    };
-
-    const handleSkillClick = (skill: any) => {
-        setSelectedSkills((prev: number[]) => {
-            const index = prev.indexOf(skill.id);
-            if (index !== -1) {
-                return prev.filter(id => id !== skill.id);
-            } else {
-                return [...prev, skill.id];
-            }
-        });
-    };
-
-    const handleCVSelect = (cvId: number) => {
-        setSelectedCV(cvId === selectedCV ? null : cvId);
-    };
-
-    const handleButtonClick = (button: string) => {
-        setActiveButton(prev => (prev === button ? null : button));
-    };
-
-    const handleBooking = async () => {
-        let message = '';
-        let valid = true;
-
-        if (Object.keys(selectedSkills).length === 0 && selectedCV === null) {
-            message = 'Bạn cần phải chọn kỹ năng phỏng vấn và CV phỏng vấn.';
-            valid = false;
-            setActiveButton("skills");
-        } else if (Object.keys(selectedSkills).length === 0) {
-            message = 'Bạn cần phải chọn kỹ năng phỏng vấn.';
-            valid = false;
-            setActiveButton("skills");
-        } else if (!selectedCV || selectedCV === null || selectedCV === "") {
-            message = 'Bạn cần phải chọn CV để phỏng vấn.';
-            valid = false;
-            setActiveButton("cvs");
-        }
-
-        if (valid) {
-
-            if (onNext) {
-                onNext();
-            }
-            if (booking) {
-                const bookingInfo = {
-                    availabilityId: selectedEvent?.id,
-                    bookingSkill: selectedSkills,
-                    customerCvId: selectedCV,
-                    expertId: +params.id,
-                    note: note
-                }
-                booking(bookingInfo);
-            }
-        } else {
-            showSnackbarDialog(message, 'warning');
-        }
-    };
-
-    useEffect(() => {
-        console.log("cvs:", cvs);
-    }, [cvs]);
-
-    useEffect(() => {
-        const convertedEvents = convertEvents(validDateToBooking);
-        setEvents(convertedEvents);
-        console.log("validDateToBooking:", validDateToBooking);
-    }, [validDateToBooking, params]);
-
-    if (loading) return <Loader />;
-
-    return (
-        <Box px={2} py={1}>
-            <Grid container pb={2} spacing={2}>
-                <Grid item xs={12}>
-                    <Button
-                        variant="outlined"
-                        onClick={() => handleButtonClick('skills')}
-                        sx={{ flex: 1, marginRight: 1 }}
-                    >
-                        {activeButton === 'skills' ? "Ẩn chọn kĩ năng phỏng vấn" : "Chọn kĩ năng phỏng vấn"}
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => handleButtonClick('cvs')}
-                        sx={{ flex: 1, marginRight: 1 }}
-                    >
-                        {activeButton === 'cvs' ? "Ẩn chọn CV phỏng vấn" : "Chọn CV phỏng vấn"}
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        onClick={() => handleButtonClick('comment')}
-                        sx={{ flex: 1 }}
-                    >
-                        {activeButton === 'comment' ? "Ẩn chú thích phỏng vấn" : "Thêm chú thích phỏng vấn"}
-                    </Button>
-                </Grid>
-            </Grid>
-
-            {activeButton === 'skills' && (
-                <Grid container spacing={2}>
-                    {expertSkillOptions?.map(skill => (
-                        <Grid item xs={12} sm={4} md={4} key={skill.id}>
-                            <div onClick={() => handleSkillClick(skill)} style={{ cursor: 'pointer' }}>
-                                <SubCard
-                                    sx={{
-                                        backgroundColor: selectedSkills.includes(skill.id) ? "#2196F3" : "#fff",
-                                        color: selectedSkills.includes(skill.id) ? "#fff" : "#000",
-                                        borderRadius: '12px',
-                                        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                                        transition: '0.3s',
-                                        '&:hover': {
-                                            transform: 'scale(1.02)',
-                                            boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                                        },
-                                    }}
-                                >
-                                    <Typography
-                                        variant="h5"
-                                        sx={{
-                                            color: selectedSkills.includes(skill.id) ? "#fff" : "#000",
-                                            pl: 1,
-                                            pb: 2,
-                                        }}
-                                    >
-                                        {skill.skillOptionName}
-                                    </Typography>
-                                    <FlexBetween>
-                                        <Rating value={skill.sumPoint} size="small" readOnly />
-                                        <Text fontSize={13}>
-                                            <span style={{ fontWeight: "bold" }}>{skill.totalRating}</span> lượt đánh giá
-                                        </Text>
-                                    </FlexBetween>
-                                </SubCard>
-                            </div>
-                        </Grid>
-                    ))}
-                </Grid>
-            )}
-
-            {activeButton === 'cvs' && (
-                <Grid container spacing={2} mb={2}>
-                    {cvs?.map(cv => (
-                        <Grid item xs={12} sm={6} md={4} key={cv.id}>
-                            <div onClick={() => handleCVSelect(cv.id)} style={{ cursor: 'pointer', border: selectedCV === cv.id ? '3px solid #2196F3' : 'none', borderRadius: '12px' }}>
-                                <SubCard title={cv.name} sx={{
-                                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                                    transition: '0.3s',
-                                    '&:hover': {
-                                        transform: 'scale(1.02)',
-                                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                                    },
-                                }}>
-                                    <Image
-                                        src={cv.image !== "" ? cv.image : "https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
-                                        //src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
-                                        alt={cv.name}
-                                        width={400}
-                                        height={600}
-                                        style={{ objectFit: "cover", objectPosition: "center" }}
-                                    />
-                                </SubCard>
-                            </div>
-                        </Grid>
-                    ))}
-                </Grid>
-            )}
-
-            {activeButton === 'comment' && (
-                <Grid item xs={12} mb={2}>
-                    <TextField
-                        label="Chú thích phỏng vấn"
-                        variant="outlined"
-                        multiline
-                        rows={3}
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        sx={{ width: "35%" }}
-                    />
-                </Grid>
-            )}
-
-            <CalendarStyled>
-                <ExpertToolbar
-                    date={date}
-                    view={view}
-                    onClickNext={handleDateNext}
-                    onClickPrev={handleDatePrev}
-                    onClickToday={handleDateToday}
-                    onChangeView={handleViewChange}
-                />
-                <SubCard>
-                    <FullCalendar
-                        weekends
-                        editable
-                        droppable
-                        selectable
-                        events={events}
-                        ref={calendarRef}
-                        rerenderDelay={10}
-                        initialDate={date}
-                        initialView={view}
-                        dayMaxEventRows={3}
-                        eventDisplay="block"
-                        headerToolbar={false}
-                        allDayMaintainDuration
-                        eventResizableFromStart
-                        select={handleRangeSelect}
-                        eventDrop={handleEventUpdate}
-                        eventClick={handleEventSelect}
-                        eventResize={handleEventUpdate}
-                        height={matchSm ? 'auto' : 720}
-                        plugins={[listPlugin, dayGridPlugin, timelinePlugin, timeGridPlugin, interactionPlugin]}
-                    />
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      color: selectedSkills.includes(skill.id) ? '#fff' : '#000',
+                      pl: 1,
+                      pb: 2
+                    }}
+                  >
+                    {skill.skillOptionName}
+                  </Typography>
+                  <FlexBetween>
+                    <Rating value={skill.sumPoint} size="small" readOnly />
+                    <Text fontSize={13}>
+                      <span style={{ fontWeight: 'bold' }}>{skill.totalRating}</span> lượt đánh giá
+                    </Text>
+                  </FlexBetween>
                 </SubCard>
-            </CalendarStyled>
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
-            <Grid item xs={12} mt={3} >
-                <Grid container spacing={3} alignItems="center" justifyContent="space-between">
-                    <Grid item>
-                        <Button onClick={() => { if (onBack) onBack(); }} color="primary" variant="outlined" startIcon={<KeyboardBackspaceIcon />}>
-                            Quay lại
-                        </Button>
-                    </Grid>
-                    {/* <Grid item>
+      {activeButton === 'cvs' && (
+        <Grid container spacing={2} mb={2}>
+          {cvs?.map((cv) => (
+            <Grid item xs={12} sm={6} md={4} key={cv.id}>
+              <div
+                onClick={() => handleCVSelect(cv.id)}
+                style={{ cursor: 'pointer', border: selectedCV === cv.id ? '3px solid #2196F3' : 'none', borderRadius: '12px' }}
+              >
+                <SubCard
+                  title={cv.name}
+                  sx={{
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    transition: '0.3s',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                    }
+                  }}
+                >
+                  <Image
+                    src={
+                      cv.image !== ''
+                        ? cv.image
+                        : 'https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg'
+                    }
+                    //src={"https://marketplace.canva.com/EAFRuCp3DcY/1/0/1131w/canva-black-white-minimalist-cv-resume-f5JNR-K5jjw.jpg"}
+                    alt={cv.name}
+                    width={400}
+                    height={600}
+                    style={{ objectFit: 'cover', objectPosition: 'center' }}
+                  />
+                </SubCard>
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+
+      {activeButton === 'comment' && (
+        <Grid item xs={12} mb={2}>
+          <TextField
+            label="Chú thích phỏng vấn"
+            variant="outlined"
+            multiline
+            rows={3}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            sx={{ width: '35%' }}
+          />
+        </Grid>
+      )}
+
+      <CalendarStyled>
+        <ExpertToolbar
+          date={date}
+          view={view}
+          onClickNext={handleDateNext}
+          onClickPrev={handleDatePrev}
+          onClickToday={handleDateToday}
+          onChangeView={handleViewChange}
+        />
+        <SubCard>
+          <FullCalendar
+            weekends
+            editable
+            droppable
+            selectable
+            events={events}
+            ref={calendarRef}
+            rerenderDelay={10}
+            initialDate={date}
+            initialView={view}
+            dayMaxEventRows={3}
+            eventDisplay="block"
+            headerToolbar={false}
+            allDayMaintainDuration
+            eventResizableFromStart
+            select={handleRangeSelect}
+            eventDrop={handleEventUpdate}
+            eventClick={handleEventSelect}
+            eventResize={handleEventUpdate}
+            height={matchSm ? 'auto' : 720}
+            plugins={[listPlugin, dayGridPlugin, timelinePlugin, timeGridPlugin, interactionPlugin]}
+          />
+        </SubCard>
+      </CalendarStyled>
+
+      <Grid item xs={12} mt={3}>
+        <Grid container spacing={3} alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <Button
+              onClick={() => {
+                if (onBack) onBack();
+              }}
+              color="primary"
+              variant="outlined"
+              startIcon={<KeyboardBackspaceIcon />}
+            >
+              Quay lại
+            </Button>
+          </Grid>
+          {/* <Grid item>
                         <Button variant="contained" endIcon={<KeyboardTabIcon />}>Tiếp tục</Button>
                     </Grid> */}
-                </Grid>
-            </Grid>
+        </Grid>
+      </Grid>
 
-            {/* Dialog xác nhận book lịch */}
-            <Dialog
-                open={isModalOpen}
-                onClose={handleModalClose}
-            >
-                <DialogTitle>Xác nhận đặt lịch chuyên gia {expert?.firstName} {expert?.lastName} </DialogTitle>
-                <DialogContent>
-                    <DialogContentText >
-                        Bạn muốn chuyên gia interview CV của bạn vào thời điểm  <Typography component="span" color="primary">
-                            {` ${formatDate(selectedEvent?.start, "dd/MM/yyyy  hh:mm")} - ${formatDate(selectedEvent?.end, "hh:mm")}`}
-                        </Typography>?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleModalClose} color="error">
-                        Đóng
-                    </Button>
-                    <Button color="success" onClick={handleBooking}>
-                        Đặt lịch
-                    </Button>
-                </DialogActions>
-            </Dialog>
+      {/* Dialog xác nhận book lịch */}
+      <Dialog open={isModalOpen} onClose={handleModalClose}>
+        <DialogTitle>
+          Xác nhận đặt lịch chuyên gia {expert?.firstName} {expert?.lastName}{' '}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Bạn muốn chuyên gia interview CV của bạn vào thời điểm{' '}
+            <Typography component="span" color="primary">
+              {` ${formatDate(selectedEvent?.start, 'dd/MM/yyyy  hh:mm')} - ${formatDate(selectedEvent?.end, 'hh:mm')}`}
+            </Typography>
+            ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModalClose} color="error">
+            Đóng
+          </Button>
+          <Button color="success" onClick={handleBooking}>
+            Đặt lịch
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-            <SnackbarDialog />
-        </Box>
-    );
+      <SnackbarDialog />
+    </Box>
+  );
 };
 
 export default ExpertCalendarPage;
-

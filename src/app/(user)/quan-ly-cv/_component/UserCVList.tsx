@@ -12,9 +12,7 @@ import { CVCurrent } from 'package/api/cv/current';
 import { formatDate } from 'package/util';
 import { useRef } from 'react';
 
-
 const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
-
   const CVRef = useRef(null);
 
   const handleDownload = async () => {
@@ -70,7 +68,8 @@ const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
                 left: 8,
                 right: 8,
                 zIndex: 3,
-                color: 'black'
+                color: 'black',
+                mb: 1.5
               }}
               px={1}
             >
@@ -110,63 +109,6 @@ const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
               >
                 Cập nhật lần cuối {formatDate(item.updatedAt, 'dd/MM/yyyy - hh:mm')}
               </Typography>
-              <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} pt={1}>
-                <Stack direction="row" spacing={1}>
-                  <Button
-                    sx={{
-                      color: '#FFFFFF',
-                      fontWeight: 700,
-                      fontSize: '12px',
-                      fontFamily: 'Inter, sans-serif',
-                      borderRadius: 30,
-                      backgroundColor: '#AAD4EB',
-                      '&:hover': {
-                        backgroundColor: '#59ABD9'
-                      }
-                    }}
-                  >
-                    <ShareIcon
-                      sx={{
-                        fontSize: '16px',
-                        color: 'white',
-                        paddingRight: '2px'
-                      }}
-                    />
-                    Chia sẻ
-                  </Button>
-                  <Button
-                    onClick={handleDownload}
-                    sx={{
-                      color: '#FFFFFF',
-                      fontWeight: 700,
-                      fontSize: '12px',
-                      fontFamily: 'Inter, sans-serif',
-                      borderRadius: 30,
-                      backgroundColor: '#AAD4EB',
-                      '&:hover': {
-                        backgroundColor: '#59ABD9'
-                      }
-                    }}
-                  >
-                    <FileDownloadIcon
-                      sx={{
-                        fontSize: '16px',
-                        color: 'white',
-                        paddingRight: '2px'
-                      }}
-                    />
-                    Tải Xuống
-                  </Button>
-                </Stack>
-                <IconButton>
-                  <DeleteOutlineIcon
-                    sx={{
-                      fontSize: '20px',
-                      color: 'white'
-                    }}
-                  />
-                </IconButton>
-              </Stack>
             </Stack>
           </Box>
         </Grid>
@@ -176,3 +118,61 @@ const UserCVList = ({ CVList }: { CVList: CVCurrent[] }) => {
 };
 
 export default UserCVList;
+
+// <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1} pt={1}>
+//   <Stack direction="row" spacing={1}>
+//     <Button
+//       sx={{
+//         color: '#FFFFFF',
+//         fontWeight: 700,
+//         fontSize: '12px',
+//         fontFamily: 'Inter, sans-serif',
+//         borderRadius: 30,
+//         backgroundColor: '#AAD4EB',
+//         '&:hover': {
+//           backgroundColor: '#59ABD9'
+//         }
+//       }}
+//     >
+//       <ShareIcon
+//         sx={{
+//           fontSize: '16px',
+//           color: 'white',
+//           paddingRight: '2px'
+//         }}
+//       />
+//       Chia sẻ
+//     </Button>
+//     <Button
+//       onClick={handleDownload}
+//       sx={{
+//         color: '#FFFFFF',
+//         fontWeight: 700,
+//         fontSize: '12px',
+//         fontFamily: 'Inter, sans-serif',
+//         borderRadius: 30,
+//         backgroundColor: '#AAD4EB',
+//         '&:hover': {
+//           backgroundColor: '#59ABD9'
+//         }
+//       }}
+//     >
+//       <FileDownloadIcon
+//         sx={{
+//           fontSize: '16px',
+//           color: 'white',
+//           paddingRight: '2px'
+//         }}
+//       />
+//       Tải Xuống
+//     </Button>
+//   </Stack>
+//   <IconButton>
+//     <DeleteOutlineIcon
+//       sx={{
+//         fontSize: '20px',
+//         color: 'white'
+//       }}
+//     />
+//   </IconButton>
+// </Stack>
