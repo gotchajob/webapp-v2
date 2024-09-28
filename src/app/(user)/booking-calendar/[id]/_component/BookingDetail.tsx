@@ -109,6 +109,7 @@ export default function BookingDetailPage({ event, onBack }: { event: any; onBac
         throw new Error(res.responseText);
       }
       enqueueSnackbar('Hủy đặt lịch thành công', { variant: 'success' });
+      setCancelReason("");
     } catch (error: any) {
       console.log(error);
       enqueueSnackbar(error, { variant: 'error' });

@@ -225,7 +225,7 @@ const BookingCalendar = ({ onNext, onSelectEvent }: { onNext: () => void; onSele
             Đóng
           </Button>
           <Button onClick={handleConfirmCancel} color="primary" sx={{ fontWeight: 'bold' }}>
-            Từ chối
+            Hủy đặt lịch
           </Button>
         </DialogActions>
       </Dialog>

@@ -278,7 +278,7 @@ export const Header = ({ alreadyLogin }: { alreadyLogin: boolean }) => {
                           <ListItemText
                             primary={
                               <Typography variant="body2">
-                                <FormattedMessage id="Lịch sử phỏng vấn" />
+                                <FormattedMessage id="Lịch phỏng vấn đã đặt" />
                               </Typography>
                             }
                           />
