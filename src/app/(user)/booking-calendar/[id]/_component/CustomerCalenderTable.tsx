@@ -131,14 +131,14 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
                     {[4].includes(params.row.status) && (
                         <Tooltip title="Báo cáo">
                             <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: params.row.id, type: 'report' })}>
-                                <ReportProblemIcon />
+                                <ReportProblemIcon  />
                             </IconButton>
                         </Tooltip>
                     )}
                     {[5, 6, 7].includes(params.row.status) && (
                         <Tooltip title="Đặt lại lịch với chuyên gia">
                             <StyledLink href={`/share-cv/expert-profile/${params.row.expertId}`}>
-                                <IconButton size="large" >
+                                <IconButton size="large" color="primary" >
                                     <IconBookmarkPlus />
                                 </IconButton>
                             </StyledLink>
