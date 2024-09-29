@@ -45,7 +45,7 @@ const SideCVTemplate = ({ onChangeTemplate, cvTemplate }: { onChangeTemplate?: (
           >
             <Box>
               <Image
-                src={"https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png"}
+                src={template?.image ||"https://www.topcv.vn/images/cv/screenshots/thumbs/cv-template-thumbnails-v1.2/prosper.png"}
                 alt={template.name}
                 width={95}
                 height={95}
