@@ -69,6 +69,7 @@ export default function Page() {
     skills: false,
     experience: false
   });
+
   const handleCheckboxChange = (event: { target: { name: string; checked: boolean } }) => {
     const { name, checked } = event.target;
     setCheckedState({
@@ -89,8 +90,9 @@ export default function Page() {
     if (checkedState.experience) {
       return 1;
     }
-    return 0;
+    return null;
   };
+
   const getClientExpertMatching = async () => {
     try {
       setIsLoading(true);

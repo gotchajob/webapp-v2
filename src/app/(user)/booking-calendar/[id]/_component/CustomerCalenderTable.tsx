@@ -16,6 +16,8 @@ import { useMemo } from 'react';
 import MainCard from 'ui-component/cards/MainCard';
 import CloseIcon from '@mui/icons-material/Close';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import { StyledLink } from 'components/common/link/styled-link';
+import { IconBookmarkPlus } from '@tabler/icons-react';
 
 const getStatusLabel = (status: any) => {
     switch (status) {
@@ -113,7 +115,7 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
                                 }
                             }}
                         >
-                            <VisibilityIcon sx={{ fontSize: '1.1rem' }} />
+                            <VisibilityIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Hủy đặt lịch">
@@ -123,14 +125,23 @@ export const RenderCustomerCalendarTable = ({ bookings, onSelectEvent, onNext, s
                             disabled={!params.row.canCancel}
                             onClick={() => setSelectedBooking({ id: params.row.id, type: 'reject' })}
                         >
-                            <CloseIcon sx={{ fontSize: '1.1rem' }} />
+                            <CloseIcon />
                         </IconButton>
                     </Tooltip>
                     {[4].includes(params.row.status) && (
                         <Tooltip title="Báo cáo">
                             <IconButton color="error" size="large" onClick={() => setSelectedBooking({ id: params.row.id, type: 'report' })}>
-                                <ReportProblemIcon sx={{ fontSize: '1.1rem' }} />
+                                <ReportProblemIcon  />
                             </IconButton>
+                        </Tooltip>
+                    )}
+                    {[5, 6, 7].includes(params.row.status) && (
+                        <Tooltip title="Đặt lại lịch với chuyên gia">
+                            <StyledLink href={`/share-cv/expert-profile/${params.row.expertId}`}>
+                                <IconButton size="large" color="primary" >
+                                    <IconBookmarkPlus />
+                                </IconButton>
+                            </StyledLink>
                         </Tooltip>
                     )}
                 </>

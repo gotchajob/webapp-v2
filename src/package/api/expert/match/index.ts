@@ -1,7 +1,7 @@
 import { apiServerFetch, errorSystem } from 'package/api/api-fetch';
 
 export interface ExpertMatchingRequest {
-  by: number;
+  by: number | null;
   skillOptionId: number[];
   nation: string[];
   minYearExperience: number;

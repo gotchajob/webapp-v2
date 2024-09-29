@@ -21,19 +21,19 @@ import { enqueueSnackbar } from 'notistack';
 
 // ==============================|| CHECKOUT PAYMENT - MAIN ||============================== //
 
-const expertBooking = [
-  {
-    userId: 1,
-    fullName: 'Anshan Handgun',
-    avatar: `/assets/images/users/avatar-3.png`,
-    email: 'anshan.handgun@example.com',
-    yearExperience: 10,
-    nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
-    point: 5,
-    bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
-    skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
-  }
-];
+// const expertBooking = [
+//   {
+//     userId: 1,
+//     fullName: 'Anshan Handgun',
+//     avatar: `/assets/images/users/avatar-3.png`,
+//     email: 'anshan.handgun@example.com',
+//     yearExperience: 10,
+//     nationSupport: [{ nation: 'USA' }, { nation: 'Canada' }],
+//     point: 5,
+//     bio: 'Hello,I’m Anshan Handgun Creative Graphic Designer & User Experience Designer based in Website, I create digital Products a more Beautiful and usable place. Morbid accusant ipsum. Nam nec tellus at.',
+//     skills: [{ skill: 'JavaScript' }, { skill: 'React' }]
+//   }
+// ];
 
 const BookInvoicePage = ({ onBack, bookingInfo, params }: { onBack: () => void; bookingInfo: any; params: { id: string } }) => {
   const handleClose = () => {
